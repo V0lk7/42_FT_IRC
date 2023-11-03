@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:55:35 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/02 15:35:07 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/03 14:18:18 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@
 			Pair contening the actual grade of the client (channel operator or not)
 			And containing the client.
 ########################################################################################*/
+
+enum mode {
+	I,
+	K,
+	T
+};
 
 class Client;
 
