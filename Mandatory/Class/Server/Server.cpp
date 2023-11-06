@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:20:18 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/03 14:33:30 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/04 11:59:41 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(){} 
+Server::Server(){} 
 
-Channel::Channel(std::string const &Passwd) : _Password(Passwd) 
+Server::Server(std::string const &Passwd) : _Password(Passwd) 
 
-Channel::~Channel()
+Server::~Server()
 {
 	std::close(this->_MasterSocket);
 	std::list<Channel *>::iterator	ItBegin = this->_ChannelList.begin();
@@ -39,8 +39,8 @@ Channel::~Channel()
 	}
 }
 
-Channel::Channel(Channel const &src) {*this = src;}
+Server::Server(Server const &src) {*this = src;}
 
-Channel	&Channel::operator=(Channel const &rhs) {(void)rhs;}
+Server	&Server::operator=(Server const &rhs) {(void)rhs;}
 
 //----------------Set/Get-------------------//
