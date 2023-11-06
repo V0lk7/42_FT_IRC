@@ -30,12 +30,12 @@ SRC_DIR		=	Mandatory
 
 INCLUDES	=	$(SRC_DIR)/Class/Client/		\
 				$(SRC_DIR)/Class/Channel/	\
+				$(SRC_DIR)/Class/PendingAction/		\
 #				./Class/Server/		\
-#				./Class/PendingAction/		\
 
 SRCS		:=	main.cpp
 
-SCRS		+=	Parsing/ParsingUserInput.cpp
+SCRS		+=	Class/PendingAction/PendingAction.cpp
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
