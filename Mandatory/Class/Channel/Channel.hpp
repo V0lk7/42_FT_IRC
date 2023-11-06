@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:55:35 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/03 14:18:18 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/06 10:50:25 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 # define CHANNEL_HPP
 
 # include <string>
-# include <list>
-# include <utility>
+# include <map>
 
 /*########################################################################################
 	Class wich will keep all the informations usefull of the channel.
@@ -29,9 +28,9 @@
 					only to channel operator. 0 = NO, 1 = YES.
 		-> Mode[2] = "k" Define a password for the channel. 0 = NO, 1 = YES.
 	_Users => Define the client list which is in the channel.
-		List containing a pair;
-			Pair contening the actual grade of the client (channel operator or not)
-			And containing the client.
+		 Map ->
+			Key => The client.
+			Value => Grade of the client (channel operator or not)
 ########################################################################################*/
 
 enum mode {
@@ -45,19 +44,19 @@ class Client;
 class Channel{
 
 	private :
-		std::string							_Name;
-		std::string							_Password;
-		std::string							_Topic;
-		size_t								_LimitUsers;
-		bool								_Mode[3];
+		std::string				_Name;
+		std::string				_Password;
+		std::string				_Topic;
+		size_t					_LimitUsers;
+		bool					_Mode[3];
 
-		std::list<std::pair<int, Client &>>	_Users;
+		std::map<Client &, int>	_Users;
 
 		Channel	&operator=(Channel const &rhs);
 		Channel(Channel const &src);
+		Channel();
 
 	public :
-		Channel();
 		Channel(std::string const &);
 		~Channel();
 

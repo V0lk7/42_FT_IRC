@@ -6,19 +6,14 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:56:16 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/03 14:29:33 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/06 10:55:22 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 #include "Client.hpp"
 
-Channel::Channel() : _Name(""), _Password(""), _Topic(""), _LimitUsers(0)
-{
-	_Mode[I] = false;
-	_Mode[T] = false;
-	_Mode[K] = false;
-}
+Channel::Channel() {}
 
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)

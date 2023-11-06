@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 10:41:21 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/03 14:15:09 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/06 13:59:56 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ class Client{
 		std::string	_Nickname;
 		std::string	_Username;
 		bool		_Auth[4];
-		//Maybe need to add a container  containing the history of all the NickName
-		//the client has had. (Just to coincide with the RFC1459)
+
+		std::string	_Input;
 
 		Client(Client const &src);
 		Client	&operator=(Client const &rhs);

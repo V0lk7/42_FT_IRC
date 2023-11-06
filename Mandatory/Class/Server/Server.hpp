@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 09:47:52 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/04 11:52:54 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/06 15:22:38 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Server {
 		int							_MasterSocket;
 		std::list<Channel *>		_ChannelList;
 		std::list<Client *>			_ClientList;
-//		std::list<PendingAction *>	_PendingList;
+//		std::map<int, std::string>	_Messages;
 
 		Server	&operator=(Server const &rhs);
 		Server(Server const &src);

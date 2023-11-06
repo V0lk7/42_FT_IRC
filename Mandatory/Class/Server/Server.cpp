@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:20:18 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/04 11:59:41 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/06 15:22:37 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,3 +44,5 @@ Server::Server(Server const &src) {*this = src;}
 Server	&Server::operator=(Server const &rhs) {(void)rhs;}
 
 //----------------Set/Get-------------------//
+
+
