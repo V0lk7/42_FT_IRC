@@ -1,14 +1,14 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 12:44:26 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/06 08:24:42 by jduval           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*            _       _                     _          _            _         */
+/*           /\ \    /\ \                  /\ \       /\ \        /\ \        */
+/*          /  \ \   \_\ \                 \ \ \     /  \ \      /  \ \       */
+/*         / /\ \ \  /\__ \                /\ \_\   / /\ \ \    / /\ \ \      */
+/*        / / /\ \_\/ /_ \ \     ____     / /\/_/  / / /\ \_\  / / /\ \ \     */
+/*       / /_/_ \/_/ / /\ \ \  /\____/\  / / /    / / /_/ / / / / /  \ \_\    */
+/*      / /____/\ / / /  \/_/  \/____\/ / / /    / / /__\/ / / / /    \/_/    */
+/*     / /\____\// / /                 / / /    / / /_____/ / / /             */
+/*    / / /     / / /              ___/ / /__  / / /\ \ \  / / /________      */
+/*   / / /     /_/ /              /\__\/_/___\/ / /  \ \ \/ / /_________\     */
+/*   \/_/      \_\/               \/_________/\/_/    \_\/\/____________/     */
 
 // #include "Parsing.hpp"
 // #include "Server.hpp"
@@ -30,33 +30,49 @@
 #include <string>
 #include <sys/types.h> 
 #include <sys/socket.h> 
-	
-#define TRUE 1 
-#define FALSE 0 
-#define PORT 8888 
-	
+
+
 int main(int argc , char *argv[]) 
-{ 
+{
 
-    //TODO void degeu
-    (void)argc;
-    (void)argv;
+	int		opt = true;
+	int		port = 8888;
+	int		max_clients = 30;
+	int		master_socket;
+	int		new_socket;
+	int		activity;
+	int		addrlen;
+	int		valread;
+	int		max_sd; 
+	int		sd; 
+	int		i;
+	int		client_socket[30];
 
+	std::string	rawPort;
 
-	int opt = TRUE; 
-	int master_socket , addrlen , new_socket , client_socket[30] , 
-		max_clients = 30 , activity, i , valread , sd; 
-	int max_sd; 
-	struct sockaddr_in address; 
-		
+	struct	sockaddr_in address; 
+
 	char buffer[1025]; //data buffer of 1K 
-		
+
 	//set of socket descriptors 
 	fd_set readfds; 
-		
+
 	//a message 
-    std::string message("ECHO Daemon v1.0 \r\n") ; 
-	
+	std::string message("ECHO Daemon v1.0 \r\n") ;
+
+	//TODO make better
+	if(argc == 2)
+	{
+		rawPort = argv[1];
+		if(rawPort.size() < 7 && atoi(rawPort.c_str()) > 0 && atoi(rawPort.c_str()) < 65536)
+			port = atoi(rawPort.c_str());
+		else
+		{
+			std::cerr << "Bad port!!" << std::endl;
+			exit(1);
+		}
+	}
+
 	//initialise all client_socket[] to 0 so not checked 
 	for (i = 0; i < max_clients; i++) 
 	{ 
@@ -82,7 +98,7 @@ int main(int argc , char *argv[])
 	//type of socket created 
 	address.sin_family = AF_INET; 
 	address.sin_addr.s_addr = INADDR_ANY; 
-	address.sin_port = htons( PORT ); 
+	address.sin_port = htons( port ); 
 		
 	//bind the socket to localhost port 8888 
 	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0) 
@@ -90,7 +106,7 @@ int main(int argc , char *argv[])
 		perror("bind failed"); 
 		exit(EXIT_FAILURE); 
 	} 
-	printf("Listener on port %d \n", PORT); 
+	printf("Listener on port %d \n", port); 
 		
 	//try to specify maximum of 3 pending connections for the master socket 
 	if (listen(master_socket, 3) < 0) 
@@ -103,7 +119,7 @@ int main(int argc , char *argv[])
 	addrlen = sizeof(address); 
 	puts("Waiting for connections ..."); 
 		
-	while(TRUE) 
+	while(true) 
 	{ 
 		//clear the socket set 
 		FD_ZERO(&readfds); 
@@ -200,13 +216,13 @@ int main(int argc , char *argv[])
 					//set the string terminating NULL byte on the end 
 					//of the data read 
 					buffer[valread] = '\0'; 
-                    // AFAIRE parser buffer
+					// AFAIRE parser buffer
 					// send(sd , buffer , strlen(buffer) , 0 ); // TODO comment here but maybe uncomment
 				}
 			}
 		}
-        printf("%s\n", buffer); // TODO ajou Jiji Charlou pas sur
-        handleCommand(buffer);
+		printf("%s\n", buffer); // TODO ajou Jiji Charlou pas sur
+		handleCommand(buffer);
 	}
 		
 	return 0; 
