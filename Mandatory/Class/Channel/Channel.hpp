@@ -6,7 +6,7 @@
 /*   By: jduval <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:55:35 by jduval            #+#    #+#             */
-/*   Updated: 2023/11/06 10:50:25 by jduval           ###   ########.fr       */
+/*   Updated: 2023/11/08 11:10:37 by jduval           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class Channel{
 		bool					_Mode[3];
 
 		std::map<Client &, int>	_Users;
+		std::list<Client &>		_WaitingList;
 
 		Channel	&operator=(Channel const &rhs);
 		Channel(Channel const &src);
