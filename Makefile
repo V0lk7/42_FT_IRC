@@ -6,7 +6,7 @@
 #    By: jduval <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/18 10:18:38 by jduval            #+#    #+#              #
-#    Updated: 2023/11/08 12:54:56 by jduval           ###   ########.fr        #
+#    Updated: 2023/11/08 13:48:38 by jduval           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,9 +28,9 @@ OBJ_DIR		:=	.obj
 
 SRC_DIR		=	Mandatory
 
-INCLUDES	=	$(SRC_DIR)/Class/Client/	\
-				$(SRC_DIR)/Class/Channel/	\
-				./Class/Server/				\
+INCLUDES	=	Class/Client/	\
+				Class/Channel/	\
+				Class/Server/	\
 
 SRCS		:=	
 
