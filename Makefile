@@ -6,7 +6,7 @@
 #    By: jduval <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/18 10:18:38 by jduval            #+#    #+#              #
-#    Updated: 2023/11/06 08:23:59 by jduval           ###   ########.fr        #
+#    Updated: 2023/11/08 12:54:56 by jduval           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,14 +28,11 @@ OBJ_DIR		:=	.obj
 
 SRC_DIR		=	Mandatory
 
-INCLUDES	=	$(SRC_DIR)/Class/Client/		\
+INCLUDES	=	$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Channel/	\
-#				./Class/Server/		\
-#				./Class/PendingAction/		\
+				./Class/Server/				\
 
-SRCS		:=	main.cpp
-
-SCRS		+=	Parsing/ParsingUserInput.cpp
+SRCS		:=	
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
