@@ -21,19 +21,3 @@ int	csplit(std::vector<std::string>& tab, std::string& str, const std::string de
 
 	return 0;
 }
-
-
-int main() {
-
-	std::string str = "Ceci est une exemple de division \r\n coucou bg";
-
-	std::vector<std::string> tokens;
-
-	csplit(tokens, str, "\n");
-
-	for (std::vector<std::string>::const_iterator it = tokens.begin(); it != tokens.end(); ++it) {
-		std::cout << *it << std::endl;
-	}
-
-	return 0;
-}
