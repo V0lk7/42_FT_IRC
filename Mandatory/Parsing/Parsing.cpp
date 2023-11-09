@@ -28,17 +28,24 @@ void    handleCommand( char* buffer ) {
         std::cout << "\nWord" << std::endl;
         // TODO displaying cmd;
         if ( line.size() != 0 )
-            std::cout << "result pars: " << displaying( line[0] ) << std::endl;
+            std::cout << displaying( line[0] ) << std::endl;
         line.clear();
     }
 }
 
 static int  displaying( const std::string& target ) {
-    // std::string comp[6] = { "TOPIC", "INVITE", "PRIVMSG", "KICK", "JOIN", "MODE" };
-    std::string comp[4] = { "CAP", "PASS", "NICK", "USER" };
-    for ( int i = 0; i < 6; i++ ) {
-        if ( comp[i] == target )
+
+    std::string comp[9] = {
+        "TOPIC", "INVITE", "PRIVMSG",
+        "KICK", "JOIN", "MODE",
+        "USER", "NICK", "PASS"
+    };
+
+    for ( int i = 0; i < 9; i++ ) {
+        if ( comp[i] == target ) {
+            std::cout << comp[i] << std::endl;
             return ( i );
+        }
     }
     return ( -1 );
 }
