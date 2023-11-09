@@ -1,2 +1,5 @@
 ircserv
 .obj
+compile_commands.json
+nohup.out
+.cache/

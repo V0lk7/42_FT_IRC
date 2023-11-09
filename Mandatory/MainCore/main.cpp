@@ -16,7 +16,7 @@
 //Example code: A simple server side code, which echos back the received message. 
 //Handle multiple socket connections with select and fd_set on Linux 
 
-#include "PendingAction.cpp"
+#include "Parsing.hpp"
 
 #include <stdio.h> 
 #include <cstring> //strlen 
@@ -54,6 +54,7 @@ int main(int argc , char *argv[])
 
 	char buffer[1025]; //data buffer of 1K 
 
+    bzero(buffer, sizeof(buffer));
 	//set of socket descriptors 
 	fd_set readfds; 
 
@@ -221,7 +222,7 @@ int main(int argc , char *argv[])
 				}
 			}
 		}
-		printf("%s\n", buffer); // TODO ajou Jiji Charlou pas sur
+		// printf("%s\n", buffer); // TODO ajou Jiji Charlou pas sur
 		handleCommand(buffer);
 	}
 		

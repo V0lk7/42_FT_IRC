@@ -16,11 +16,18 @@ OBJ_DIR		:=	.obj
 
 SRC_DIR		=	Mandatory
 
-INCLUDES	=	Class/Client/	\
-				Class/Channel/	\
-				Class/Server/	\
+# INCLUDES	=	$(SRC_DIR)/Class/Client/	\
+# 				$(SRC_DIR)/Class/Channel/	\
+# 				$(SRC_DIR)/Class/Server/	\
 
-SRCS		:=	
+INCLUDES	= 	$(SRC_DIR)/Tools/			\
+				$(SRC_DIR)/Parsing/			\
+
+SRCS		:=	MainCore/main.cpp \
+
+SRCS		+=	Parsing/Parsing.cpp
+
+SRCS		+=	Tools/cSplit.cpp
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
@@ -34,7 +41,7 @@ DEPS		:=	$(OBJS:.o=.d)
 
 CC			=	c++
 
-CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98
+CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98 -g
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 
