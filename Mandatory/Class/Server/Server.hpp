@@ -15,7 +15,6 @@ class Server {
 		int								_MasterSocket;
 		std::list<Channel *>			_ChannelList;
 		std::list<Client *>				_ClientList;
-		std::map<Client &, std::string>	_Messages;
 
 		Server	&operator=(Server const &rhs);
 		Server(Server const &src);
