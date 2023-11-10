@@ -30,6 +30,8 @@ SRCS		+=	Parsing/Parsing.cpp
 
 SRCS		+=	Tools/cSplit.cpp
 
+SRCS		+=	Class/Client/Client.cpp
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
