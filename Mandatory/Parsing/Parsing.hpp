@@ -5,6 +5,6 @@
 # include <sstream>
 # include <vector>
 
-void    handleCommand( char* buffer );
+void    handleCommand( const char* buffer );
 
 #endif
