@@ -3,6 +3,7 @@
 
 # include <string>
 # include <map>
+# include <list>
 
 /*########################################################################################
 	Class wich will keep all the informations usefull of the channel.
@@ -22,9 +23,9 @@
 ########################################################################################*/
 
 enum mode {
-	I,
-	K,
-	T
+	INVITE_ONLY,
+	PASSWORD_SET,
+	TOPIC_CHANGE
 };
 
 class Client;
@@ -38,8 +39,8 @@ class Channel{
 		size_t					_LimitUsers;
 		bool					_Mode[3];
 
-		std::map<Client &, int>	_Users;
-		std::list<Client &>		_WaitingList;
+		std::map<Client *, bool>	_Users;
+		std::list<Client *>			_WaitingList;
 
 		Channel	&operator=(Channel const &rhs);
 		Channel(Channel const &src);
@@ -61,8 +62,12 @@ class Channel{
 		size_t		GetLimitUsers(void) const;
 		bool		GetMode(int) const;
 
-		void		AddClientToChannel(Client const &, int);
-		void		EraseClientFromChannel(Client const &);
+		void		AddClientToChannel(Client &, int);
+		void		EraseClientFromChannel(Client &);
+
+		void		PutClientOnWaitingList(Client &);
+		void		EraseClientFromWaitingList(Client &);
+		void		ModifyClientRights(Client &, bool);
 };
 
 #endif

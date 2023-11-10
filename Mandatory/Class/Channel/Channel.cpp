@@ -1,21 +1,22 @@
 #include "Channel.hpp"
-#include "Client.hpp"
+#include "../Client/Client.hpp"
+#include <algorithm>
 
 Channel::Channel() {}
 
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)
 {
-	_Mode[I] = false;
-	_Mode[T] = false;
-	_Mode[K] = false;
+	_Mode[INVITE_ONLY] = false;
+	_Mode[TOPIC_CHANGE] = false;
+	_Mode[PASSWORD_SET] = false;
 }
 
 Channel::~Channel(){}
 
 Channel::Channel(Channel const &src) {*this = src;}
 
-Channel	&Channel::operator=(Channel const &rhs) {(void)rhs;}
+Channel	&Channel::operator=(Channel const &rhs) {(void)rhs; return (*this);}
 
 //----------------Set/Get-------------------//
 
@@ -34,14 +35,14 @@ void	Channel::SetTopic(std::string const &NewTopic)
 	this->_Password = NewTopic;
 }
 
-void	Channel::SetLimitUsers(std::string const &NewLimit)
+void	Channel::SetLimitUsers(size_t const &NewLimit)
 {
 	this->_LimitUsers = NewLimit;
 }
 
 void	Channel::SetMode(int Index, bool state)
 {
-	this->Mode[Index] = state;
+	this->_Mode[Index] = state;
 }
 
 std::string	Channel::GetName(void) const
@@ -71,17 +72,51 @@ bool	Channel::GetMode(int Index) const
 
 /*----------------------SpecificMethods----------------------------*/
 
-void	Channel::AddClientToChannel(Client const &src, int Type)
+void	Channel::AddClientToChannel(Client &src, int Admin)
 {
-	if (this->_Users.find(src) != map::end)
-		throw std::logic_error("ALREADY_IN_CHANNEL");
-	this->_Users[src] = Type;
+	if (this->_Users.find(&src) != this->_Users.end())
+		return ;
+	this->_Users[&src] = Admin;
 }
 
-void	Channel::EraseClientFromChannel(Client const &src)
+void	Channel::EraseClientFromChannel(Client &src)
 {
-	std::map<Client &, int>:: iterator	It = this->_Users.find(src);
-	if (It == map::end)
-		throw std::logic_error("NOT_IN_CHANNEL");
+	std::map<Client *, bool>::iterator	It = this->_Users.find(&src);
+
+	if (It == this->_Users.end())
+		return ;
 	this->_Users.erase(It);
+}
+
+void	Channel::PutClientOnWaitingList(Client &src)
+{
+	std::list<Client *>::iterator	ItBegin = this->_WaitingList.begin();
+	std::list<Client *>::iterator	ItEnd = this->_WaitingList.end();
+
+	if (std::find(ItBegin, ItEnd, &src) != ItEnd)
+		return ;
+	this->_WaitingList.push_back(&src);
+}
+
+void	Channel::EraseClientFromWaitingList(Client &src)
+{
+	std::list<Client *>::iterator	ItBegin = this->_WaitingList.begin();
+	std::list<Client *>::iterator	ItEnd = this->_WaitingList.end();
+	std::list<Client *>::iterator	ItClient = std::find(ItBegin, ItEnd, &src);
+
+	if (ItClient == ItEnd)
+		return ;
+	this->_WaitingList.erase(ItClient);
+}
+
+void	Channel::ModifyClientRights(Client &src, bool Admin)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.find(&src);
+
+	if (It == this->_Users.end())
+		return ;
+	if (Admin == true)
+		It->second = true;
+	else
+		It->second = false;
 }
