@@ -27,7 +27,8 @@ class Client{
 		std::string	_Username;
 		bool		_Auth[4];
 
-		std::string	_Input;
+		std::string	_InputBuffer;
+		std::string	_MessageToSend;
 
 		Client(Client const &src);
 		Client	&operator=(Client const &rhs);
@@ -40,11 +41,15 @@ class Client{
 		void	SetUsername(std::string const &);
 		void	SetSocket(int const &);
 		void	SetPasswd(void);
+		void	SetInputBuffer(std::string const &);
 
-		std::string const	&GetNickname(void) const;
-		std::string const	&GetUsername(void) const;
-		int const			&GetSocket(void) const;
-		bool const			&GetStatement(void) const;
+		std::string	GetNickname(void) const;
+		std::string	GetUsername(void) const;
+		int			GetSocket(void) const;
+		bool		GetStatement(void) const;
+		std::string	GetInputBuffer(void) const;
+
+		void		ClearInputBuffer(void);
 };
 
 #endif
