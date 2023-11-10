@@ -22,6 +22,7 @@ SRC_DIR		=	Mandatory
 
 INCLUDES	= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Parsing/			\
+				$(SRC_DIR)/Class/Client/	\
 
 SRCS		:=	MainCore/main.cpp \
 

@@ -21,7 +21,7 @@ Client::~Client()
 
 void	Client::SetNickname(std::string const &NewNickname)
 {
-	this->_Nickname = NewNickname;
+	this->_Nickname += NewNickname;
 	this->_Auth[NICK] = true;
 	if (this->_Auth[PASSWD] == true && this->_Auth[USER] == true)
 		this->_Auth[OK] = true;
