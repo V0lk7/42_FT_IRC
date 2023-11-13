@@ -54,7 +54,7 @@ int main(int argc , char *argv[])
 
 	char buffer[1025]; //data buffer of 1K 
 
-    bzero(buffer, sizeof(buffer));
+    // bzero(buffer, sizeof(buffer));
 	//set of socket descriptors 
 	fd_set readfds; 
 
@@ -199,12 +199,12 @@ int main(int argc , char *argv[])
 			{ 
 				//Check if it was for closing , and also read the 
 				//incoming message 
-				if ((valread = read( sd , buffer, 1024)) == 0) 
-				{ 
+				if ((valread = read( sd , buffer, 1024)) == 0)
+				{
 					//Somebody disconnected , get his details and print 
 					getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen); 
-					printf("Host disconnected , ip %s , port %d \n" , 
-						inet_ntoa(address.sin_addr) , ntohs(address.sin_port)); 
+					printf("Host disconnected , ip %s , port %d \n" ,
+						inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
 						
 					//Close the socket and mark as 0 in list for reuse 
 					close( sd ); 
@@ -219,11 +219,15 @@ int main(int argc , char *argv[])
 					buffer[valread] = '\0'; 
 					// AFAIRE parser buffer
 					// send(sd , buffer , strlen(buffer) , 0 ); // TODO comment here but maybe uncomment
+                    // handleCommand(buffer);
 				}
 			}
 		}
-		// printf("%s\n", buffer); // TODO ajou Jiji Charlou pas sur
-		handleCommand(buffer);
+		printf("\t*FULL BUFFER*\n%s\nclient_socket[i]:%d\n\n", buffer, i); // TODO ajou Jiji Charlou pas sur
+        std::string tmp;
+        tmp += buffer;
+        if ( valread == 0 )
+            handleCommand(tmp.c_str());
 	}
 		
 	return 0; 

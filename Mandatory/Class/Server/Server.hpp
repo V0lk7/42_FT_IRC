@@ -10,7 +10,7 @@ class Client;
 class Server {
 
 	private:
-		
+
 		std::string						_Password;
 		int								_MasterSocket;
 		std::list<Channel *>			_ChannelList;
@@ -24,6 +24,6 @@ class Server {
 		Server(std::string const &);
 		~Server();
 
-}
+};
 
 #endif
