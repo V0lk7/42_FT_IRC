@@ -11,10 +11,10 @@ $(ARCHIVE): $(OBJS)
 
 $(TEST_OBJS): CPPFLAGS += -I $(DIRUNITEST)
 
-$(TEST_OBJS): CXXFLAGS = -Wall -Wextra -ggdb3
+$(TEST_OBJS): CXXFLAGS = -ggdb3
 
 $(RUNNER): $(ARCHIVE) $(TEST_OBJS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TEST_OBJS) $(ARCHIVE) -o $(RUNNER)
+	c++ $(CXXFLAGS) $(CPPFLAGS) $(TEST_OBJS) $(ARCHIVE) -o $(RUNNER)
 
 clear:
 	rm -rf $(ARCHIVE)
@@ -24,11 +24,11 @@ rclean:
 	rm -rf $(RUNNER)
 .PHONY: rclean
 
-test: clear fclean rclean $(RUNNER)
+test: clear fclean rclean $(RUNNER) run
 .PHONY: test
 
 run:
-	cd unitest/ && ./runtest
+	cd $(DIRUNITEST)/ && ./runtest
 .PHONY: run
 
 valrun:

@@ -16,11 +16,11 @@ OBJ_DIR		:=	.obj
 
 SRC_DIR		=	Mandatory
 
-INCLUDES	=	Class/Client/	\
-				Class/Channel/	\
-				Class/Server/	\
+INCLUDES	=	$(SRC_DIR)/Class/Client/	\
+				$(SRC_DIR)/Class/Channel/	\
 
-SRCS		:=	
+SRCS		:=	Class/Client/Client.cpp		\
+				Class/Channel/Channel.cpp	\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
@@ -34,7 +34,7 @@ DEPS		:=	$(OBJS:.o=.d)
 
 CXX			=	c++
 
-CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98
+CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98 
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 
@@ -49,7 +49,7 @@ DIR_CREATE	=	mkdir -p $(@D)
 ###############################################################################
 
 $(NAME): $(OBJS)
-	@$(CXX) $(OBJS) -o $(NAME)
+	$(CXX) $(OBJS) -o $(NAME)
 	$(info CREATED $(NAME))
 
 $(OBJ_DIR)/%.o : %.cpp
