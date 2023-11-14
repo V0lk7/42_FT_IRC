@@ -6,10 +6,6 @@
 #include <sstream>
 #include <vector>
 
-#define NICK 10
-#define PASS 11
-#define USER 21
-
 #define TOPIC   0 
 #define INVITE  1
 #define PRIVMSG 2
@@ -17,14 +13,18 @@
 #define JOIN    4
 #define MODE    5
 #define CAP     6
-#define NC      7
+#define PASS    7
+#define NICK    8
+#define USER    9
+#define NC      10
+#define CLIENT  11
 
 /*
  * Trying to handle parsing
 */
 
-static void
-print( std::string in, std::vector<std::string>& tab );
+// static void
+// print( std::string in, std::vector<std::string>& tab );
 static void
 dispatch( const std::vector<std::string>& info, const int& way, Client* person );
 static void
@@ -35,42 +35,45 @@ static int
 wayChooser( const std::string& target );
 static void
 loadUserData( Client* person, const std::string& data, int word );
-// static void
-// stashInfo( Client* person, const std::vector<std::string>& input );
 
-void
+Client*
 handleCommand( const char* buffer ) {
     std::string                 work;
     std::vector<std::string>    tab;
     std::vector<std::string>    line;
-    int                         way = -1;
-    Client*                     person = NULL;
+    int                         way = - 1;
+    Client*                     person = new Client();
 
-                                                                                 // TODO need a APPEND with previous cmd
-                                                                                 // TODO std::cout << "Handle" << std::endl;
+    // TODO need a APPEND with previous cmd
+    // TODO std::cout << "Handle" << std::endl;
     if ( !buffer )
-        return ;
+        return ( NULL ) ;
     work = buffer;
     tab = split(  work, "\r\n" );
-    print( "handleCommand", tab );                                               // TODO testing
+    // print( "handleCommand", tab );                                            // TODO testing
     for ( size_t i = 0; tab.size() != 0  && i < tab.size(); i++ ) {
         line = split(  tab[i], " " );
         if ( line.size() != 0 )
             way = wayChooser( line[0] );
         if ( way != -1 )
-            break;
+            break ;
         line.clear();
     }
-    // TODO wayChoosering cmd;
-    dispatch( tab, way, person );
-    if ( person )
+    if ( way != -1 )
+        dispatch( tab, way, person );
+    if ( person->GetStatement() == true ) {
         printClient( person );
+        return ( person );
+    }
+    // else
+    //     delete ( person );
+    return ( NULL );
 }
 
 static void
 dispatch( const std::vector<std::string>& info, const int& way, Client* person ) {
-    std::vector<std::string> cpy(info);
-    print( "dispatch", cpy );                                                    // TODO testing
+    // std::vector<std::string> cpy(info);
+    // print( "dispatch", cpy );                                                    // TODO testing
     switch ( way ) {
         // case NC :
         // case TOPIC :
@@ -79,10 +82,9 @@ dispatch( const std::vector<std::string>& info, const int& way, Client* person )
         // case KICK :
         // case JOIN :
         // case MODE :
-        case CAP :
-            std::cout << " ICI bo goss " << std::endl;
+        case CLIENT :
             userCreation( info , person );
-            break ;
+            break;
         default :
             return ;
     }
@@ -93,21 +95,23 @@ userCreation( const std::vector<std::string>& info, Client* person ) {
     std::vector<std::string>    toParse;
     std::vector<std::string>    word;
 
-    if ( info.empty() )
+    if ( info.empty() ) {
+        delete ( person );
         return ;
+    }
 
-    person = new Client();
     toParse = info;
-
-    print( "userCreation", toParse );                                            // TODO DEBUG
-    for ( size_t i = 1; i < toParse.size(); i++ ) {
+    // print( "userCreation", toParse );                                            // TODO DEBUG
+    // std::cout << "HERE MARK" << std::endl;
+    for ( size_t i = 0; i < toParse.size(); i++ ) {
         if ( toParse[i].find( "PASS" ) != std::string::npos )
             loadUserData( person, toParse[i], PASS );
         else if ( toParse[i].find( "NICK" ) != std::string::npos )               // TODO need test
             loadUserData( person, toParse[i], NICK );
         else if ( toParse[i].find( "USER" ) != std::string::npos )
             loadUserData( person, toParse[i], USER );
-        // else
+        else
+            delete ( person );
                                                                                  // TODO error;
     }
 }
@@ -124,12 +128,14 @@ loadUserData( Client* person, const std::string& data, int word ) {
         buffer = toWork.substr( it + 4, std::string::npos );
         if ( buffer.size() < 9 )
             person->SetNickname( buffer );
+        else
+            person->SetNickname( "ERROR" ); // TODO ERROR gestion need better gestion
         buffer.clear();
     }
     else if ( word == PASS ) {
         it = toWork.find( "PASS" );
         buffer = toWork.substr( it + 4, std::string::npos );
-                                                                                 // TODO verfied PASSWORD in server and buffer
+        // verfied PASSWORD in server and buffer                                 // TODO
         person->SetPasswd();
         buffer.clear();
     }
@@ -141,49 +147,33 @@ loadUserData( Client* person, const std::string& data, int word ) {
 
 static int
 wayChooser( const std::string& target ) {
-    std::string comp[7] = {
-        "TOPIC", "INVITE", "PRIVMSG",
-        "KICK", "JOIN", "MODE",
-        "CAP"
-    };
-    for ( int i = 0; i < 9; i++ ) {
-        if ( comp[i] == target ) {
-            std::cout << comp[i] << std::endl;
+    std::string client[4] = { "CAP", "PASS", "NICK", "USER" };
+    std::string cmd[6] = { "TOPIC", "INVITE", "PRIVMSG", "KICK", "JOIN", "MODE" };
+
+    for ( int i = 0; i < 6; i++ ) {
+        if ( cmd[i] == target ) {
             return ( i );
         }
     }
-                                // TODO CREATION USER NC NEEDING
+    for ( int i = 0; i < 4; i++ ) {
+        if ( client[i] == target ) {
+            return ( CLIENT );
+        }
+    }
     return ( NC );
 }
-
-// static void
-// stashInfo( Client* person, const std::vector<std::string>& input ) {
-//     std::vector<std::string>    info;
-//
-//     if ( input.empty() )
-//         return ;
-//     info = input;
-//     // if ( info[0] == "PASS" ) {
-//     //     // NEED MORE CHECK
-//     //     person->SetPasswd();
-//     // }
-//     if ( info[0] == "NICK" ) {
-//         if ( )
-//     }
-// }
-
 
 // ########################################################################## //
 // #~TESTING TOOL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
 
-static void
-print( std::string in, std::vector<std::string>& tab ) {
-    int i = 0;
-    std::cout << in << ":" << std::endl;
-    for ( std::vector<std::string>::iterator it = tab.begin(); it < tab.end(); it++, i++ )
-        std::cout << "tab[" << i << "]: " << *it << std::endl;
-    std::cout << std::endl;
-}
+// static void
+// print( std::string in, std::vector<std::string>& tab ) {
+//     int i = 0;
+//     std::cout << in << ":" << std::endl;
+//     for ( std::vector<std::string>::iterator it = tab.begin(); it < tab.end(); it++, i++ )
+//         std::cout << "tab[" << i << "]: " << *it << std::endl;
+//     std::cout << std::endl;
+// }
 
 static void
 printClient( const Client* person ) {

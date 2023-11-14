@@ -17,6 +17,7 @@
 //Handle multiple socket connections with select and fd_set on Linux 
 
 #include "Parsing.hpp"
+#include "Client.hpp"
 
 #include <stdio.h> 
 #include <cstring> //strlen 
@@ -223,11 +224,11 @@ int main(int argc , char *argv[])
 				}
 			}
 		}
-		printf("\t*FULL BUFFER*\n%s\nclient_socket[i]:%d\n\n", buffer, i); // TODO ajou Jiji Charlou pas sur
-        std::string tmp;
-        tmp += buffer;
-        if ( valread == 0 )
-            handleCommand(tmp.c_str());
+        Client* person = NULL;
+		printf("\t*FULL BUFFER*\n%s\n\n", buffer ); // TODO ajou Jiji Charlou pas sur
+        person = handleCommand(buffer);
+        if ( person && person->GetStatement() == false )
+            delete ( person );
 	}
 		
 	return 0; 

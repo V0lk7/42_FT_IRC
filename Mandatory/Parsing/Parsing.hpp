@@ -4,7 +4,9 @@
 # include <iostream>
 # include <sstream>
 # include <vector>
+# include "Client.hpp"
 
-void    handleCommand( const char* buffer );
+Client*
+handleCommand( const char* buffer );
 
 #endif
