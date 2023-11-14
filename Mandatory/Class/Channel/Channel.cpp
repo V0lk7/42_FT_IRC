@@ -1,6 +1,7 @@
 #include "Channel.hpp"
-#include "../Client/Client.hpp"
+#include "Client.hpp"
 #include <algorithm>
+#include <ostream>
 
 Channel::Channel() {}
 
@@ -119,4 +120,16 @@ void	Channel::ModifyClientRights(Client &src, bool Admin)
 		It->second = true;
 	else
 		It->second = false;
+}
+
+std::ostream&	operator<<(std::ostream& print, const Channel& other)
+{
+	print << "CHANNEL NAME : " << other.GetName() << std::endl;
+	print << "PASSWORD : " << other.GetPassword() << std::endl;
+	print << "TOPIC : " << other.GetTopic() << std::endl;
+	print << "LIMIT USERS : " << other.GetLimitUsers() << std::endl;
+	print << "INVITE ONLY : " << other.GetMode(INVITE_ONLY) << std::endl;
+	print << "TOPIC CHANGE : " << other.GetMode(TOPIC_CHANGE) << std::endl;
+	print << "PASSWORD SET : " << other.GetMode(PASSWORD_SET) << std::endl;
+	return (print);
 }

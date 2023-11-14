@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include <ostream>
 #include <unistd.h>
 
 Client::Client() : _Socket(-1), _Nickname(""), _Username("")
@@ -45,6 +46,11 @@ void	Client::SetPasswd(void)
 	this->_Auth[PASSWD] = true;
 }
 
+void	Client::SetStatement(int Index, bool state)
+{
+	this->_Auth[Index] = state;
+}
+
 void	Client::SetInputBuffer(std::string const &Cmd)
 {
 	this->_InputBuffer += Cmd;
@@ -78,4 +84,14 @@ bool 	Client::GetStatement(void) const
 std::string	Client::GetInputBuffer(void) const
 {
 	return (this->_InputBuffer);
+}
+
+std::ostream&	operator<<(std::ostream& print, const Client& other)
+{
+	print << "Nickname : " << other.GetNickname() << std::endl;
+	print << "Username : " << other.GetUsername() << std::endl;
+	print << "Socket : " << other.GetSocket() << std::endl;
+	print << "Statement : " << other.GetStatement() << std::endl;
+	// print << "InputBuffer : " << other.GetInputBuffer() << std::endl;
+	return (print);
 }

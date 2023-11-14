@@ -70,4 +70,6 @@ class Channel{
 		void		ModifyClientRights(Client &, bool);
 };
 
+std::ostream&	operator<<(std::ostream& print, const Channel& other);
+
 #endif
