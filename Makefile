@@ -30,6 +30,7 @@ SRCS		+=	Tools/cSplit.cpp \
 
 SRCS		+=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
+				Class/Server/Server.cpp
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
