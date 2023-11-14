@@ -1,0 +1,4 @@
+ircserv
+.obj
+Unitary-Test/irc.a
+Unitary-Test/runtest
