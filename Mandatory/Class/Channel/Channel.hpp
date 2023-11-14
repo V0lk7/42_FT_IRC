@@ -3,6 +3,7 @@
 
 # include <string>
 # include <map>
+# include <list>
 
 /*########################################################################################
 	Class wich will keep all the informations usefull of the channel.
@@ -22,9 +23,9 @@
 ########################################################################################*/
 
 enum mode {
-	I,
-	K,
-	T
+	INVITE_ONLY,
+	PASSWORD_SET,
+	TOPIC_CHANGE
 };
 
 class Client;
@@ -38,8 +39,8 @@ class Channel{
 		size_t					_LimitUsers;
 		bool					_Mode[3];
 
-		std::map<Client &, int>	_Users;
-		std::list<Client &>		_WaitingList;
+		std::map<Client *, bool>	_Users;
+		std::list<Client *>			_WaitingList;
 
 		Channel	&operator=(Channel const &rhs);
 		Channel(Channel const &src);
@@ -53,13 +54,22 @@ class Channel{
 		void	SetPassword(std::string const &);
 		void	SetTopic(std::string const &);
 		void	SetLimitUsers(size_t const &);
-		void	SetMode(int, int);
+		void	SetMode(int, bool);
 
-		std::string const	&GetName(void) const;
-		std::string const	&GetPassword(void) const;
-		std::string const	&GetTopic(void) const;
-		size_t const		&GetLimitUsers(void) const;
-		bool const			&GetMode(int) const;
+		std::string	GetName(void) const;
+		std::string	GetPassword(void) const;
+		std::string	GetTopic(void) const;
+		size_t		GetLimitUsers(void) const;
+		bool		GetMode(int) const;
+
+		void		AddClientToChannel(Client &, int);
+		void		EraseClientFromChannel(Client &);
+
+		void		PutClientOnWaitingList(Client &);
+		void		EraseClientFromWaitingList(Client &);
+		void		ModifyClientRights(Client &, bool);
 };
+
+std::ostream&	operator<<(std::ostream& print, const Channel& other);
 
 #endif

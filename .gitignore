@@ -3,3 +3,5 @@ ircserv
 compile_commands.json
 nohup.out
 .cache/
+Unitary-Test/irc.a
+Unitary-Test/runtest

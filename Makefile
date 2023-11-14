@@ -16,21 +16,20 @@ OBJ_DIR		:=	.obj
 
 SRC_DIR		=	Mandatory
 
-# INCLUDES	=	$(SRC_DIR)/Class/Client/	\
-# 				$(SRC_DIR)/Class/Channel/	\
-# 				$(SRC_DIR)/Class/Server/	\
-
 INCLUDES	= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Parsing/			\
 				$(SRC_DIR)/Class/Client/	\
+				$(SRC_DIR)/Class/Server/	\
+				$(SRC_DIR)/Class/Channel/	\
 
 SRCS		:=	MainCore/main.cpp \
 
-SRCS		+=	Parsing/Parsing.cpp
+SRCS		+=	Parsing/Parsing.cpp \
 
-SRCS		+=	Tools/cSplit.cpp
+SRCS		+=	Tools/cSplit.cpp \
 
-SRCS		+=	Class/Client/Client.cpp
+SRCS		+=	Class/Client/Client.cpp		\
+				Class/Channel/Channel.cpp	\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
@@ -42,9 +41,9 @@ DEPS		:=	$(OBJS:.o=.d)
 #								FLAGS										  #
 ###############################################################################
 
-CC			=	c++
+CXX			=	c++
 
-CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98 -g
+CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98 -ggdb3
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 
@@ -59,14 +58,14 @@ DIR_CREATE	=	mkdir -p $(@D)
 ###############################################################################
 
 $(NAME): $(OBJS)
-	@$(CC) $(OBJS) -o $(NAME)
+	$(CXX) $(OBJS) -o $(NAME)
 	$(info CREATED $(NAME))
 
 $(OBJ_DIR)/%.o : %.cpp
 	$(DIR_CREATE)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
--include $(DEPS)
+-include $(DEPS) unitest.mk
 
 ###############################################################################
 #								RULES										  #
