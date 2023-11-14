@@ -41,15 +41,18 @@ class Client{
 		void	SetUsername(std::string const &);
 		void	SetSocket(int const &);
 		void	SetPasswd(void);
+		void 	SetStatement(int, bool);
 		void	SetInputBuffer(std::string const &);
 
-		std::string	GetNickname(void) const;
-		std::string	GetUsername(void) const;
-		int			GetSocket(void) const;
-		bool		GetStatement(void) const;
-		std::string	GetInputBuffer(void) const;
+		std::string		GetNickname(void) const;
+		std::string		GetUsername(void) const;
+		int				GetSocket(void) const;
+		bool			GetStatement(void) const;
+		std::string		GetInputBuffer(void) const;
 
 		void		ClearInputBuffer(void);
 };
+
+std::ostream&	operator<<(std::ostream& print, const Client& other);
 
 #endif

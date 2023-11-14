@@ -18,10 +18,18 @@ SRC_DIR		=	Mandatory
 
 INCLUDES	=	$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Channel/	\
+				$(SRC_DIR)/Class/Server/	\
+				$(SRC_DIR)/Tools/	\
 
 SRCS		:=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
 
+SRCS		:=	MainCore/main.cpp	\
+				Class/Client/Client.cpp	\
+				Class/Channel/Channel.cpp	\
+				Class/Server/Server.cpp	\
+				Tools/cSplit.cpp
+				
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
