@@ -32,9 +32,9 @@ DEPS		:=	$(OBJS:.o=.d)
 #								FLAGS										  #
 ###############################################################################
 
-CC			=	c++
+CXX			=	c++
 
-CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98
+CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 
@@ -49,14 +49,14 @@ DIR_CREATE	=	mkdir -p $(@D)
 ###############################################################################
 
 $(NAME): $(OBJS)
-	@$(CC) $(OBJS) -o $(NAME)
+	@$(CXX) $(OBJS) -o $(NAME)
 	$(info CREATED $(NAME))
 
 $(OBJ_DIR)/%.o : %.cpp
 	$(DIR_CREATE)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
--include $(DEPS)
+-include $(DEPS) unitest.mk
 
 ###############################################################################
 #								RULES										  #
