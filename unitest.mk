@@ -31,6 +31,14 @@ run:
 	cd $(DIRUNITEST)/ && ./runtest
 .PHONY: run
 
-valrun:
-	cd $(DIRUNITEST)/ && valgrind --leaks-check=full --show-kind=all ./runtest
+valrun: clear fclean rclean $(RUNNER)
+	cd $(DIRUNITEST)/ && valgrind --leak-check=full ./runtest
 .PHONY: valrun
+
+help:
+	@echo "Usage : make | make [OPTION]"
+	@echo "OPTION: Normal Usage = [all], [clean], [fclean], [re]"
+	@echo "OPTION: Test Usage:"
+	@echo "[clear]: Erase Unitary-Test/irc.a"
+	@echo "[rclean]: Erase Unitary-Test/runtest"
+	@echo "[test]: Do "

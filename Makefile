@@ -29,6 +29,8 @@ SRCS		:=	MainCore/main.cpp	\
 				Class/Channel/Channel.cpp	\
 				Class/Server/Server.cpp	\
 				Tools/cSplit.cpp
+
+SRCS		+=	Commands/JOIN/Parsing.cpp	\
 				
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
