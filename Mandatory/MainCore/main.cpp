@@ -16,9 +16,9 @@
 //Example code: A simple server side code, which echos back the received message. 
 //Handle multiple socket connections with select and fd_set on Linux 
 
-#include "Parsing.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Parsing.hpp"
 
 #include <algorithm>
 #include <stdio.h> 
@@ -62,7 +62,7 @@ int main(int argc , char *argv[])
 
     int      port = parse( argc, argv, rawPort ); //TODO make better
 
-    server = new Server( "PASS" );
+    server = new Server( "password" );
 
 
 
@@ -177,18 +177,25 @@ int main(int argc , char *argv[])
 
             sd = (*it)->GetSocket();
 
-            FD_ISSET( sd, &readfds );
-            valread = read( sd, buffer, 1024 );
+            if ( FD_ISSET( sd, &readfds ) ) {
+                valread = read( sd, buffer, 1024 );
 
-            if ( valread == 0 ) {
-                getpeername( new_socket, ( struct sockaddr* )&address, ( socklen_t* )&addrlen );
-                std::cout << "Host disconnected" << std::endl;
-                close( new_socket );
+                if ( valread == 0 ) {
+                    getpeername( new_socket, ( struct sockaddr* )&address,
+                            ( socklen_t* )&addrlen );
+                    std::cout << "Host disconnected" << std::endl;
+                    close( sd );
+                    delete ( *it );
+                }
+                else
+                    buffer[ valread ] = '\0';
+
+                std::cout << "\t*buffer*\n" << buffer
+                    << "socket: " << (*it)->GetSocket() << "\n" << std::endl;
+
             }
-            else
-                buffer[ valread ] = '\0';
-            std::cout << "\t*buffer*\n" << buffer
-               << "socket: " << (*it)->GetSocket() << std::endl;
+            handleCommand( buffer, *server, **it );
+            std::cout << **it << std::endl;
         }
     }
     return ( 0 );

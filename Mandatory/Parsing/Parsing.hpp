@@ -5,8 +5,9 @@
 # include <sstream>
 # include <vector>
 # include "Client.hpp"
+# include "Server.hpp"
 
-Client*
-handleCommand( const char* buffer );
+void
+handleCommand( const char* buffer, const Server& server, Client& person );
 
 #endif

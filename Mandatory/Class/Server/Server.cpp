@@ -32,8 +32,8 @@ Server	&Server::operator=(Server const &rhs) {(void)rhs; return (*this);}
 
 //----------------Set/Get-------------------//
 
-std::list<Client *>
-Server::getCllist( void ) const {
+std::list<Client *>&
+Server::getCllist( void ) {
     return ( _ClientList );
 }
 

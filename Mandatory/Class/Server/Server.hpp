@@ -34,8 +34,8 @@ class Server {
 		std::string	GetChannelList(void) const;
 		std::string	GetClientList(void) const;
 
-        std::list<Client *>
-        getCllist( void ) const;
+        std::list<Client *>&
+        getCllist( void ) ;
 
 		std::string	GetPassword(void) const;
 		int			GetMasterSocket(void) const;
