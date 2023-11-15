@@ -60,7 +60,7 @@ int main(int argc , char *argv[])
     Client* person;
 	std::string	rawPort;
 
-    int      port = parse( argc, argv, rawPort ); //TODO make better
+    int      port = parse( argc, argv, rawPort );                                //TODO make better
 
     server = new Server( "password" );
 
@@ -85,7 +85,7 @@ int main(int argc , char *argv[])
 	fd_set readfds; 
 
 	//a message 
-	std::string message("ECHO Daemon v1.0 \r\n") ;
+	std::string message( "ECHO Daemon v1.0 \r\n" ) ;
 
 
 	//initialise all client_socket[] to 0 so not checked 
@@ -95,18 +95,18 @@ int main(int argc , char *argv[])
 	// 	client_socket[i] = 0; 
 	// } 
 		
-    server->SetMasterSocket( socket(AF_INET , SOCK_STREAM , 0));
+    server->SetMasterSocket( socket( AF_INET , SOCK_STREAM , 0 ) );
 	if( server->GetMasterSocket() == 0) 
 	{ 
-		perror("socket failed"); 
-		exit(EXIT_FAILURE); 
+		perror( "socket failed" ); 
+		exit( EXIT_FAILURE ); 
 	} 
 	
 	//set master socket to allow multiple connections , 
 	//this is just a good habit, it will work without this 
     // SERVER 
 	if( setsockopt( server->GetMasterSocket(), SOL_SOCKET, SO_REUSEADDR, (char *)&opt, 
-		sizeof(opt)) < 0 ) 
+		sizeof( opt ) ) < 0 ) 
 	{ 
 		perror( "setsockopt" ); 
 		exit( EXIT_FAILURE ); 
@@ -116,7 +116,7 @@ int main(int argc , char *argv[])
     // SERVER
 	address.sin_family = AF_INET; 
 	address.sin_addr.s_addr = INADDR_ANY; 
-	address.sin_port = htons( port ); 
+	address.sin_port = htons( port );
 		
 	//bind the socket to localhost port 8888 
     // SERVER
@@ -141,6 +141,7 @@ int main(int argc , char *argv[])
 	puts("Waiting for connections ..."); 
 		
     while ( true ) {
+
         FD_ZERO(&readfds);
 		FD_SET( server->GetMasterSocket() , &readfds );
         max_sd = server->GetMasterSocket();
@@ -184,19 +185,21 @@ int main(int argc , char *argv[])
                     getpeername( new_socket, ( struct sockaddr* )&address,
                             ( socklen_t* )&addrlen );
                     std::cout << "Host disconnected" << std::endl;
-                    close( sd );
-                    delete ( *it );
+                    close( (*it)->GetSocket() );
+                    (*it)->SetSocket( -1 );
                 }
                 else
                     buffer[ valread ] = '\0';
 
-                std::cout << "\t*buffer*\n" << buffer
-                    << "socket: " << (*it)->GetSocket() << "\n" << std::endl;
+                // std::cout << "\t*buffer*\n" << buffer                         // TODO DEBUG
+                //     << "socket: " << (*it)->GetSocket() << "\n" << std::endl; // TODO DEBUG
 
             }
             handleCommand( buffer, *server, **it );
             std::cout << **it << std::endl;
         }
     }
+    // TODO handle routine of kill program idea check socket descriptor of       // TODO
+    // ClientList which been to -1                                               // TODO
     return ( 0 );
 }

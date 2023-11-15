@@ -29,8 +29,8 @@
 // static void
 // print( std::string in, std::vector<std::string>& tab );
 
-static void
-dispatch( const std::vector<std::string>& info, const int& way, Client& person, const Server& server );
+// static void
+// dispatch( const std::string& info, const int& way, Client& person, const Server& server );
 static void
 userCreation( const std::vector<std::string>& info, Client& person, const Server& server );
 static int
@@ -43,13 +43,14 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     std::string                 work;
     std::vector<std::string>    tab;
     std::vector<std::string>    line;
-    int                         way = - 1;
+    int                         way = -1;
 
-    // TODO need a APPEND with previous cmd
-    // TODO std::cout << "Handle" << std::endl;
+
     if ( !buffer || !*buffer )
         return ;
-    work = buffer;
+    // TODO need a APPEND with previous cmd maybe manage here
+    person.SetInputBuffer( buffer );
+    work = person.GetInputBuffer();
     tab = split( work, "\r\n" );
     if ( tab.empty() )
         return ;
@@ -57,32 +58,31 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
         line = split(  tab[i], " " );
         if ( line.size() != 0 )
             way = wayChooser( line[0] );
-        if ( way != -1 )
+        if ( way != CLIENT )
             break ;
-        line.clear();
+        // else if ( way != -1 )                                                    // TODO
+        //     dispatch( tab[i], way, person, server );                     // need more accuratie
+        line.clear();                                                    // i need to split cmd one by one
     }
-    if ( way != -1 )
-        dispatch( tab, way, person, server );
+    if ( way == CLIENT )
+        userCreation( tab, person, server );
     return ;
 }
 
-static void
-dispatch( const std::vector<std::string>& info, const int& way, Client& person, const Server& server ) {
-    switch ( way ) {
-        // case NC :
-        // case TOPIC :
-        // case INVITE :
-        // case PRIVMSG :
-        // case KICK :
-        // case JOIN :
-        // case MODE :
-        case CLIENT :
-            userCreation( info , person, server );
-            break;
-        default :
-            return ;
-    }
-}
+// static void
+// dispatch( const std::string& info, const int& way, Client& person, const Server& server ) {
+//     switch ( way ) {
+//         // case NC :
+//         // case TOPIC :
+//         // case INVITE :
+//         // case PRIVMSG :
+//         // case KICK :
+//         // case JOIN :
+//         // case MODE :
+//         default :
+//             return ;
+//     }
+// }
 
 static void
 userCreation( const std::vector<std::string>& info, Client& person, const Server& server ) {
@@ -117,7 +117,7 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
 
     if ( word == NICK ) {
         it = toWork.find( "NICK" );
-        buffer = toWork.substr( it + 4, std::string::npos );
+        buffer = toWork.substr( it + 5, std::string::npos );
         if ( buffer.size() < 9 )
             person.SetNickname( buffer );
         else
@@ -126,7 +126,7 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
     }
     else if ( word == PASS ) {
         it = toWork.find( "PASS" );
-        buffer = toWork.substr( it + 4, std::string::npos );
+        buffer = toWork.substr( it + 5, std::string::npos );
         if ( server.GetPassword() == buffer )
             person.SetPasswd();
         buffer.clear();
