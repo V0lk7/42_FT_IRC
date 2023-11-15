@@ -191,8 +191,8 @@ int main(int argc , char *argv[])
                 else
                     buffer[ valread ] = '\0';
 
-                // std::cout << "\t*buffer*\n" << buffer                         // TODO DEBUG
-                //     << "socket: " << (*it)->GetSocket() << "\n" << std::endl; // TODO DEBUG
+                std::cout << "\t*buffer*\n" << buffer                         // TODO DEBUG
+                    << "socket: " << (*it)->GetSocket() << "\n" << std::endl; // TODO DEBUG
 
             }
             handleCommand( buffer, *server, **it );

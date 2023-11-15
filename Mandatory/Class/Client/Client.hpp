@@ -44,10 +44,15 @@ class Client{
 		void 	SetStatement(int, bool);
 		void	SetInputBuffer(std::string const &);
 
+
 		std::string		GetNickname(void) const;
 		std::string		GetUsername(void) const;
 		int				GetSocket(void) const;
 		bool			GetStatement(void) const;
+
+        bool
+        GetStatementStep( step target ) const;
+
 		std::string		GetInputBuffer(void) const;
 
 		void		ClearInputBuffer(void);

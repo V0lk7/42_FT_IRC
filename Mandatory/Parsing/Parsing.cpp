@@ -14,9 +14,9 @@
 #define JOIN    4
 #define MODE    5
 #define CAP     6
-#define PASS    7
-#define NICK    8
-#define USER    9
+#define sPASS    7
+#define sNICK    8
+#define sUSER    9
 #define NC      10
 #define CLIENT  11
 
@@ -49,8 +49,9 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     if ( !buffer || !*buffer )
         return ;
     // TODO need a APPEND with previous cmd maybe manage here
-    person.SetInputBuffer( buffer );
-    work = person.GetInputBuffer();
+    // person.SetInputBuffer( buffer );
+    // work = person.GetInputBuffer();
+    work = buffer;
     tab = split( work, "\r\n" );
     if ( tab.empty() )
         return ;
@@ -58,13 +59,13 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
         line = split(  tab[i], " " );
         if ( line.size() != 0 )
             way = wayChooser( line[0] );
-        if ( way != CLIENT )
+        if ( way == CLIENT )
             break ;
         // else if ( way != -1 )                                                    // TODO
         //     dispatch( tab[i], way, person, server );                     // need more accuratie
         line.clear();                                                    // i need to split cmd one by one
     }
-    if ( way == CLIENT )
+    if ( way == CLIENT || way == NC )
         userCreation( tab, person, server );
     return ;
 }
@@ -88,6 +89,7 @@ static void
 userCreation( const std::vector<std::string>& info, Client& person, const Server& server ) {
     std::vector<std::string>    toParse;
     std::vector<std::string>    word;
+    size_t                      check = 0;
 
     if ( info.empty() ) {
         return ;
@@ -96,13 +98,25 @@ userCreation( const std::vector<std::string>& info, Client& person, const Server
     toParse = info;
     // print( "userCreation", toParse );                                         // TODO DEBUG
     // std::cout << "HERE MARK" << std::endl;
-    for ( size_t i = 0; i < toParse.size(); i++ ) {
-        if ( toParse[i].find( "PASS" ) != std::string::npos )
-            loadUserData( person, server, toParse[i], PASS );
-        else if ( toParse[i].find( "NICK" ) != std::string::npos )               // TODO need test
-            loadUserData( person, server, toParse[i], NICK );
+    if ( !person.GetStatementStep( PASSWD ) ) {
+        for ( size_t i = 0; i < toParse.size(); i++, check++ ) {
+            if ( toParse[i].find( "PASS" ) != std::string::npos ) {
+                loadUserData( person, server, toParse[i], sPASS );
+                break;
+            }
+        }
+        if ( check == toParse.size() ) {
+            std::cout << "Require Password" << std::endl;
+            return ;
+        }
+    }
+    for ( size_t i = 0; i < toParse.size() && person.GetStatementStep( PASSWD ); i++ ) {
+        // if ( toParse[i].find( "PASS" ) != std::string::npos )
+        //     loadUserData( person, server, toParse[i], sPASS );
+        if ( toParse[i].find( "NICK" ) != std::string::npos )               // TODO need test
+            loadUserData( person, server, toParse[i], sNICK );
         else if ( toParse[i].find( "USER" ) != std::string::npos )
-            loadUserData( person, server, toParse[i], USER );
+            loadUserData( person, server, toParse[i], sUSER );
         // else
                                                                                  // TODO error;
     }
@@ -115,7 +129,7 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
     std::string                 buffer;
     std::vector<std::string>    tab;
 
-    if ( word == NICK ) {
+    if ( word == sNICK ) {
         it = toWork.find( "NICK" );
         buffer = toWork.substr( it + 5, std::string::npos );
         if ( buffer.size() < 9 )
@@ -124,14 +138,18 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
             person.SetNickname( "ERROR" ); // TODO ERROR gestion need better gestion
         buffer.clear();
     }
-    else if ( word == PASS ) {
+    else if ( word == sPASS ) {
         it = toWork.find( "PASS" );
         buffer = toWork.substr( it + 5, std::string::npos );
-        if ( server.GetPassword() == buffer )
+        std::cout << "PASS server: " << server.GetPassword() << std::endl;
+        std::cout << "buffer: " << buffer << std::endl;
+        if ( server.GetPassword() == buffer ) {
+            std::cout << " PROOOOOOOUT " << std::endl;
             person.SetPasswd();
+        }
         buffer.clear();
     }
-    else if ( word == USER ) {
+    else if ( word == sUSER ) {
         tab = split( data, " " );
         person.SetUsername( tab[1] );
     }
