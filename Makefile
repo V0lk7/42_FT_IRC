@@ -21,14 +21,13 @@ INCLUDES	=	$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Tools/	\
 
-SRCS		:=	Class/Client/Client.cpp		\
-				Class/Channel/Channel.cpp	\
-
 SRCS		:=	MainCore/main.cpp	\
-				Class/Client/Client.cpp	\
+
+SRCS		+=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
-				Class/Server/Server.cpp	\
-				Tools/cSplit.cpp
+				Class/Server/Server.cpp		\
+
+SRCS		+=	Tools/cSplit.cpp
 
 SRCS		+=	Commands/JOIN/Parsing.cpp	\
 				
