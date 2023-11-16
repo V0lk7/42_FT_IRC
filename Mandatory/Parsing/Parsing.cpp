@@ -2,7 +2,10 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -96,30 +99,40 @@ userCreation( const std::vector<std::string>& info, Client& person, const Server
     }
 
     toParse = info;
-    // print( "userCreation", toParse );                                         // TODO DEBUG
-    // std::cout << "HERE MARK" << std::endl;
     if ( !person.GetStatementStep( PASSWD ) ) {
         for ( size_t i = 0; i < toParse.size(); i++, check++ ) {
             if ( toParse[i].find( "PASS" ) != std::string::npos ) {
                 loadUserData( person, server, toParse[i], sPASS );
-                break;
+                return ;
             }
         }
-        if ( check == toParse.size() ) {
-            std::cout << "Require Password" << std::endl;
+        if ( check == toParse.size() )
+            send( person.GetSocket(), \
+                    "Require password\n", strlen( "Require password\n" ) + 1, 0 );
+        return ;
+    }
+
+    for ( size_t i = 0; i < toParse.size() && person.GetStatementStep( PASSWD ); i++ ) {
+        if ( toParse[i].find( "NICK" ) != std::string::npos ) {
+            loadUserData( person, server, toParse[i], sNICK );
+            return ;
+        }                                                                         // TODO need test
+        else if ( toParse[i].find( "USER" ) != std::string::npos && \
+                person.GetStatementStep( NICK ) ) {
+            loadUserData( person, server, toParse[i], sUSER );
+            return ;
+        }
+        else if ( !person.GetStatementStep( NICK ) ) {
+            send( person.GetSocket(), \
+                    "Require nickname\n", strlen( "Require nickname\n" ) + 1, 0 );
             return ;
         }
     }
-    for ( size_t i = 0; i < toParse.size() && person.GetStatementStep( PASSWD ); i++ ) {
-        // if ( toParse[i].find( "PASS" ) != std::string::npos )
-        //     loadUserData( person, server, toParse[i], sPASS );
-        if ( toParse[i].find( "NICK" ) != std::string::npos )               // TODO need test
-            loadUserData( person, server, toParse[i], sNICK );
-        else if ( toParse[i].find( "USER" ) != std::string::npos )
-            loadUserData( person, server, toParse[i], sUSER );
-        // else
-                                                                                 // TODO error;
-    }
+
+    if ( person.GetStatementStep( PASSWD ) && person.GetStatementStep( NICK ) \
+        && !person.GetStatementStep( USER ) )
+        send( person.GetSocket(), \
+                "Require username\n", strlen( "Require username\n" ) + 1, 0 );
 }
 
 static void
@@ -141,12 +154,11 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
     else if ( word == sPASS ) {
         it = toWork.find( "PASS" );
         buffer = toWork.substr( it + 5, std::string::npos );
-        std::cout << "PASS server: " << server.GetPassword() << std::endl;
-        std::cout << "buffer: " << buffer << std::endl;
-        if ( server.GetPassword() == buffer ) {
-            std::cout << " PROOOOOOOUT " << std::endl;
+        if ( server.GetPassword() == buffer )
             person.SetPasswd();
-        }
+        else
+            send( person.GetSocket(), \
+                    "Require password\n", strlen( "Require password\n" ) + 1, 0 );
         buffer.clear();
     }
     else if ( word == sUSER ) {

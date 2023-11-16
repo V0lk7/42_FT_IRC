@@ -43,7 +43,6 @@ void	Client::SetSocket(int const &NewSocket)
 
 void	Client::SetPasswd(void)
 {
-    std::cout << "\tGROSSE MERDE" << std::endl;
 	_Auth[ PASSWD ] = true;
 }
 
