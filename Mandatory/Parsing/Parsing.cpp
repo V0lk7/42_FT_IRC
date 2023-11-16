@@ -2,6 +2,7 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
+#include <strings.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <cstdio>
@@ -23,17 +24,24 @@
 #define NC      10
 #define CLIENT  11
 
-/*
- * Trying to handle parsing
+
+
+
+/* TEST
+PASS password
+NICK jimmy
+USER tdc
 */
 
 // static void
 // printClient( const Client* person );
-// static void
-// print( std::string in, std::vector<std::string>& tab );
+static void
+print( std::string in, std::vector<std::string>& tab );
 
 // static void
 // dispatch( const std::string& info, const int& way, Client& person, const Server& server );
+static void
+ncCreation( const std::vector<std::string>& info, Client& person, const Server& server );
 static void
 userCreation( const std::vector<std::string>& info, Client& person, const Server& server );
 static int
@@ -49,6 +57,12 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     int                         way = -1;
 
 
+    (void)buffer;
+    (void)server;
+    (void)person;
+    tab = split( " ceci est un test ", "se" );
+    print( "test avec charlou\n", tab );
+    return;
     if ( !buffer || !*buffer )
         return ;
     // TODO need a APPEND with previous cmd maybe manage here
@@ -64,11 +78,13 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
             way = wayChooser( line[0] );
         if ( way == CLIENT )
             break ;
-        // else if ( way != -1 )                                                    // TODO
-        //     dispatch( tab[i], way, person, server );                     // need more accuratie
+        // else if ( way != -1 )
+        //     dispatch( tab[i], way, person, server );
         line.clear();                                                    // i need to split cmd one by one
     }
-    if ( way == CLIENT || way == NC )
+    if ( tab.size() == 1 && tab[0].find( "CAP") == std::string::npos )
+        ncCreation( tab, person, server );
+    else
         userCreation( tab, person, server );
     return ;
 }
@@ -76,20 +92,25 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
 // static void
 // dispatch( const std::string& info, const int& way, Client& person, const Server& server ) {
 //     switch ( way ) {
-//         // case NC :
 //         // case TOPIC :
+//         // break ;
 //         // case INVITE :
+//         // break ;
 //         // case PRIVMSG :
+//         // break ;
 //         // case KICK :
+//         // break ;
 //         // case JOIN :
+//         // break ;
 //         // case MODE :
+//         // break ;
 //         default :
 //             return ;
 //     }
 // }
 
 static void
-userCreation( const std::vector<std::string>& info, Client& person, const Server& server ) {
+ncCreation( const std::vector<std::string>& info, Client& person, const Server& server ) {
     std::vector<std::string>    toParse;
     std::vector<std::string>    word;
     size_t                      check = 0;
@@ -133,6 +154,26 @@ userCreation( const std::vector<std::string>& info, Client& person, const Server
         && !person.GetStatementStep( USER ) )
         send( person.GetSocket(), \
                 "Require username\n", strlen( "Require username\n" ) + 1, 0 );
+}
+
+static void
+userCreation( const std::vector<std::string>& info, Client& person, const Server& server ) {
+    std::vector<std::string>    toParse;
+    std::vector<std::string>    word;
+
+    if ( info.empty() ) {
+        return ;
+    }
+
+    toParse = info;
+    for ( size_t i = 0; i < toParse.size(); i++ ) {
+        if ( toParse[i].find( "PASS" ) != std::string::npos )
+                loadUserData( person, server, toParse[i], sPASS );
+        else if ( toParse[i].find( "NICK" ) != std::string::npos )
+            loadUserData( person, server, toParse[i], sNICK );
+        else if ( toParse[i].find( "USER" ) != std::string::npos )
+            loadUserData( person, server, toParse[i], sUSER );
+    }
 }
 
 static void
@@ -182,20 +223,20 @@ wayChooser( const std::string& target ) {
             return ( CLIENT );
         }
     }
-    return ( NC );
+    return ( CLIENT );
 }
 
 // ########################################################################## //
 // #~TESTING TOOL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
 
-// static void
-// print( std::string in, std::vector<std::string>& tab ) {
-//     int i = 0;
-//     std::cout << in << ":" << std::endl;
-//     for ( std::vector<std::string>::iterator it = tab.begin(); it < tab.end(); it++, i++ )
-//         std::cout << "tab[" << i << "]: " << *it << std::endl;
-//     std::cout << std::endl;
-// }
+static void
+print( std::string in, std::vector<std::string>& tab ) {
+    int i = 0;
+    std::cout << in << ":" << std::endl;
+    for ( std::vector<std::string>::iterator it = tab.begin(); it < tab.end(); it++, i++ )
+        std::cout << "tab[" << i << "]: " << *it << std::endl;
+    std::cout << std::endl;
+}
 
 // static void
 // printClient( const Client& person ) {

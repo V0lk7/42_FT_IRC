@@ -3,6 +3,9 @@
 #include <vector>
 #include <sstream>
 
+// FUNCTION BEHAVIOUR:
+// this split cut on all delimiter founded.
+
 std::vector<std::string>
 split(const std::string& s, std::string delimiter) {
     std::stringstream ss(s);

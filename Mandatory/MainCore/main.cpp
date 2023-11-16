@@ -80,7 +80,7 @@ int main(int argc , char *argv[])
 
 	char buffer[1025]; //  BUFFER DE LECCTURE data buffer of 1K 
 
-    // bzero(buffer, sizeof(buffer));
+    bzero(buffer, sizeof(buffer));
 	//set of socket descriptors 
 	fd_set readfds; 
 
@@ -195,7 +195,10 @@ int main(int argc , char *argv[])
                     << "socket: " << (*it)->GetSocket() << "\n" << std::endl; // TODO DEBUG
 
             }
-            handleCommand( buffer, *server, **it );
+            if ( *buffer ) {
+                handleCommand( buffer, *server, **it );
+                bzero(buffer, sizeof(buffer));
+            }
             std::cout << **it << std::endl;
         }
     }
