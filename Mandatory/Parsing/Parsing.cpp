@@ -27,16 +27,18 @@
 
 
 
-/* TEST
-PASS password
-NICK jimmy
-USER tdc
-*/
-
+// ########################################################################## //
+// #~TESTING TOOL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
 // static void
 // printClient( const Client* person );
-static void
-print( std::string in, std::vector<std::string>& tab );
+// static void
+// print( std::string in, std::vector<std::string>& tab );
+
+// TEST :
+// PASS password
+// NICK jimmy
+// USER tdc
+// ########################################################################## //
 
 // static void
 // dispatch( const std::string& info, const int& way, Client& person, const Server& server );
@@ -57,14 +59,6 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     int                         way = -1;
 
 
-    (void)buffer;
-    (void)server;
-    (void)person;
-    tab = split( " ceci est un test ", "se" );
-    print( "test avec charlou\n", tab );
-    return;
-    if ( !buffer || !*buffer )
-        return ;
     // TODO need a APPEND with previous cmd maybe manage here
     // person.SetInputBuffer( buffer );
     // work = person.GetInputBuffer();
@@ -229,21 +223,18 @@ wayChooser( const std::string& target ) {
 // ########################################################################## //
 // #~TESTING TOOL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
 
-static void
-print( std::string in, std::vector<std::string>& tab ) {
-    int i = 0;
-    std::cout << in << ":" << std::endl;
-    for ( std::vector<std::string>::iterator it = tab.begin(); it < tab.end(); it++, i++ )
-        std::cout << "tab[" << i << "]: " << *it << std::endl;
-    std::cout << std::endl;
-}
+// static void
+// print( std::string in, std::vector<std::string>& tab ) {
+//     int i = 0;
+//     std::cout << in << ":" << std::endl;
+//     for ( std::vector<std::string>::iterator it = tab.begin(); it < tab.end(); it++, i++ )
+//         std::cout << "tab[" << i << "]: " << *it << std::endl;
+//     std::cout << std::endl;
+// }
 
 // static void
 // printClient( const Client& person ) {
 //     std::cout << "NickName: " << person->GetNickname() << std::endl;
 //     std::cout << "User: " << person->GetUsername() << std::endl;
 // }
-
-/*
- * Parser et creer le client 
-*/
+// ########################################################################## //
