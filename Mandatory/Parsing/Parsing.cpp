@@ -58,11 +58,10 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     std::vector<std::string>    line;
     int                         way = -1;
 
-
     // TODO need a APPEND with previous cmd maybe manage here
-    // person.SetInputBuffer( buffer );
-    // work = person.GetInputBuffer();
-    work = buffer;
+    person.SetInputBuffer( buffer );
+    work = person.GetInputBuffer();
+    // work = buffer;
     tab = split( work, "\r\n" );
     if ( tab.empty() )
         return ;
@@ -236,5 +235,12 @@ wayChooser( const std::string& target ) {
 // printClient( const Client& person ) {
 //     std::cout << "NickName: " << person->GetNickname() << std::endl;
 //     std::cout << "User: " << person->GetUsername() << std::endl;
+
+// void
+// test( Client& person ) {
+//     std::string test = "Ceci est un test\r\nTEST\n";
+//     person.SetInputBuffer( test );
+//     std::cout << "Inside Client: " << person.GetInputBuffer() << std::endl;
+// }
 // }
 // ########################################################################## //

@@ -9,5 +9,7 @@
 
 void
 handleCommand( const char* buffer, const Server& server, Client& person );
+void
+test( Client& person );
 
 #endif

@@ -195,6 +195,8 @@ int main(int argc , char *argv[])
                     << "socket: " << (*it)->GetSocket() << "\n" << std::endl; // TODO DEBUG
 
             }
+            // test( **it );                                                  // TODO debug
+
             if ( *buffer ) {
                 handleCommand( buffer, *server, **it );
                 bzero(buffer, sizeof(buffer));
