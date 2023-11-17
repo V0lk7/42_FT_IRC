@@ -25,7 +25,12 @@
 #define CLIENT  11
 
 
-
+// ########################################################################## //
+// #~TODO MANAGER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
+// Still to make :
+// Error found :
+//      SEGFAULT on empty data after all keyword
+// ########################################################################## //
 
 // ########################################################################## //
 // #~TESTING TOOL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
@@ -61,7 +66,6 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     // TODO need a APPEND with previous cmd maybe manage here
     person.SetInputBuffer( buffer );
     work = person.GetInputBuffer();
-    // work = buffer;
     tab = split( work, "\r\n" );
     if ( tab.empty() )
         return ;
@@ -75,11 +79,11 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
         //     dispatch( tab[i], way, person, server );
         line.clear();                                                    // i need to split cmd one by one
     }
-    if ( tab.size() == 1 && tab[0].find( "CAP") == std::string::npos )
+    if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos )
         ncCreation( tab, person, server );
     else
         userCreation( tab, person, server );
-    return ;
+    person.ClearInputBuffer();
 }
 
 // static void
@@ -125,7 +129,7 @@ ncCreation( const std::vector<std::string>& info, Client& person, const Server& 
                     "Require password\n", strlen( "Require password\n" ) + 1, 0 );
         return ;
     }
-
+    std::cout << "Test\n"; // TODO test
     for ( size_t i = 0; i < toParse.size() && person.GetStatementStep( PASSWD ); i++ ) {
         if ( toParse[i].find( "NICK" ) != std::string::npos ) {
             loadUserData( person, server, toParse[i], sNICK );
@@ -154,6 +158,8 @@ userCreation( const std::vector<std::string>& info, Client& person, const Server
     std::vector<std::string>    toParse;
     std::vector<std::string>    word;
 
+    std::cout << "\tUSERCREATION\n";
+
     if ( info.empty() ) {
         return ;
     }
@@ -179,6 +185,7 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
     if ( word == sNICK ) {
         it = toWork.find( "NICK" );
         buffer = toWork.substr( it + 5, std::string::npos );
+        // TODO manage empty after NICK
         if ( buffer.size() < 9 )
             person.SetNickname( buffer );
         else
@@ -187,6 +194,7 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
     }
     else if ( word == sPASS ) {
         it = toWork.find( "PASS" );
+        // TODO manage empty after PASS
         buffer = toWork.substr( it + 5, std::string::npos );
         if ( server.GetPassword() == buffer )
             person.SetPasswd();
@@ -197,6 +205,7 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
     }
     else if ( word == sUSER ) {
         tab = split( data, " " );
+        // TODO manage empty after USER
         person.SetUsername( tab[1] );
     }
 }
