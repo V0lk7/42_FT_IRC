@@ -1,22 +1,27 @@
 #include <string>
 #include <vector>
+#include <sstream>
 
+// FUNCTION BEHAVIOUR:
+// this split cut on all delimiter founded.
 
-int	csplit(std::vector<std::string>& tab, std::string& str, const std::string delimiter) {
-	size_t startPos = 0;
-	size_t endPos = str.find(delimiter);
+std::vector<std::string>
+split(const std::string& s, std::string delimiter) {
+    std::stringstream ss(s);
+    std::vector<std::string> tokens;
+    std::string token;
+    std::string::size_type it;
 
-	while (endPos != std::string::npos) {
-
-		std::string token = str.substr(startPos, endPos - startPos);
-		tab.push_back(token);
-
-		startPos = endPos + delimiter.length();
-		endPos = str.find(delimiter, startPos);
-	}
-
-	std::string lastToken = str.substr(startPos);
-	tab.push_back(lastToken);
-
-	return 0;
+    for ( size_t i = 0; i <= s.size(); i++ ) {
+        it = delimiter.find(s[i]);
+        if ( it == std::string::npos && i < s.size() )
+            token += s[i];
+        else {
+            if ( !token.empty() ) {
+                tokens.push_back(token);
+                token.clear();
+            }
+        }
+    }
+    return tokens;
 }

@@ -6,6 +6,7 @@
 #include <vector>
 
 
-int	csplit(std::vector<std::string>& tab, std::string& str, const std::string delimiter);
+std::vector<std::string>
+split(const std::string& s, std::string delimiter);
 
 #endif

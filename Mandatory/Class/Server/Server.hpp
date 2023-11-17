@@ -12,7 +12,7 @@ class Client;
 class Server {
 
 	private:
-		
+
 		std::string				_Password;
 		int						_MasterSocket;
 		std::list<Channel *>	_ChannelList;
@@ -28,11 +28,15 @@ class Server {
 
 		void	SetPassword(std::string const &);
 		void	SetMasterSocket(int const &);
-		void	AddChannel(Channel &);
-		void	AddClient(Client &);
+		void	AddChannel(Channel *);
+		void	AddClient(Client *);
 
 		std::string	GetChannelList(void) const;
 		std::string	GetClientList(void) const;
+
+        std::list<Client *>&
+        getCllist( void ) ;
+
 		std::string	GetPassword(void) const;
 		int			GetMasterSocket(void) const;
 		Channel		*GetChannel(std::string const &) const;

@@ -32,6 +32,11 @@ Server	&Server::operator=(Server const &rhs) {(void)rhs; return (*this);}
 
 //----------------Set/Get-------------------//
 
+std::list<Client *>&
+Server::getCllist( void ) {
+    return ( _ClientList );
+}
+
 void	Server::SetPassword(std::string const &NewPassword)
 {
 	this->_Password = NewPassword;
@@ -110,14 +115,14 @@ Client	*Server::GetClient(std::string const &Nickname) const
 
 /*----------------------SpecificMethods----------------------------*/
 
-void	Server::AddChannel(Channel &NewChannel)
+void	Server::AddChannel(Channel *NewChannel)
 {
-	this->_ChannelList.push_back(&NewChannel);
+	this->_ChannelList.push_back(NewChannel);
 }
 
-void	Server::AddClient(Client &NewClient)
+void	Server::AddClient(Client *NewClient)
 {
-	this->_ClientList.push_back(&NewClient);
+	this->_ClientList.push_back(NewClient);
 }
 
 std::ostream&	operator<<(std::ostream& print, const Server& other)

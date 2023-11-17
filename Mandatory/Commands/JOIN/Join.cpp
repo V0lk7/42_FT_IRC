@@ -12,7 +12,7 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 
 	(void)server;
 	(void)client;
-	csplit(CmdParts, RawCmd, " ");
+	CmdParts = split(RawCmd, " ");
 	Error = OrganiseRequest(Request, CmdParts);
 	//if (Error != NONE)
 	//{
@@ -25,9 +25,9 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 	return ;
 }
 
-static void	HandleJoinChannel(	Server &server,
-								Client &client,
-								std::map<std::string, std::string>::iterator &Chan)
-{
-		
-}
+//static void	HandleJoinChannel(	Server &server,
+//								Client &client,
+//								std::map<std::string, std::string>::iterator &Chan)
+//{
+//		
+//}
