@@ -29,7 +29,8 @@ SRCS		+=	Class/Client/Client.cpp		\
 
 SRCS		+=	Tools/cSplit.cpp
 
-SRCS		+=	Commands/JOIN/Parsing.cpp	\
+SRCS		+=	Commands/JOIN/Join.cpp		\
+				Commands/JOIN/Parsing.cpp	\
 				
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 

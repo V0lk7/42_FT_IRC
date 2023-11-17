@@ -1,15 +1,11 @@
-#include <map>
-#include <vector>
-#include <string>
-#include <stdexcept>
-
 #include "Tools.hpp"
+#include "Join.hpp"
 
 static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 								std::vector<std::string> &Channel,
 								std::vector<std::string> &Key);
 
-static void	AssignChannel(	std::map<std::string, std::string> &Request,
+static bool	AssignChannel(	std::map<std::string, std::string> &Request,
 							std::vector<std::string> &Channel);
 static void	AssignKeyToChan(	std::map<std::string, std::string> &Request,
 								std::vector<std::string> &Key);
@@ -18,26 +14,27 @@ static bool	CheckDelimFormat(std::string const &src, const char &delim);
 static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts);
 
 
-int	OrganiseRequest(	std::map<std::string, std::string> &Request,
-						std::vector<std::string> &CmdParts)
+ErrorsFlag	OrganiseRequest(	std::map<std::string, std::string> &Request,
+								std::vector<std::string> &CmdParts)
 {
 	std::vector<std::string>	Channel;
 	std::vector<std::string>	Key;
 
 	CmdParts.erase(CmdParts.begin());
-
 	if (CmdParts.size() == 0)
-		throw std::runtime_error("NO_PARAMETERS");
+		return (NO_PARAMETERS);
 	else if (CmdParts.size() > 2)
-		throw std::runtime_error("TOO_MANY_PARAMETERS");
+		return (TOO_MANY_PARAMETERS);
 
 	if (VerifyParamsFormat(CmdParts) != true)
-		throw std::runtime_error("WRONG_FORMAT");
+		return (WRONG_FORMAT);
 
 	DivideParamsType(CmdParts, Channel, Key);
-	AssignChannel(Request, Channel);
+	if (AssignChannel(Request, Channel) != true)
+		return (WRONG_FORMAT);
+
 	AssignKeyToChan(Request, Key);
-	return (0);
+	return (NONE);
 }
 
 static void	DivideParamsType(	std::vector<std::string> &CmdParts,
@@ -49,11 +46,20 @@ static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 		csplit(Key, CmdParts[1], ",");
 }
 
-static void	AssignChannel(	std::map<std::string, std::string> &Request,
+static bool	AssignChannel(	std::map<std::string, std::string> &Request,
 							std::vector<std::string> &Channel)
 {
+	std::string	tmp;
+
 	for (size_t i = 0; i < Channel.size(); i++)
-		Request[Channel[i]] = "";
+	{
+		tmp = Channel[i];
+		if (tmp[0] != '#' && tmp[0] != '&')
+			return (false);
+		tmp.erase(tmp.begin());
+		Request[tmp] = "";
+	}
+	return (true);
 }
 
 static void	AssignKeyToChan(	std::map<std::string, std::string> &Request,
