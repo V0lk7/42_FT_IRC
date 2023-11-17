@@ -22,6 +22,8 @@ INCLUDES	= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
 
+INCLUDES 	+=  Unitary-Test/
+
 SRCS		:=	MainCore/main.cpp \
 
 SRCS		+=	Parsing/Parsing.cpp \
