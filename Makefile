@@ -22,16 +22,17 @@ INCLUDES	= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
 
-SRCS		:=	MainCore/main.cpp \
-
-SRCS		+=	Parsing/Parsing.cpp \
-
-SRCS		+=	Tools/cSplit.cpp \
+SRCS		:=	MainCore/main.cpp	\
 
 SRCS		+=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
-				Class/Server/Server.cpp
+				Class/Server/Server.cpp		\
 
+SRCS		+=	Tools/cSplit.cpp
+
+SRCS		+=	Commands/JOIN/Join.cpp		\
+				Commands/JOIN/Parsing.cpp	\
+				
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
