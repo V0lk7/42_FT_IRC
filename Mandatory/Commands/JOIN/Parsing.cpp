@@ -41,9 +41,9 @@ static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 								std::vector<std::string> &Channel,
 								std::vector<std::string> &Key)
 {
-	csplit(Channel, CmdParts[0], ",");
+	Channel = split(CmdParts[0], ",");
 	if (CmdParts.size() > 1)
-		csplit(Key, CmdParts[1], ",");
+		Key = split(CmdParts[1], ",");
 }
 
 static bool	AssignChannel(	std::map<std::string, std::string> &Request,

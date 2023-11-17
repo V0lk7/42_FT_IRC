@@ -290,39 +290,39 @@ TEST_SUITE("PARSING")
 		SUBCASE("TEST1: /JOIN #chan1 key1")
 		{
 			Cmd = "/JOIN #chan1 key1";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == NONE);
 
 		}
 		SUBCASE("TEST2: /JOIN")
 		{
 			Cmd = "/JOIN";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == NO_PARAMETERS);
 
 		}
 		SUBCASE("TEST3: /JOIN #chan1 key1 key2")
 		{
 			Cmd = "/JOIN #chan1 key1 key2";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == TOO_MANY_PARAMETERS);
 		}
 		SUBCASE("TEST4: /JOIN #chan1,,&chan2 key")
 		{
 			Cmd = "/JOIN #chan1,,&chan2 key";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == WRONG_FORMAT);
 		}
 		SUBCASE("TEST5: /JOIN #chan1,chan2 key")
 		{
 			Cmd = "/JOIN #chan1,chan2 key";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == WRONG_FORMAT);
 		}
 		SUBCASE("TEST6: /JOIN #chan1,&chan2 key")
 		{
 			Cmd = "/JOIN #chan1,&chan2 key";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == NONE);
 			CHECK(Request.size() == 2);
 			It = Request.begin();
@@ -333,7 +333,7 @@ TEST_SUITE("PARSING")
 		SUBCASE("TEST7: /JOIN #chan1,&chan2,#chan3 key1,key2")
 		{
 			Cmd = "/JOIN #chan1,&chan2,#chan3 key1,key2";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == NONE);
 			CHECK(Request.size() == 3);
 			It = Request.begin();
@@ -346,7 +346,7 @@ TEST_SUITE("PARSING")
 		SUBCASE("TEST8: /JOIN #chan1,&chan2,#chan3 key1,key2,key3")
 		{
 			Cmd = "/JOIN #chan1,&chan2,#chan3 key1,key2,key3";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == NONE);
 			CHECK(Request.size() == 3);
 			It = Request.begin();
@@ -359,7 +359,7 @@ TEST_SUITE("PARSING")
 		SUBCASE("TEST9: /JOIN #chan,&chan1,#chan")
 		{
 			Cmd = "/JOIN #chan,&chan1,#chan";
-			csplit(Raw, Cmd, " ");
+			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == NONE);
 			CHECK(Request.size() == 2);
 			It = Request.begin();
