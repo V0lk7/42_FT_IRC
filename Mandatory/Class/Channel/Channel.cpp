@@ -21,6 +21,8 @@ Channel	&Channel::operator=(Channel const &rhs) {(void)rhs; return (*this);}
 
 //----------------Set/Get-------------------//
 
+inline std::map<Client*, bool> Channel::GetUser( void ) const { return ( _Users ); }
+
 void	Channel::SetName(std::string const &NewName)
 {
 	this->_Name = NewName;

@@ -30,12 +30,13 @@ class Client{
 		std::string	_InputBuffer;
 		std::string	_MessageToSend;
 
-		Client(Client const &src);
-		Client	&operator=(Client const &rhs);
 
 	public :
 		Client();
 		~Client();
+
+		Client(Client const &src);
+		Client	&operator=(Client const &rhs);
 
 		void	SetNickname(std::string const &);
 		void	SetUsername(std::string const &);
@@ -50,8 +51,7 @@ class Client{
 		int				GetSocket(void) const;
 		bool			GetStatement(void) const;
 
-        bool
-        GetStatementStep( step target ) const;
+        bool    GetStatementStep( step target ) const;
 
 		std::string		GetInputBuffer(void) const;
 

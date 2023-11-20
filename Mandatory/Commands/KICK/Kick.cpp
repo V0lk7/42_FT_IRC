@@ -11,16 +11,89 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
+// ########################################################################## //
+// #_TODO___________________________________________________________________# //
+// #-> better handling error msg: 1.                                        # //
+// #-> need hard testing                                                    # //
+// #-> need to implement checking right of client kickmaker                 # //
+// ########################################################################## //
+
+enum Err { NONE, EMPTY, NOTARGET, CONTINUE, NOCHANNEL };
+
+static enum Err
+findChannel( std::vector<std::string> data, const Channel& channel );
+static enum Err
+findTarget( std::vector<std::string> data, const Channel& channel );
+static enum Err
+parseCmd( const std::string& cmd, const Channel& channel );
+
 void
-kick( const Server& server, Client& client, Channel& channel, const std::string& cmd ) {
+kick( const Server& server, const Client& client, Channel& channel,
+                                                        const std::string& cmd )
+{
+    (void)server;
+    (void)client;
     std::string str(cmd);
     std::string msg;
     std::vector<std::string> words;
 
-    if ( !client.getRight() ) {
-        msg = client.GetUsername() + " haven't right to kick\n";
-        send( client.GetSocket(), msg.c_str(), strlen( msg.c_str() ) , 0 );
+
+    if ( parseCmd( cmd , channel ) != NONE ) {
+        std::cerr << "\t*NEED MSG HANDLING*" << std::endl;                       // TODO 1.
         return ;
     }
-    words = split( str, "," );
+
+}
+
+// ########################################################################## //
+// #_PARSER_________________________________________________________________# //
+
+static enum Err
+parseCmd( const std::string& cmd, const Channel& channel )
+{
+    std::vector<std::string> splitOnSpace;
+
+    splitOnSpace = split( cmd , " " );
+    splitOnSpace.erase( splitOnSpace.begin() );
+    if ( !splitOnSpace.size() )
+        return ( EMPTY );
+    if ( findChannel( splitOnSpace, channel ) == NOCHANNEL )
+        return ( NOCHANNEL );
+    if ( findTarget( splitOnSpace, channel ) == NOTARGET )
+        return ( NOTARGET );
+
+    return ( NONE );
+}
+
+static enum Err
+findChannel( std::vector<std::string> data, const Channel& channel )
+{
+    bool found = false;
+    for ( std::vector<std::string>::iterator it = data.begin();
+                                                      it != data.end(); it++ ) {
+        if ( *(++it) == channel.GetName() ) {
+            found = true ; break ;
+        }
+    }
+    if ( found ) return ( CONTINUE );
+    else         return ( NOCHANNEL );
+}
+
+static enum Err
+findTarget( std::vector<std::string> data, const Channel& channel )
+{
+    std::map<Client*, bool> target( channel.GetUser() );
+    bool found = false;
+
+    for ( std::vector<std::string>::iterator itData = data.begin();
+                                              itData != data.end(); itData++ ) {
+        for ( std::map<Client*, bool>::iterator itTarget = target.begin();
+                                        itTarget != target.end(); itTarget++ ) {
+            if ( itTarget->first->GetUsername() == *itData ) {
+                found = true ; break ;
+            }
+        }
+    }
+    if ( found ) return ( CONTINUE );
+    else         return ( NOTARGET );
 }

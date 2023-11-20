@@ -62,6 +62,9 @@ class Channel{
 		size_t		GetLimitUsers(void) const;
 		bool		GetMode(int) const;
 
+        std::map<Client *, bool>
+        GetUser( void ) const;
+
 		void		AddClientToChannel(Client &, int);
 		void		EraseClientFromChannel(Client &);
 

@@ -14,15 +14,13 @@ OBJ_DIR		:=	.obj
 #								SOURCES										  #
 ###############################################################################
 
-SRC_DIR		=	Mandatory
+SRC_DIR		:=	Mandatory
 
-INCLUDES	= 	$(SRC_DIR)/Tools/			\
+INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Parsing/			\
 				$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
-
-INCLUDES 	+=  Unitary-Test/
 
 SRCS		:=	MainCore/main.cpp \
 

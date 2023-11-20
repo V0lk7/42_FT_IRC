@@ -2,7 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 
-Client::Client() : _Socket(-1), _Nickname(""), _Username("")
+Client::Client() : _Socket(-1), _Nickname(""), _Username(""), _Op( false )
 {
 	for (int i = 0; i < 4; i++)
 		this->_Auth[i] = false;
