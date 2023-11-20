@@ -71,9 +71,14 @@ bool	Channel::GetMode(int Index) const
 	return (this->_Mode[Index]);
 }
 
+std::map<Client *, bool>	&Channel::GetUsers(void)
+{
+	return (this->_Users);
+}
+
 /*----------------------SpecificMethods----------------------------*/
 
-void	Channel::AddClientToChannel(Client &src, int Admin)
+void	Channel::AddClientToChannel(Client &src, bool Admin)
 {
 	if (this->_Users.find(&src) != this->_Users.end())
 		return ;
@@ -120,6 +125,23 @@ void	Channel::ModifyClientRights(Client &src, bool Admin)
 		It->second = true;
 	else
 		It->second = false;
+}
+
+bool	Channel::UserInChannel(Client &client) const
+{
+	if (this->_Users.find(&client) != this->_Users.end())
+		return (true);
+	return (false);
+}
+
+bool	Channel::UserInWaitingList(Client &client) const
+{
+	std::list<Client *>::const_iterator	ItBegin = this->_WaitingList.begin();
+	std::list<Client *>::const_iterator	ItEnd = this->_WaitingList.end();
+
+	if (std::find(ItBegin, ItEnd, &client) != ItEnd)
+		return (true);
+	return (false);
 }
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other)

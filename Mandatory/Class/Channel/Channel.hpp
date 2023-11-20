@@ -62,12 +62,16 @@ class Channel{
 		size_t		GetLimitUsers(void) const;
 		bool		GetMode(int) const;
 
-		void		AddClientToChannel(Client &, int);
+		std::map<Client *, bool>	&GetUsers(void);
+
+		void		AddClientToChannel(Client &, bool);
 		void		EraseClientFromChannel(Client &);
 
 		void		PutClientOnWaitingList(Client &);
 		void		EraseClientFromWaitingList(Client &);
 		void		ModifyClientRights(Client &, bool);
+		bool		UserInChannel(Client &) const;
+		bool		UserInWaitingList(Client &) const;
 };
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other);

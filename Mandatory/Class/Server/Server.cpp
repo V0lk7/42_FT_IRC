@@ -4,11 +4,12 @@
 
 Server::Server(){} 
 
-Server::Server(std::string const &Passwd) : _Password(Passwd) {}
+Server::Server(std::string const &Passwd) : _Password(Passwd), _MasterSocket(-1) {}
 
 Server::~Server()
 {
-	close(this->_MasterSocket);
+	if (this->_MasterSocket > 0)
+		close(this->_MasterSocket);
 	std::list<Channel *>::iterator	ItChannelBegin = this->_ChannelList.begin();
 	std::list<Channel *>::iterator	ItChannelEnd = this->_ChannelList.end();
 	while (ItChannelBegin != ItChannelEnd)
