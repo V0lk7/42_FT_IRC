@@ -18,13 +18,14 @@ class Server {
 		std::list<Channel *>	_ChannelList;
 		std::list<Client *>		_ClientList;
 
-		Server	&operator=(Server const &rhs);
-		Server(Server const &src);
-		Server();
 
 	public:
 		Server(std::string const &);
 		~Server();
+
+		Server	&operator=(Server const &rhs);
+		Server(Server const &src);
+		Server();
 
 		void	SetPassword(std::string const &);
 		void	SetMasterSocket(int const &);
