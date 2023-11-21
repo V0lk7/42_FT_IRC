@@ -1,12 +1,21 @@
 #include "Kick.hpp"
 
-static enum Err
-checkRight( const Channel& channel, Client& client );
-static enum Err
-findChannel( std::vector<std::string> data, const Channel& channel );
-static enum Err
-findTarget( std::vector<std::string> data, const Channel& channel );
+// ########################################################################## //
+// #_TODO___________________________________________________________________# //
+// #-> better handling error msg: 1.                                        # //
+// #-> need check if [&#] is present TODO                                   # //
+// #-> need to implement checking right of client kickmaker                 # //
+// #-> need str is : KICK [&#]CHANNEL target TODO MISSING FORMAT CHECKING   # //
+// #               : MISSING MULTIPLE KICKING FORMAT AND HAVE TO CHANNEL    # //
+// #               : AFTER [#&]                                             # //
+// ########################################################################## //
 
+static enum Err
+checkRight( const Channel& channel, const Client& client );
+static enum Err
+findChannel( std::vector<std::string>& data, const Channel& channel );
+static enum Err
+findTarget( std::vector<std::string>& data, const Channel& channel );
 
 // ########################################################################## //
 // #_PARSER_________________________________________________________________# //
@@ -14,17 +23,19 @@ findTarget( std::vector<std::string> data, const Channel& channel );
 enum Err
 parseCmd( const std::string& cmd, const Channel& channel, Client& client )
 {
-    std::vector<std::string> splitOnSpace;
+    std::vector<std::string> splitOnSpace = split( cmd , " " );
 
-    splitOnSpace = split( cmd , " " );
     splitOnSpace.erase( splitOnSpace.begin() );
     if ( !splitOnSpace.size() )
         return ( EMPTY );
-    if ( findChannel( splitOnSpace, channel ) != CONTINUE )
+
+    else if ( findChannel( splitOnSpace, channel ) != CONTINUE )
         return ( NOCHANNEL );
-    if ( checkRight( channel, client ) != CONTINUE )
+
+    else if ( checkRight( channel, client ) != CONTINUE )
         return ( NORIGHT );
-    if ( findTarget( splitOnSpace, channel ) != CONTINUE )
+
+    else if ( findTarget( splitOnSpace, channel ) != CONTINUE )
         return ( NOTARGET );
 
     return ( NONE );
@@ -34,12 +45,12 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
 // #_TOOLS__________________________________________________________________# //
 
 static enum Err
-findChannel( std::vector<std::string> data, const Channel& channel )
+findChannel( std::vector<std::string>& data, const Channel& channel )
 {
     bool found = false;
     for ( std::vector<std::string>::iterator it = data.begin();
                                                       it != data.end(); it++ ) {
-        if ( !(*it).empty() &&
+        if ( !(*it).empty() && ( (*it)[0] == '#' ||(*it)[0] == '&' ) &&
                 (*it).substr( 1, std::string::npos ) == channel.GetName() ) {
             found = true ; break ;
         }
@@ -49,7 +60,7 @@ findChannel( std::vector<std::string> data, const Channel& channel )
 }
 
 static enum Err
-findTarget( std::vector<std::string> data, const Channel& channel )
+findTarget( std::vector<std::string>& data, const Channel& channel )
 {
     std::map<Client*, bool> target( channel.GetUser() );
     bool found = false;
@@ -69,10 +80,12 @@ findTarget( std::vector<std::string> data, const Channel& channel )
 }
 
 static enum Err
-checkRight( const Channel& channel, Client& client )
+checkRight( const Channel& channel, const Client& client )
 {
+    Client asRight( client );
+
     std::map<Client*, bool> target( channel.GetUser() );
-    if ( target.count( &client ) != 0 && target[&client] == true )
+    if ( target.count( &asRight ) != 0 && target[&asRight] == true )
         return ( CONTINUE );
     else
         return ( NORIGHT );

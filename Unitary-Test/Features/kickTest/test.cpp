@@ -5,6 +5,12 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 
+// ########################################################################## //
+// # TODO___________________________________________________________________# //
+// # find error on findChannel                                               # //
+// #                                                                        # //
+// ########################################################################## //
+
 TEST_SUITE ( "KICK TESTING" )
 {
     Server   server;
@@ -35,10 +41,11 @@ TEST_SUITE ( "KICK TESTING" )
             CHECK ( findChannel( data, *channel) == NOCHANNEL );
         }
         SUBCASE( "#test" ) {
-            data.push_back( "#test" );
+            data.push_back( "##test" );
             CHECK ( findChannel( data, *channel) == NOCHANNEL );
         }
         SUBCASE( "empty case" ) {
+    std::list<Channel*> channelToK;
             data.push_back("");
             CHECK ( findChannel( data, *channel) == NOCHANNEL );
         }
@@ -89,6 +96,10 @@ TEST_SUITE ( "KICK TESTING" )
         CHECK ( parseCmd( "KICK #test Jimmy", *channel, *kicker ) == NOCHANNEL );
         CHECK ( parseCmd( "KICK #Test Jimmy", *channel, *kicker ) == NOTARGET );
         CHECK ( parseCmd( "KICK #Test Jean", *channel, *target  ) == NORIGHT );
+
+        CHECK ( parseCmd( "KICK Test #Jean", *channel, *kicker  ) != NONE );
+
+        CHECK ( parseCmd( "KICK TTest #Jean", *channel, *kicker  ) != NONE );
     }
 // ########################################################################## //
 }
