@@ -51,6 +51,11 @@ Client::GetStatementStep( step target ) const {
     return ( _Auth[ target ] );
 }
 
+std::string	Client::GetMessage(void) const
+{
+	return (this->_MessageToSend);
+}
+
 void	Client::SetStatement(int Index, bool state)
 {
 	this->_Auth[Index] = state;
@@ -61,9 +66,19 @@ void	Client::SetInputBuffer(std::string const &Cmd)
 	this->_InputBuffer += Cmd;
 }
 
+void	Client::SetMessageToSend(std::string const &Msg)
+{
+	this->_MessageToSend += Msg;
+}
+
 void	Client::ClearInputBuffer(void)
 {
 	this->_InputBuffer.clear();
+}
+
+void	Client::ClearMessage(void)
+{
+	this->_MessageToSend.clear();
 }
 
 int 	Client::GetSocket(void) const

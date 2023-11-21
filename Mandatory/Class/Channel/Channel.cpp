@@ -33,7 +33,7 @@ void	Channel::SetPassword(std::string const &NewPassword)
 
 void	Channel::SetTopic(std::string const &NewTopic)
 {
-	this->_Password = NewTopic;
+	this->_Topic = NewTopic;
 }
 
 void	Channel::SetLimitUsers(size_t const &NewLimit)
@@ -142,6 +142,23 @@ bool	Channel::UserInWaitingList(Client &client) const
 	if (std::find(ItBegin, ItEnd, &client) != ItEnd)
 		return (true);
 	return (false);
+}
+
+
+std::string	Channel::GetListClientIn(void)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.begin();
+	std::string						ClientList;
+
+	while (It != this->_Users.end())
+	{
+		if (It->second == true)
+			ClientList += "@";
+		ClientList += It->first->GetNickname() + " ";
+		It++;
+	}
+	ClientList.erase(ClientList.end() - 1);
+	return (ClientList);
 }
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other)

@@ -4,43 +4,7 @@
 #include "Channel.hpp"
 #include "Server.hpp"
 #include "../../../Mandatory/Commands/JOIN/Join.hpp"
-#include <sstream>
-
-static std::string	IntToString(int n)
-{
-	std::stringstream ss;
-	ss << n;
-	return ss.str();
-}
-
-static Client *SetupCli(std::string Name)
-{
-	Client	*ptr = new Client;
-
-	ptr->SetNickname(Name);
-	for (int i = 0; i < 4; i++)
-		ptr->SetStatement(i, true);
-	return (ptr);
-}
-
-static void	Setup(Server &serv, int ChanNbr, int CliNbr)
-{
-	std::string	ChanName;
-	std::string	CliName;
-	Client		*CliPtr;
-
-	for (int i = 0; i < ChanNbr; i++)
-	{
-		ChanName = "Chan" + IntToString(i);
-		serv.AddChannel(new Channel(ChanName));
-	}
-	for (int i = 0; i < CliNbr; i++)
-	{
-		CliName = "Client" + IntToString(i);
-		CliPtr = SetupCli(CliName);
-		serv.AddClient(CliPtr);
-	}
-}
+#include "Utils.hpp"
 
 TEST_SUITE("Utilities")
 {
@@ -74,6 +38,8 @@ TEST_SUITE("Utilities")
 			It2 = Users.find(CliPtr);
 			REQUIRE(It2 != Users.end());
 			CHECK(It2->second == true);
+			for (int i = 0; i < 3; i++)
+				CHECK(ChanPtr->GetMode(i) == false);
 		}
 		SUBCASE("Create Channel with passwd")
 		{
@@ -94,6 +60,9 @@ TEST_SUITE("Utilities")
 			It2 = Users.find(CliPtr);
 			REQUIRE(It2 != Users.end());
 			CHECK(It2->second == true);
+			CHECK(ChanPtr->GetMode(0) == false);
+			CHECK(ChanPtr->GetMode(1) == true);
+			CHECK(ChanPtr->GetMode(2) == false);
 		}
 	}
 

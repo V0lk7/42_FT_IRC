@@ -17,6 +17,7 @@ OBJ_DIR		:=	.obj
 SRC_DIR		=	Mandatory
 
 INCLUDES	= 	$(SRC_DIR)/Tools/			\
+INCLUDES	= 	$(SRC_DIR)/Commands/		\
 				$(SRC_DIR)/Parsing/			\
 				$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Server/	\

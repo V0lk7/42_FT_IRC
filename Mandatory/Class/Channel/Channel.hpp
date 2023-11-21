@@ -72,6 +72,7 @@ class Channel{
 		void		ModifyClientRights(Client &, bool);
 		bool		UserInChannel(Client &) const;
 		bool		UserInWaitingList(Client &) const;
+		std::string	GetListClientIn(void);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other);

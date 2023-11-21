@@ -20,11 +20,11 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 		return ;
 	CmdParts = split(RawCmd, " ");
 	Error = OrganiseRequest(Request, CmdParts);
-	//if (Error != NONE)
-	//{
-	//	ErrorHandling(client, Error);
-	//	return ;
-	//}
+	if (Error != NONE)
+	{
+//		ErrorHandling(client, Error);
+		return ;
+	}
 	for (std::map<std::string, std::string>::iterator It = Request.begin(); 
 			It != Request.end(); It++)
 		HandleJoinChannel(server, client, It);
@@ -37,29 +37,23 @@ static void	HandleJoinChannel(	Server &server,
 {
 	Channel	*channel = server.GetChannel(It->first);
 
-	if (channel == NULL)
+	if (channel == NULL){
 		CreateNewChannel(server, client, It);
-		//maybe send a message to the client
-	else if (channel->UserInChannel(client) == true){
-		//Send an error message to the client
-		return ;
+		CreateReply(client, *(server.GetChannel(It->first)), NEW_CHANNEL);
 	}
-	else if (VerifyChannelLimit(*channel) != true){
-		//Send an error message to the client
-		return ;
-	}
-	else if (VerifyInvitOnly(*channel, client) != true){
-		//Send an error message to the client
-		return ;
-	}
-	else if (VerifyPasswordNeed(*channel, It->second) != true){
-		//Send an error message to the client
-		return ;
-	}
+	else if (channel->UserInChannel(client) == true)
+		CreateReply(client, *channel, ALREADY_IN);
+	else if (VerifyChannelLimit(*channel) != true)
+		CreateReply(client, *channel, TOO_MANY_CLIENT);
+	else if (VerifyInvitOnly(*channel, client) != true)
+		CreateReply(client, *channel, NOT_INVITED);
+	else if (VerifyPasswordNeed(*channel, It->second) != true)
+		CreateReply(client, *channel, BAD_KEY);
 	else
 	{
 		channel->EraseClientFromWaitingList(client);
 		channel->AddClientToChannel(client, false);
+		CreateReply(client, *channel, EXISTING_CHANNEL);
 	}
 	return ;
 }
