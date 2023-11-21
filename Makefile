@@ -21,6 +21,7 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
+				$(SRC_DIR)/Commands/KICK/	\
 
 SRCS		:=	MainCore/main.cpp \
 
@@ -34,6 +35,8 @@ SRCS		+=	Class/Client/Client.cpp		\
 
 SRCS		+=	Commands/JOIN/Join.cpp		\
 				Commands/JOIN/Parsing.cpp	\
+				Commands/KICK/Kick.cpp		\
+				Commands/KICK/ParsingKick.cpp		\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
