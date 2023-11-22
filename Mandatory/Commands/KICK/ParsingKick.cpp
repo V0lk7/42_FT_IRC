@@ -47,10 +47,11 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
 static enum Err
 findChannel( std::vector<std::string>& data, const Channel& channel )
 {
-    bool found = false;
+    bool    found = false;
+    size_t  pos = 0;
     for ( std::vector<std::string>::iterator it = data.begin();
-                                                      it != data.end(); it++ ) {
-        if ( !(*it).empty() && ( (*it)[0] == '#' ||(*it)[0] == '&' ) &&
+                                               it != data.end(); it++, pos++ ) {
+        if ( !pos && !(*it).empty() && ( (*it)[0] == '#' ||(*it)[0] == '&' ) &&
                 (*it).substr( 1, std::string::npos ) == channel.GetName() ) {
             found = true ; break ;
         }
@@ -63,12 +64,13 @@ findTarget( std::vector<std::string>& data, const Channel& channel )
 {
     std::map<Client*, bool> target( channel.GetUser() );
     bool found = false;
+    size_t  pos = 0;
 
     for ( std::vector<std::string>::iterator itData = data.begin();
-                                              itData != data.end(); itData++ ) {
+                                       itData != data.end(); itData++, pos++ ) {
         for ( std::map<Client*, bool>::iterator itTarget = target.begin();
                                         itTarget != target.end(); itTarget++ ) {
-            if ( !itData->empty() &&
+            if ( !itData->empty() && pos == 1 &&
                     itTarget->first->GetNickname() == *itData ) {
                 found = true ; break ;
             }
