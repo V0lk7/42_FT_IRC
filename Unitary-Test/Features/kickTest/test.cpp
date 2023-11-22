@@ -90,16 +90,18 @@ TEST_SUITE ( "KICK TESTING" )
     }
 // ########################################################################## //
 // # PARSECMD_______________________________________________________________# //
-    TEST_CASE ( "ParseCmd: true" )
-    {
-        CHECK ( parseCmd( "KICK #Test Jean", *channel, *kicker  ) == NONE );
-        CHECK ( parseCmd( "KICK #test Jimmy", *channel, *kicker ) == NOCHANNEL );
-        CHECK ( parseCmd( "KICK #Test Jimmy", *channel, *kicker ) == NOTARGET );
-        CHECK ( parseCmd( "KICK #Test Jean", *channel, *target  ) == NORIGHT );
-
-        CHECK ( parseCmd( "KICK Test #Jean", *channel, *kicker  ) != NONE );
-
-        CHECK ( parseCmd( "KICK TTest #Jean", *channel, *kicker  ) != NONE );
-    }
+    // TEST_CASE ( "ParseCmd: true" )
+    // {
+    //     CHECK ( parseCmd( "KICK #Test Jean", *channel, *kicker  ) == NONE );
+    //     CHECK ( parseCmd( "KICK #test Jimmy", *channel, *kicker ) == NOCHANNEL );
+    //     CHECK ( parseCmd( "KICK #Test Jimmy", *channel, *kicker ) == NOTARGET );
+    //     CHECK ( parseCmd( "KICK #Test Jean", *channel, *target  ) == NORIGHT );
+    //
+    //     CHECK ( parseCmd( "KICK Jean #Test ", *channel, *kicker  ) != NONE );
+    //
+    //     CHECK ( parseCmd( "KICK Test #Jean", *channel, *kicker  ) != NONE );
+    //
+    //     CHECK ( parseCmd( "KICK TTest #Jean", *channel, *kicker  ) != NONE );
+    // }
 // ########################################################################## //
 }

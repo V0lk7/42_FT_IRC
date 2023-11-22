@@ -11,7 +11,7 @@
 // ########################################################################## //
 
 static enum Err
-checkRight( const Channel& channel, const Client& client );
+checkRight( const Channel& channel, Client& client );
 static enum Err
 findChannel( std::vector<std::string>& data, const Channel& channel );
 static enum Err
@@ -55,8 +55,7 @@ findChannel( std::vector<std::string>& data, const Channel& channel )
             found = true ; break ;
         }
     }
-    if ( found ) return ( CONTINUE );
-    else         return ( NOCHANNEL );
+    return ( found ? CONTINUE : NOCHANNEL );
 }
 
 static enum Err
@@ -75,17 +74,14 @@ findTarget( std::vector<std::string>& data, const Channel& channel )
             }
         }
     }
-    if ( found ) return ( CONTINUE );
-    else         return ( NOTARGET );
+    return ( found ? CONTINUE : NOTARGET );
 }
 
 static enum Err
-checkRight( const Channel& channel, const Client& client )
+checkRight( const Channel& channel, Client& client )
 {
-    Client asRight( client );
-
     std::map<Client*, bool> target( channel.GetUser() );
-    if ( target.count( &asRight ) != 0 && target[&asRight] == true )
+    if ( target.count( &client ) != 0 && target[&client] == true )
         return ( CONTINUE );
     else
         return ( NORIGHT );
