@@ -1,8 +1,9 @@
+#include "Join.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Tools.hpp"
-#include "Join.hpp"
+#include <iostream>
 
 static void	HandleJoinChannel(	Server &server,
 								Client &client,
@@ -13,16 +14,17 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 	std::map<std::string, std::string>				Request;
 	std::map<std::string, std::string>::iterator	It;
 	std::vector<std::string>						CmdParts;
-	ErrorsFlag										Error;
 
 	if (client.GetStatement() != true)
-	//Maybe sending a message to the client is needed ?
-		return ;
-	CmdParts = split(RawCmd, " ");
-	Error = OrganiseRequest(Request, CmdParts);
-	if (Error != NONE)
 	{
-//		ErrorHandling(client, Error);
+		ErrorHandling(client, INVALID_CLIENT);
+		return ;
+	}
+	RawCmd.erase(RawCmd.find_first_of("\r\n"), std::string::npos);
+	CmdParts = split(RawCmd, " ");
+	if (OrganiseRequest(Request, CmdParts) == false)
+	{
+		ErrorHandling(client, SYNTAX_ERROR);
 		return ;
 	}
 	for (std::map<std::string, std::string>::iterator It = Request.begin(); 

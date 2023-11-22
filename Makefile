@@ -34,7 +34,7 @@ SRCS		+=	Class/Client/Client.cpp		\
 				Class/Server/Server.cpp
 
 SRCS		+=	Commands/JOIN/Join.cpp				\
-				Commands/JOIN/Parsing.cpp			\
+				Commands/JOIN/Join_parsing.cpp		\
 				Commands/JOIN/Join_utilities.cpp	\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)

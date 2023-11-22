@@ -1,9 +1,9 @@
 #include "doctest.hpp"
 
+#include "../../../Mandatory/Commands/JOIN/Join.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Server.hpp"
-#include "../../../Mandatory/Commands/JOIN/Join.hpp"
 #include "Utils.hpp"
 
 TEST_SUITE("Utilities")

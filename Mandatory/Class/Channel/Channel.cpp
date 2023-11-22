@@ -144,7 +144,6 @@ bool	Channel::UserInWaitingList(Client &client) const
 	return (false);
 }
 
-
 std::string	Channel::GetListClientIn(void)
 {
 	std::map<Client *, bool>::iterator	It = this->_Users.begin();
@@ -159,6 +158,19 @@ std::string	Channel::GetListClientIn(void)
 	}
 	ClientList.erase(ClientList.end() - 1);
 	return (ClientList);
+}
+
+void	Channel::SendMessageToClients(std::string const &Message, Client const &client)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.begin();
+
+	while (It != this->_Users.end())
+	{
+		if (It->first != &client)
+			It->first->SetMessageToSend(Message);
+		It++;
+	}
+	return ;
 }
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other)

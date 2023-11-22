@@ -1,9 +1,7 @@
+#include "Join.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
-#include "Join.hpp"
-#include <map>
-#include <string>
 
 void	CreateNewChannel(	Server &server, Client &client,
 							std::map<std::string, std::string>::iterator &ChanParams)
@@ -52,10 +50,21 @@ bool	VerifyPasswordNeed(Channel const &chan, std::string const &Passwd)
 		return (false);
 }
 
-//void	ErrorHandling(Client &client, ErrorsFlag Error)
-//{
-//
-//}
+void	ErrorHandling(Client &client, Error const Type)
+{
+	std::string	ClientName;
+	std::string	Reply;
+
+	if (Type == SYNTAX_ERROR)
+	{
+		ClientName = client.GetNickname();
+		Reply	= ": 461 " + ClientName +
+			" JOIN :Syntax error. Proper usage /JOIN [# | &]<channel_name> <key>\r\n";
+	}
+	else
+		Reply = ": 451 :You have not registered. Please authenticate before executing commands.\r\n";
+	client.SetMessageToSend(Reply);
+}
 
 void	CreateReply(Client &client, Channel &channel, int flag)
 {
@@ -72,7 +81,7 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 	}
 	else if (flag == EXISTING_CHANNEL){
 		Reply	= ":" + ClientName + " JOIN #" + ChannelName + "\r\n";
-//		channel.SendToClientList(Reply, ClientName);
+		channel.SendMessageToClients(Reply, client);
 		Reply	+= ": 332 " + ClientName + " #" + ChannelName + " :" + channel.GetTopic() + "\r\n";
 		Reply	+= ": 353 " + ClientName + " = #"
 				+ ChannelName + " :" + channel.GetListClientIn() + "\r\n";
@@ -99,8 +108,3 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 		Reply = "";
 	client.SetMessageToSend(Reply);
 }
-
-//void	ErrorHandling(Client &client, ErrorsFlag flag)
-//{
-//	
-//}

@@ -40,7 +40,7 @@ TEST_SUITE("Test Reply message")
 
 			reply = ":Client1 JOIN #Chan0\r\n";
 			reply += ": 332 Client1 #Chan0 :Hello\r\n";
-			reply += ": 353 Client1 = #Chan0 :Client1 @Client0\r\n";
+			reply += ": 353 Client1 = #Chan0 :@Client0 Client1\r\n";
 			reply += ": 366 Client1 #Chan0 :End of /NAMES list.\r\n";
 			CreateReply(*CliPtr, *ChanPtr, EXISTING_CHANNEL);
 			CHECK(CliPtr->GetMessage() == reply);
@@ -84,6 +84,26 @@ TEST_SUITE("Test Reply message")
 				REQUIRE(true == false);
 			CreateReply(*CliPtr, *ChanPtr, ALREADY_IN);
 			CHECK(CliPtr->GetMessage() == reply);
+		}
+	}
+	TEST_CASE("Error_Handling_function")
+	{
+		Client	client;
+		std::string	Reply;
+
+		SUBCASE("SYNTAX_ERROR")
+		{
+			client.SetNickname("Joe");
+			Reply = ": 461 Joe JOIN :Syntax error. Proper usage /JOIN [# | &]<channel_name> <key>\r\n";
+			ErrorHandling(client, SYNTAX_ERROR);
+			CHECK(client.GetMessage() == Reply);
+		}
+		SUBCASE("INVALID_CLIENT")
+		{
+			client.SetNickname("Joe");
+			Reply = ": 451 :You have not registered. Please authenticate before executing commands.\r\n";
+			ErrorHandling(client, INVALID_CLIENT);
+			CHECK(client.GetMessage() == Reply);
 		}
 	}
 }
