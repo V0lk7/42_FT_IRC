@@ -82,9 +82,9 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 	else if (flag == EXISTING_CHANNEL){
 		Reply	= ":" + ClientName + " JOIN #" + ChannelName + "\r\n";
 		channel.SendMessageToClients(Reply, client);
-		Reply	+= ": 332 " + ClientName + " #" + ChannelName + " :" + channel.GetTopic() + "\r\n";
-		Reply	+= ": 353 " + ClientName + " = #"
-				+ ChannelName + " :" + channel.GetListClientIn() + "\r\n";
+		if (channel.GetTopic().empty() == false)
+			Reply	+= ": 332 " + ClientName + " #" + ChannelName + " :" + channel.GetTopic() + "\r\n";
+		Reply	+= ": 353 " + ClientName + " = #" + ChannelName + " :" + channel.GetListClientIn() + "\r\n";
 		Reply	+= ": 366 " + ClientName + " #"
 				+ ChannelName + " :End of /NAMES list.\r\n";
 	}

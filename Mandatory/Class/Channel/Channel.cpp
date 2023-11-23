@@ -147,7 +147,7 @@ bool	Channel::UserInWaitingList(Client &client) const
 std::string	Channel::GetListClientIn(void)
 {
 	std::map<Client *, bool>::iterator	It = this->_Users.begin();
-	std::string						ClientList;
+	std::string							ClientList;
 
 	while (It != this->_Users.end())
 	{

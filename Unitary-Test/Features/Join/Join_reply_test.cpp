@@ -40,7 +40,21 @@ TEST_SUITE("Test Reply message")
 
 			reply = ":Client1 JOIN #Chan0\r\n";
 			reply += ": 332 Client1 #Chan0 :Hello\r\n";
-			reply += ": 353 Client1 = #Chan0 :@Client0 Client1\r\n";
+			reply += ": 353 Client1 = #Chan0 :Client1 @Client0\r\n";
+			reply += ": 366 Client1 #Chan0 :End of /NAMES list.\r\n";
+			CreateReply(*CliPtr, *ChanPtr, EXISTING_CHANNEL);
+			CHECK(CliPtr->GetMessage() == reply);
+		}
+		SUBCASE("EXISTING_CHANNEL with no topic set")
+		{
+			CliPtr = server.GetClient("Client0");
+			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr->AddClientToChannel(*CliPtr, true);
+			CliPtr = server.GetClient("Client1");
+			ChanPtr->AddClientToChannel(*CliPtr, false);
+
+			reply = ":Client1 JOIN #Chan0\r\n";
+			reply += ": 353 Client1 = #Chan0 :Client1 @Client0\r\n";
 			reply += ": 366 Client1 #Chan0 :End of /NAMES list.\r\n";
 			CreateReply(*CliPtr, *ChanPtr, EXISTING_CHANNEL);
 			CHECK(CliPtr->GetMessage() == reply);
