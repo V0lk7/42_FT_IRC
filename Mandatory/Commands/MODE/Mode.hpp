@@ -3,6 +3,9 @@
 
 # include <string>
 
+class Server;
+class Client;
+
 typedef enum ErrorFlag {
 	ERR_NEEDMOREPARAMS = 461,
 	ERR_CHANOPRIVSNEEDED = 482,
