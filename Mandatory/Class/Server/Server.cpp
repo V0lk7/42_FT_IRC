@@ -9,10 +9,12 @@ Server::Server() : _Password( "password" ),
     Client* one;
     Client* two;
     Client* three;
+    Client* four;
 
     _ClientList.push_back( new Client ( "sudo",      SUDO ) );
     _ClientList.push_back( new Client ( "Jean",    CLIENT ) );
     _ClientList.push_back( new Client ( "Charles", CLIENT ) );
+    _ClientList.push_back( new Client ( "Jimmy",   CLIENT ) );
 
 	std::list<Client *>::iterator	ItClientBegin = this->_ClientList.begin();
 	std::list<Client *>::iterator	ItEnd = this->_ClientList.end();
@@ -25,15 +27,18 @@ Server::Server() : _Password( "password" ),
             case 1:
                 two = *ItClientBegin;
                 break;
+            case 2:
+                three= *ItClientBegin;
+                break;
             default:
-                three = *ItClientBegin;
+                four = *ItClientBegin;
                 break;
         }
 		ItClientBegin++;
         i++;
 	}
 
-    _ChannelList.push_back( new Channel ( *one, *two, *three ) );
+    _ChannelList.push_back( new Channel ( *one, *two, *three, *four ) );
 
 }
 

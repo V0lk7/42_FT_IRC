@@ -5,7 +5,7 @@
 
 Channel::Channel( void ) {}
 
-Channel::Channel( Client& one, Client& two, Client& three ) :
+Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
                            _Name( "Test" ),
                            _Password( "password" ),
                            _Topic( "Test" ),
@@ -19,7 +19,7 @@ Channel::Channel( Client& one, Client& two, Client& three ) :
     _Users[ &two ]   = false;
     _Users[ &three ] = false;
 
-    _WaitingList.push_back( new Client( "Jimmy", CLIENT ) );
+    _WaitingList.push_back( &four );
 }
 
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),

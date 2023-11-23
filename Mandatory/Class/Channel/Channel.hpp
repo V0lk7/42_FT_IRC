@@ -47,7 +47,7 @@ class Channel{
 		Channel(std::string const &);
 		~Channel();
 
-        Channel(  Client& one,  Client& two,  Client& tree );
+        Channel( Client& one, Client& two, Client& tree, Client& four );
 
 		Channel	&operator=(Channel const &rhs);
 		Channel(Channel const &src);

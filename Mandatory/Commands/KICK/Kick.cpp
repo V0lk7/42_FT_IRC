@@ -17,6 +17,8 @@
 // ########################################################################## //
 // #_TODO___________________________________________________________________# //
 // #-> better handling error msg: 1.                                        # //
+// #-> check idx 4 not sur i guess it would be 3                            # //
+// #-> care about commment code to test: 2.                                 # //
 // ########################################################################## //
 
 static std::string
@@ -50,40 +52,36 @@ static void
 rmClientOfChannel( Channel& channel, const std::string& key,
                                                      const std::string& reason )
 {
-    Client* kicked = NULL;
     std::map<Client*, bool> target( channel.GetUser() );
 
     for ( std::map<Client*, bool>::iterator it = target.begin();
                                                       it != target.end(); it++ )
     {
 
-        if ( it->first->GetNickname() == key )
-            *kicked = *it->first;
+        (void)reason;
+        // send( it->first->GetSocket(),                                          // TODO 2.
+        //                           reason.c_str(), strlen( reason.c_str() ), 0 );
 
-        send( it->first->GetSocket(),
-                                  reason.c_str(), strlen( reason.c_str() ), 0 );
+        if ( it->first->GetNickname() == key )
+            channel.EraseClientFromChannel( *it->first );
     }
-    if ( kicked )
-        channel.EraseClientFromChannel( *kicked );
 }
 
 static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
     std::string msg;
-    if ( data.size() < 2 ) {
-        msg = client.GetNickname() + " KICK " + data[2] + " to #"
+    if ( data.size() <= 2 ) {
+        msg = client.GetNickname() + " KICK " + data[1] + " to #"
             + channel.GetName() + "\r\n";
     }
     else
     {
-        msg = client.GetNickname() + " KICK " + data[2] + " to #"
-            + channel.GetName() + " ";
+        msg = client.GetNickname() + " KICK " + data[1] + " to #"
+            + channel.GetName();
 
-        for ( std::vector<std::string>::iterator it = data.begin() + 3;
-                                                        it != data.end(); it++ )
-            msg += *it;
-
+        for ( size_t idx = 4; idx < data.size(); idx++ )                         // TODO not sur about
+            msg += " " + data[idx];                                              // idx = 4
         msg += "\r\n";
     }
     return ( msg );
