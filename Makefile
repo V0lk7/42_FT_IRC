@@ -14,14 +14,15 @@ OBJ_DIR		:=	.obj
 #								SOURCES										  #
 ###############################################################################
 
-SRC_DIR		=	Mandatory
+SRC_DIR		:=	Mandatory
 
-INCLUDES	= 	$(SRC_DIR)/Tools/			\
+INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Commands/		\
 				$(SRC_DIR)/Parsing/			\
 				$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
+				$(SRC_DIR)/Commands/KICK/	\
 
 SRCS		:=	MainCore/main.cpp \
 
@@ -33,9 +34,12 @@ SRCS		+=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
 				Class/Server/Server.cpp
 
-SRCS		+=	Commands/JOIN/Join.cpp				\
+SRCS		+=	Commands/JOIN/Join.cpp		\
 				Commands/JOIN/Join_parsing.cpp		\
 				Commands/JOIN/Join_utilities.cpp	\
+
+SRCS		+=	Commands/KICK/Kick.cpp		\
+				Commands/KICK/ParsingKick.cpp		\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 

@@ -3,7 +3,24 @@
 #include <algorithm>
 #include <ostream>
 
-Channel::Channel() {}
+Channel::Channel( void ) {}
+
+Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
+                           _Name( "Test" ),
+                           _Password( "password" ),
+                           _Topic( "Test" ),
+                           _LimitUsers( 5 )
+{
+    _Mode[ INVITE_ONLY  ] = false;
+    _Mode[ TOPIC_CHANGE ] = false;
+    _Mode[ PASSWORD_SET ] = false;
+
+    _Users[ &one ]   = true;
+    _Users[ &two ]   = false;
+    _Users[ &three ] = false;
+
+    _WaitingList.push_back( &four );
+}
 
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)
@@ -13,13 +30,33 @@ Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 	_Mode[PASSWORD_SET] = false;
 }
 
-Channel::~Channel(){}
+Channel::~Channel() {}
 
 Channel::Channel(Channel const &src) {*this = src;}
 
-Channel	&Channel::operator=(Channel const &rhs) {(void)rhs; return (*this);}
+Channel	&Channel::operator=(Channel const &rhs) 
+{
+    if ( this == &rhs )
+        return ( *this );
+
+    _Name                 = rhs._Name;
+    _Password             = rhs._Password;
+    _Topic                = rhs._Topic;
+    _LimitUsers           = rhs._LimitUsers;
+
+    _Mode[ INVITE_ONLY  ] = rhs._Mode[ INVITE_ONLY  ];
+    _Mode[ TOPIC_CHANGE ] = rhs._Mode[ TOPIC_CHANGE ];
+    _Mode[ PASSWORD_SET ] = rhs._Mode[ PASSWORD_SET ];
+
+    _Users                = rhs._Users;
+    _WaitingList          = rhs._WaitingList;
+
+    return ( *this );
+}
 
 //----------------Set/Get-------------------//
+
+std::map<Client*, bool> Channel::GetUser( void ) const { return ( _Users ); }
 
 void	Channel::SetName(std::string const &NewName)
 {
