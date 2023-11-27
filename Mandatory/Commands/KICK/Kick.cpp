@@ -19,6 +19,8 @@
 // #-> better handling error msg: 1.                                        # //
 // #-> check idx 4 not sur i guess it would be 3                            # //
 // #-> care about commment code to test: 2.                                 # //
+// #-> Send msg handling need to be modify put msg in client buffer         # //
+// #        ClientMsgToSend                                                 # //
 // ########################################################################## //
 
 static std::string
@@ -35,7 +37,7 @@ kick( const Server& server, Client& client, Channel& channel,
     (void)client;
 
     std::string reason;
-    std::vector<std::string> data = split( cmd, "" );
+    std::vector<std::string> data = split( cmd, " " );
     data.erase( data.begin() );
 
 
