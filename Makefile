@@ -17,6 +17,7 @@ OBJ_DIR		:=	.obj
 SRC_DIR		=	Mandatory
 
 INCLUDES	= 	$(SRC_DIR)/Tools/			\
+				$(SRC_DIR)/Commands/		\
 				$(SRC_DIR)/Parsing/			\
 				$(SRC_DIR)/Class/Client/	\
 				$(SRC_DIR)/Class/Server/	\
@@ -32,8 +33,9 @@ SRCS		+=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
 				Class/Server/Server.cpp
 
-SRCS		+=	Commands/JOIN/Join.cpp		\
-				Commands/JOIN/Parsing.cpp	\
+SRCS		+=	Commands/JOIN/Join.cpp				\
+				Commands/JOIN/Join_parsing.cpp		\
+				Commands/JOIN/Join_utilities.cpp	\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 

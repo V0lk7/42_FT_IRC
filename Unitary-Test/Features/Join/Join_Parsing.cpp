@@ -1,7 +1,7 @@
 #include "doctest.hpp"
 
 #include <vector>
-#include "../../../Mandatory/Commands/JOIN/Parsing.cpp"
+#include "../../../Mandatory/Commands/JOIN/Join_parsing.cpp"
 
 static void	InitVectorTest(	std::vector<std::string> &src,
 							std::string const &Chan,
@@ -165,9 +165,39 @@ TEST_SUITE("PARSING")
 			CHECK(It->first == "chan1");
 			CHECK(It->second == "");
 		}
-		SUBCASE("Wrong format Channel")
+		SUBCASE("Wrong format Channel_1")
 		{
 			Channel.push_back("chan1");
+			CHECK(AssignChannel(Request, Channel) == false);
+		}
+		SUBCASE("Wrong format Channel_2")
+		{
+			Channel.push_back("##chan1");
+			CHECK(AssignChannel(Request, Channel) == false);
+		}
+		SUBCASE("Wrong format Channel_3")
+		{
+			Channel.push_back("&&chan1");
+			CHECK(AssignChannel(Request, Channel) == false);
+		}
+		SUBCASE("Wrong format Channel_3")
+		{
+			Channel.push_back("&#chan1");
+			CHECK(AssignChannel(Request, Channel) == false);
+		}
+		SUBCASE("Wrong format Channel_4")
+		{
+			Channel.push_back("#&chan1");
+			CHECK(AssignChannel(Request, Channel) == false);
+		}
+		SUBCASE("Wrong format Channel_5")
+		{
+			Channel.push_back("#");
+			CHECK(AssignChannel(Request, Channel) == false);
+		}
+		SUBCASE("Wrong format Channel_6")
+		{
+			Channel.push_back("&");
 			CHECK(AssignChannel(Request, Channel) == false);
 		}
 	}
@@ -291,39 +321,39 @@ TEST_SUITE("PARSING")
 		{
 			Cmd = "/JOIN #chan1 key1";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == NONE);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 
 		}
 		SUBCASE("TEST2: /JOIN")
 		{
 			Cmd = "/JOIN";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == NO_PARAMETERS);
+			CHECK(OrganiseRequest(Request, Raw) == false);
 
 		}
 		SUBCASE("TEST3: /JOIN #chan1 key1 key2")
 		{
 			Cmd = "/JOIN #chan1 key1 key2";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == TOO_MANY_PARAMETERS);
+			CHECK(OrganiseRequest(Request, Raw) == false);
 		}
 		SUBCASE("TEST4: /JOIN #chan1,,&chan2 key")
 		{
 			Cmd = "/JOIN #chan1,,&chan2 key";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == WRONG_FORMAT);
+			CHECK(OrganiseRequest(Request, Raw) == false);
 		}
 		SUBCASE("TEST5: /JOIN #chan1,chan2 key")
 		{
 			Cmd = "/JOIN #chan1,chan2 key";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == WRONG_FORMAT);
+			CHECK(OrganiseRequest(Request, Raw) == false);
 		}
 		SUBCASE("TEST6: /JOIN #chan1,&chan2 key")
 		{
 			Cmd = "/JOIN #chan1,&chan2 key";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == NONE);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 2);
 			It = Request.begin();
 			CHECK(CheckNode(It, "chan1", "key") == true);
@@ -334,7 +364,7 @@ TEST_SUITE("PARSING")
 		{
 			Cmd = "/JOIN #chan1,&chan2,#chan3 key1,key2";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == NONE);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 3);
 			It = Request.begin();
 			CHECK(CheckNode(It, "chan1", "key1") == true);
@@ -347,7 +377,7 @@ TEST_SUITE("PARSING")
 		{
 			Cmd = "/JOIN #chan1,&chan2,#chan3 key1,key2,key3";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == NONE);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 3);
 			It = Request.begin();
 			CHECK(CheckNode(It, "chan1", "key1") == true);
@@ -360,7 +390,7 @@ TEST_SUITE("PARSING")
 		{
 			Cmd = "/JOIN #chan,&chan1,#chan";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == NONE);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 2);
 			It = Request.begin();
 			CHECK(CheckNode(It, "chan", "") == true);
