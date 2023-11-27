@@ -59,21 +59,26 @@ class Channel{
 		void	SetLimitUsers(size_t const &);
 		void	SetMode(int, bool);
 
-		std::string	GetName(void) const;
-		std::string	GetPassword(void) const;
-		std::string	GetTopic(void) const;
-		size_t		GetLimitUsers(void) const;
-		bool		GetMode(int) const;
+		std::string					GetName(void) const;
+		std::string					GetPassword(void) const;
+		std::string					GetTopic(void) const;
+		size_t						GetLimitUsers(void) const;
+		bool						GetMode(int) const;
+		std::string					GetListClientIn(void);
+		std::map<Client *, bool>	&GetUsers(void);
 
         std::map<Client *, bool>
         GetUser( void ) const;
 
-		void		AddClientToChannel(Client &, int);
+		void		AddClientToChannel(Client &, bool);
 		void		EraseClientFromChannel(Client &);
+		bool		UserInChannel(Client &) const;
+		bool		UserInWaitingList(Client &) const;
 
 		void		PutClientOnWaitingList(Client &);
 		void		EraseClientFromWaitingList(Client &);
 		void		ModifyClientRights(Client &, bool);
+		void		SendMessageToClients(std::string const &, Client const &);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other);

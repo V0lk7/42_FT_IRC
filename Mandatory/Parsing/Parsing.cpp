@@ -11,13 +11,13 @@
 #include <sstream>
 #include <vector>
 
-#define TOPIC   0 
-#define INVITE  1
-#define PRIVMSG 2
-#define KICK    3
-#define JOIN    4
-#define MODE    5
-#define CAP     6
+#define TOPIC    0
+#define INVITE   1
+#define PRIVMSG  2
+#define KICK     3
+#define JOIN     4
+#define MODE     5
+#define CAP      6
 #define sPASS    7
 #define sNICK    8
 #define sUSER    9
@@ -45,8 +45,8 @@
 // USER tdc
 // ########################################################################## //
 
-static void
-dispatch( const std::string& info, const int& way, Client& person, const Server& server );
+// static void
+// dispatch( const std::string& info, int& way, Client& person, const Server& server );
 static void
 ncCreation( const std::vector<std::string>& info, Client& person, const Server& server );
 static void
@@ -55,6 +55,9 @@ static int
 wayChooser( const std::string& target );
 static void
 loadUserData( Client& person, const Server& server, const std::string& data, int word );
+
+// ########################################################################## //
+// #_PARSER COMMAND_________________________________________________________# //
 
 int
 handleCommand( const char* buffer, const Server& server, Client& person ) {
@@ -75,8 +78,10 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
             way = wayChooser( line[0] );
         if ( way == CLIENT )
             break ;
-        else if ( way != -1 && line.size() > 1 )
-            dispatch( tab[i], way, person, server );
+        // else if ( way != -1 && line.size() > 1 )
+        //      dispatch( tab[i], way, person, server );
+        // else
+        //      ERR_NEEDMOREPARAMS
         line.clear();                                                    // i need to split cmd one by one
     }
     if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos )
@@ -87,32 +92,31 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     return ( way );
 }
 
-static void
-dispatch( const std::string& info, const int& way, Client& person, const Server& server ) {
-    (void)info;
-    (void)person;
-    (void)server;
-    switch ( way ) {
-        // case TOPIC :
-        // break ;
-        // case INVITE :
-        // break ;
-        // case PRIVMSG :
-        // break ;
-        // case KICK :
-        // break ;
-        // case JOIN :
-        // break ;
-        // case MODE :
-        // break ;
-        default :
-            return ;
-    }
-}
-
-// ########################################################################## //
-// #_PARSER COMMAND_________________________________________________________# //
-
+// static void
+// dispatch( const std::string& info, int& way, Client& person, const Server& server ) {
+//     (void)info;
+//     (void)person;
+//     (void)server;
+// //     if ( !person.GetRight )
+// //          way = -1;
+//     switch ( way ) {
+//         // case TOPIC :
+//         // break ;
+//         // case INVITE :
+//         // break ;
+//         // case PRIVMSG :
+//         // break ;
+//         // case KICK :
+//         // break ;
+//         // case JOIN :
+//         // break ;
+//         // case MODE :
+//         // break ;
+//         default :
+// //             ERROR_444 error no login
+//             return ;
+//     }
+// }
 
 // ########################################################################## //
 // #_CLIENT GESTION_________________________________________________________# //

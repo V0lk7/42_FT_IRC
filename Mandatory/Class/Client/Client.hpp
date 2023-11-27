@@ -37,9 +37,11 @@ class Client{
 		Client();
 		~Client();
 
+        // TOOLS DEV
 		Client( const std::string name, right right );
 		Client(Client const &src);
 		Client	&operator=(Client const &rhs);
+        // TOOLS DEV
 
 		void            SetNickname(std::string const &);
 		void            SetUsername(std::string const &);
@@ -47,17 +49,20 @@ class Client{
 		void            SetPasswd(void);
 		void            SetStatement(int, bool);
 		void            SetInputBuffer(std::string const &);
+		void            SetMessageToSend(std::string const &);
 
 		std::string		GetNickname(void) const;
 		std::string		GetUsername(void) const;
 		int				GetSocket(void) const;
 		bool			GetStatement(void) const;
+		std::string		GetMessage(void) const;
 
-        bool    GetStatementStep( step target ) const;
+        bool            GetStatementStep( step target ) const;
 
 		std::string		GetInputBuffer(void) const;
 
-		void		ClearInputBuffer(void);
+		void		    ClearInputBuffer(void);
+		void		    ClearMessage(void);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Client& other);
