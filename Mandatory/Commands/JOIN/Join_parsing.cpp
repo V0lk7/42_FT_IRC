@@ -14,27 +14,22 @@ static bool	CheckDelimFormat(std::string const &src, const char &delim);
 static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts);
 
 
-ErrorsFlag	OrganiseRequest(	std::map<std::string, std::string> &Request,
-								std::vector<std::string> &CmdParts)
+bool	OrganiseRequest(	std::map<std::string, std::string> &Request,
+							std::vector<std::string> &CmdParts)
 {
 	std::vector<std::string>	Channel;
 	std::vector<std::string>	Key;
 
 	CmdParts.erase(CmdParts.begin());
-	if (CmdParts.size() == 0)
-		return (NO_PARAMETERS);
-	else if (CmdParts.size() > 2)
-		return (TOO_MANY_PARAMETERS);
-
-	if (VerifyParamsFormat(CmdParts) != true)
-		return (WRONG_FORMAT);
-
+	if (CmdParts.size() == 0 || CmdParts.size() > 2
+			|| VerifyParamsFormat(CmdParts) != true)
+		return (false);
 	DivideParamsType(CmdParts, Channel, Key);
 	if (AssignChannel(Request, Channel) != true)
-		return (WRONG_FORMAT);
-
-	AssignKeyToChan(Request, Key);
-	return (NONE);
+		return (false);
+	if (Key.empty() != true)
+		AssignKeyToChan(Request, Key);
+	return (true);
 }
 
 static void	DivideParamsType(	std::vector<std::string> &CmdParts,
@@ -54,10 +49,15 @@ static bool	AssignChannel(	std::map<std::string, std::string> &Request,
 	for (size_t i = 0; i < Channel.size(); i++)
 	{
 		tmp = Channel[i];
-		if (tmp[0] != '#' && tmp[0] != '&')
+		if (tmp.size() == 1)
 			return (false);
-		tmp.erase(tmp.begin());
-		Request[tmp] = "";
+		else if ((tmp[0] != '#' && tmp[0] != '&') || (tmp[1] == '#' || tmp[1] == '&'))
+			return (false);
+		else
+		{
+			tmp.erase(tmp.begin());
+			Request[tmp] = "";
+		}
 	}
 	return (true);
 }
