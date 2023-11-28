@@ -23,9 +23,9 @@
 ########################################################################################*/
 
 enum mode {
-	INVITE_ONLY,
+	INVITE_ONLY_SET,
 	PASSWORD_SET,
-	TOPIC_CHANGE
+	TOPIC_CHANGE_SET
 };
 
 class Client;

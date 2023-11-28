@@ -18,6 +18,8 @@
 // #-> two functions:-> change TOPIC if arguments were send                 # //
 // #                 -> display TOPIC if no argument was send               # //
 // #-> make send msg when errro input user was detected                     # //
+// #-> question about management need i inform all user when topic change   # //
+// #-> TOPIC DONE NEED MSG MANAGEMENT                                       # //
 // ########################################################################## //
 
 typedef enum TErr { TOPICNONE, NOTOPIC, TOPICNORIGHT, TOPICNOCHANNEL,
@@ -42,10 +44,8 @@ topic( const Server& server, Client& client, Channel& channel,
     if ( data.size() && topicParsing( data, client, channel) != TOPICNONE ) {
         // TODO error handling
     }
-    if ( data.size() == 1 )
-    {
-        send ( client.GetSocket(), channel.GetTopic().c_str(),
-                                                 channel.GetTopic().size(), 0 );
+    if ( data.size() == 1 ) {
+        client.SetMessageToSend( channel.GetTopic() );
         return ;
     }
     if ( topicChange( data, channel ) != TOPICNONE ) {
@@ -74,15 +74,18 @@ topicChange( std::vector<std::string>& data, Channel& channel )
 static enum TErr
 topicParsing( std::vector<std::string>& data, Client& client, Channel& channel )
 {
-    std::map<Client*, bool> key( channel.GetUser() );
-    std::vector<std::string>::iterator check = data.begin();
+    std::map<Client*, bool>             key( channel.GetUser() );
+    std::vector<std::string>::iterator  check = data.begin();
+    bool                                right = false;
 
     if ( !check->empty() && ( (*check)[0] != '#' || (*check)[0] != '&' )
                 && (*check).substr( 1, std::string::npos ) != channel.GetName() )
         return ( TOPICNOCHANNEL );
 
-    if ( !key.count( &client ) || !key[ &client ] )
-        return ( TOPICNORIGHT );
+    if ( !channel.GetMode( TOPIC_CHANGE_SET ) )
+        right = true;
+    else if ( key.count( &client ) && key[ &client ] ) 
+        right = true;
 
-    return ( TOPICNONE );
+    return ( right ? TOPICNONE :  TOPICNORIGHT  );
 }
