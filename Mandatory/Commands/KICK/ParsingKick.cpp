@@ -15,7 +15,7 @@ checkRight( const Channel& channel, Client& client );
 static enum Err
 findChannel( std::vector<std::string>& data, const Channel& channel );
 static enum Err
-findTarget( std::vector<std::string>& data, const Channel& channel );
+findTarget( std::vector<std::string>& data, const Channel& channel, Client& client );
 
 // ########################################################################## //
 // #_PARSER_________________________________________________________________# //
@@ -35,7 +35,7 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
     else if ( checkRight( channel, client ) != CONTINUE )
         return ( NORIGHT );
 
-    else if ( findTarget( splitOnSpace, channel ) != CONTINUE )
+    else if ( findTarget( splitOnSpace, channel, client ) != CONTINUE )
         return ( NOTARGET );
 
     return ( NONE );
@@ -60,23 +60,28 @@ findChannel( std::vector<std::string>& data, const Channel& channel )
 }
 
 static enum Err
-findTarget( std::vector<std::string>& data, const Channel& channel )
+findTarget( std::vector<std::string>& data, const Channel& channel, Client& client )
 {
     std::map<Client*, bool> target( channel.GetUser() );
-    bool found = false;
-    size_t  pos = 0;
+    bool                    found = false;
+    size_t                  pos = 0;
+    std::string             himself;
 
     for ( std::vector<std::string>::iterator itData = data.begin();
                                        itData != data.end(); itData++, pos++ ) {
         for ( std::map<Client*, bool>::iterator itTarget = target.begin();
                                         itTarget != target.end(); itTarget++ ) {
             if ( !itData->empty() && pos == 1 &&
-                    itTarget->first->GetNickname() == *itData ) {
-                found = true ; break ;
+                                   itTarget->first->GetNickname() == *itData ) {
+                himself = *itData;
+                found = true;
+                break ;
             }
         }
     }
-    return ( found ? CONTINUE : NOTARGET );
+    if ( himself == client.GetNickname() )
+        found = false;                                                           // TODO maybe specify it's
+    return ( found ? CONTINUE : NOTARGET );                                      // hiself
 }
 
 static enum Err

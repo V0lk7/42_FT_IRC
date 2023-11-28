@@ -18,9 +18,6 @@
 // #_TODO___________________________________________________________________# //
 // #-> better handling error msg: 1.                                        # //
 // #-> check idx 4 not sur i guess it would be 3                            # //
-// #-> care about commment code to test: 2.                                 # //
-// #-> Send msg handling need to be modify put msg in client buffer         # //
-// #        ClientMsgToSend                                                 # //
 // ########################################################################## //
 
 static std::string
@@ -42,7 +39,7 @@ kick( const Server& server, Client& client, Channel& channel,
 
 
     if ( parseCmd( cmd , channel, client ) != NONE ) {
-        std::cerr << "\t*NEED MSG HANDLING*" << std::endl;                       // TODO 1.
+        client.SetMessageToSend( "TODO" );                                       // TODO:1. msg a faire
         return ;
     }
     reason = msgMaker( client, channel, data );
@@ -60,10 +57,7 @@ rmClientOfChannel( Channel& channel, const std::string& key,
                                                       it != target.end(); it++ )
     {
 
-        (void)reason;
-        // send( it->first->GetSocket(),                                          // TODO 2.
-        //                           reason.c_str(), strlen( reason.c_str() ), 0 );
-
+        it->first->SetMessageToSend( reason );
         if ( it->first->GetNickname() == key )
             channel.EraseClientFromChannel( *it->first );
     }

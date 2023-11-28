@@ -17,6 +17,7 @@ TEST_SUITE ( "KICK TESTING" )
     Channel* channel = server.GetChannel( "Test" );
     Client*  kicker = server.GetClient( "sudo" );
     Client*  target = server.GetClient( "Jean" );
+    Client*  notTarget = server.GetClient( "Jimmy" );
     std::vector<std::string> data;
 
 // ########################################################################## //
@@ -59,7 +60,7 @@ TEST_SUITE ( "KICK TESTING" )
         data.clear();
         data.push_back("#Test");
         data.push_back("Jean");
-        CHECK ( findTarget( data, *channel) == CONTINUE );
+        CHECK ( findTarget( data, *channel, *kicker ) == CONTINUE );
     }
 // ########################################################################## //
 
@@ -71,11 +72,15 @@ TEST_SUITE ( "KICK TESTING" )
         data.push_back("#Test");
         SUBCASE( "Jimmy not in list" ) {
             data.push_back("Jimmy");
-            CHECK ( findTarget( data, *channel) == NOTARGET );
+            CHECK ( findTarget( data, *channel, *notTarget ) == NOTARGET );
         }
         SUBCASE( "empty case" ) {
             data.push_back("");
-            CHECK ( findTarget( data, *channel) == NOTARGET );
+            CHECK ( findTarget( data, *channel, *kicker ) == NOTARGET );
+        }
+        SUBCASE ( "himself" ) {
+            data.push_back( "sudo" );
+            CHECK ( findTarget( data, *channel, *kicker ) == NOTARGET );
         }
     }
 // ########################################################################## //
