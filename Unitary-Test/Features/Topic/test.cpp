@@ -46,3 +46,32 @@ TEST_CASE ( "topicParsing" )
         CHECK(topicParsing( data, *sudo, *channel ) == TOPICNONE );
     }
 }
+
+TEST_CASE ( "topicParsing" )
+{
+    Server                      server;
+    Channel*                    channel = server.GetChannel( "Test" );
+    Client*                     sudo = server.GetClient( "sudo" );
+    Client*                     Jean = server.GetClient( "Jean" );
+    std::vector<std::string>    data;
+    SUBCASE ( "true" )
+    {
+        data.push_back( ":the" );
+        data.push_back( "new" );
+        data.push_back( "Topic" );
+        topicChange( data, *channel );
+        CHECK( channel->GetTopic() == "the new Topic" );
+    }
+    SUBCASE ( "false" )
+    {
+        data.push_back( ":" );
+        CHECK( topicChange( data, *channel) == TOPICERR );
+    }
+    SUBCASE ( "false" )
+    {
+        data.push_back( "the" );
+        data.push_back( "new" );
+        data.push_back( "Topic" );
+        CHECK( topicChange( data, *channel) == TOPICERR );
+    }
+}

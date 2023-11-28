@@ -49,7 +49,7 @@ topic( const Server& server, Client& client, Channel& channel,
         return ;
     }
     if ( topicChange( data, channel ) != TOPICNONE ) {
-        // TODO sending error;
+        //TODO sending error;
         return ;
     }
 }
@@ -58,14 +58,21 @@ static enum TErr
 topicChange( std::vector<std::string>& data, Channel& channel )
 {
     std::string topic;
+    std::string output;
     std::vector<std::string>::iterator check = data.begin();
 
-    if ( data.size() == 1 && (*check)[0] != ':' && (*check).length() == 1 )
+    if ( data.size() == 1 && (*check)[0] == ':' && (*check).length() == 1 )
         return ( TOPICERR );
 
-    while ( check++ != data.end() )
+    if ( (*check)[0] != ':' )
+        return ( TOPICERR );
+
+    while ( check != data.end() )
+    {
         topic += " " + *check;
-    topic = topic.substr( 1, std::string::npos );
+        check++;
+    }
+    topic = topic.substr( 2, std::string::npos );
     channel.SetTopic( topic );
 
     return ( TOPICNONE );
