@@ -10,8 +10,8 @@ static bool	AssignChannel(	std::map<std::string, std::string> &Request,
 static void	AssignKeyToChan(	std::map<std::string, std::string> &Request,
 								std::vector<std::string> &Key);
 
-static bool	CheckDelimFormat(std::string const &src, const char &delim);
-static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts);
+//static bool	CheckDelimFormat(std::string const &src, const char &delim);
+//static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts);
 
 
 bool	OrganiseRequest(	std::map<std::string, std::string> &Request,
@@ -21,12 +21,10 @@ bool	OrganiseRequest(	std::map<std::string, std::string> &Request,
 	std::vector<std::string>	Key;
 
 	CmdParts.erase(CmdParts.begin());
-	if (CmdParts.size() == 0 || CmdParts.size() > 2
-			|| VerifyParamsFormat(CmdParts) != true)
+	if (CmdParts.size() == 0)
 		return (false);
 	DivideParamsType(CmdParts, Channel, Key);
-	if (AssignChannel(Request, Channel) != true)
-		return (false);
+	AssignChannel(Request, Channel);
 	if (Key.empty() != true)
 		AssignKeyToChan(Request, Key);
 	return (true);
@@ -44,21 +42,8 @@ static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 static bool	AssignChannel(	std::map<std::string, std::string> &Request,
 							std::vector<std::string> &Channel)
 {
-	std::string	tmp;
-
 	for (size_t i = 0; i < Channel.size(); i++)
-	{
-		tmp = Channel[i];
-		if (tmp.size() == 1)
-			return (false);
-		else if ((tmp[0] != '#' && tmp[0] != '&') || (tmp[1] == '#' || tmp[1] == '&'))
-			return (false);
-		else
-		{
-			tmp.erase(tmp.begin());
-			Request[tmp] = "";
-		}
-	}
+		Request[Channel[i]] = "";
 	return (true);
 }
 
@@ -80,7 +65,7 @@ static void	AssignKeyToChan(	std::map<std::string, std::string> &Request,
 	}
 }
 
-static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts)
+/*static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts)
 {
 	if (CheckDelimFormat(CmdParts[0], ',') == false)
 		return (false);
@@ -110,4 +95,4 @@ static bool	CheckDelimFormat(std::string const &src, const char &delim)
 		}
 	}
 	return (true);
-}
+}*/
