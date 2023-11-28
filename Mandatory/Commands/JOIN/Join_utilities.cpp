@@ -32,7 +32,7 @@ bool	VerifyChannelLimit(Channel &chan)
 
 bool	VerifyInvitOnly(Channel const &chan, Client &client)
 {
-	if (chan.GetMode(INVITE_ONLY) != true)
+	if (chan.GetMode(INVITE_ONLY_SET) != true)
 		return (true);
 	if (chan.UserInWaitingList(client) == true)
 		return (true);

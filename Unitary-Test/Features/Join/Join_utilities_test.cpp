@@ -157,7 +157,7 @@ TEST_SUITE("Utilities")
 			CliPtr = server.GetClient("Client0");
 			if (ChanPtr == NULL || CliPtr == NULL)
 				REQUIRE(true == false);
-			ChanPtr->SetMode(INVITE_ONLY, true);
+			ChanPtr->SetMode(INVITE_ONLY_SET, true);
 			CHECK(VerifyInvitOnly(*ChanPtr, *CliPtr) == false);
 		}
 		SUBCASE("on Invit Only mode, client on waiting list")
@@ -167,7 +167,7 @@ TEST_SUITE("Utilities")
 			CliPtr = server.GetClient("Client0");
 			if (ChanPtr == NULL || CliPtr == NULL)
 				REQUIRE(true == false);
-			ChanPtr->SetMode(INVITE_ONLY, true);
+			ChanPtr->SetMode(INVITE_ONLY_SET, true);
 			ChanPtr->PutClientOnWaitingList(*CliPtr);
 			CHECK(VerifyInvitOnly(*ChanPtr, *CliPtr) == true);
 		}

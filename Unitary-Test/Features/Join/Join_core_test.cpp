@@ -107,7 +107,7 @@ TEST_SUITE("Test of Join Main file")
 			if (CliPtr == NULL || ChanPtr == NULL)
 				REQUIRE(true == false);
 			It = JoinCmd.begin();
-			ChanPtr->SetMode(INVITE_ONLY, true);
+			ChanPtr->SetMode(INVITE_ONLY_SET, true);
 			ChanPtr->PutClientOnWaitingList(*CliPtr);
 			HandleJoinChannel(server, *CliPtr, It);
 			CHECK(ChanPtr->UserInWaitingList(*CliPtr) == false);	
@@ -122,7 +122,7 @@ TEST_SUITE("Test of Join Main file")
 				REQUIRE(true == false);
 			It = JoinCmd.begin();
 			ChanPtr->SetMode(PASSWORD_SET, true);
-			ChanPtr->SetMode(INVITE_ONLY, true);
+			ChanPtr->SetMode(INVITE_ONLY_SET, true);
 			ChanPtr->SetPassword("key");
 			ChanPtr->PutClientOnWaitingList(*CliPtr);
 			HandleJoinChannel(server, *CliPtr, It);
