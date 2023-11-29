@@ -2,13 +2,52 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-Server::Server(){} 
+Server::Server() : _Password( "password" ),
+                   _MasterSocket( -1 )
+{
+    int i = 0;
+    Client* one;
+    Client* two;
+    Client* three;
+    Client* four;
 
-Server::Server(std::string const &Passwd) : _Password(Passwd) {}
+    _ClientList.push_back( new Client ( "sudo",      SUDO ) );
+    _ClientList.push_back( new Client ( "Jean",    CLIENT ) );
+    _ClientList.push_back( new Client ( "Charles", CLIENT ) );
+    _ClientList.push_back( new Client ( "Jimmy",   CLIENT ) );
+
+	std::list<Client *>::iterator	ItClientBegin = this->_ClientList.begin();
+	std::list<Client *>::iterator	ItEnd = this->_ClientList.end();
+	while ( ItClientBegin != ItEnd )
+	{
+        switch (i) {
+            case 0:
+                one = *ItClientBegin;
+                break;
+            case 1:
+                two = *ItClientBegin;
+                break;
+            case 2:
+                three= *ItClientBegin;
+                break;
+            default:
+                four = *ItClientBegin;
+                break;
+        }
+		ItClientBegin++;
+        i++;
+	}
+
+    _ChannelList.push_back( new Channel ( *one, *two, *three, *four ) );
+
+}
+
+Server::Server(std::string const &Passwd) : _Password(Passwd), _MasterSocket(-1) {}
 
 Server::~Server()
 {
-	close(this->_MasterSocket);
+	if (this->_MasterSocket > 0)
+		close(this->_MasterSocket);
 	std::list<Channel *>::iterator	ItChannelBegin = this->_ChannelList.begin();
 	std::list<Channel *>::iterator	ItChannelEnd = this->_ChannelList.end();
 	while (ItChannelBegin != ItChannelEnd)

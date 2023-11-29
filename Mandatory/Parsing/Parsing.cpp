@@ -11,13 +11,13 @@
 #include <sstream>
 #include <vector>
 
-#define TOPIC   0 
-#define INVITE  1
-#define PRIVMSG 2
-#define KICK    3
-#define JOIN    4
-#define MODE    5
-#define CAP     6
+#define TOPIC    0
+#define INVITE   1
+#define PRIVMSG  2
+#define KICK     3
+#define JOIN     4
+#define MODE     5
+#define CAP      6
 #define sPASS    7
 #define sNICK    8
 #define sUSER    9
@@ -46,7 +46,7 @@
 // ########################################################################## //
 
 // static void
-// dispatch( const std::string& info, const int& way, Client& person, const Server& server );
+// dispatch( const std::string& info, int& way, Client& person, const Server& server );
 static void
 ncCreation( const std::vector<std::string>& info, Client& person, const Server& server );
 static void
@@ -56,7 +56,10 @@ wayChooser( const std::string& target );
 static void
 loadUserData( Client& person, const Server& server, const std::string& data, int word );
 
-void
+// ########################################################################## //
+// #_PARSER COMMAND_________________________________________________________# //
+
+int
 handleCommand( const char* buffer, const Server& server, Client& person ) {
     std::string                 work;
     std::vector<std::string>    tab;
@@ -68,15 +71,17 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     work = person.GetInputBuffer();
     tab = split( work, "\r\n" );
     if ( tab.empty() )
-        return ;
+        return ( way ) ;
     for ( size_t i = 0; tab.size() != 0  && i < tab.size(); i++ ) {
         line = split(  tab[i], " " );
         if ( line.size() != 0 )
             way = wayChooser( line[0] );
         if ( way == CLIENT )
             break ;
-        // else if ( way != -1 )
-        //     dispatch( tab[i], way, person, server );
+        // else if ( way != -1 && line.size() > 1 )
+        //      dispatch( tab[i], way, person, server );
+        // else
+        //      ERR_NEEDMOREPARAMS
         line.clear();                                                    // i need to split cmd one by one
     }
     if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos )
@@ -84,10 +89,16 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
     else
         userCreation( tab, person, server );
     person.ClearInputBuffer();
+    return ( way );
 }
 
 // static void
-// dispatch( const std::string& info, const int& way, Client& person, const Server& server ) {
+// dispatch( const std::string& info, int& way, Client& person, const Server& server ) {
+//     (void)info;
+//     (void)person;
+//     (void)server;
+// //     if ( !person.GetRight )
+// //          way = -1;
 //     switch ( way ) {
 //         // case TOPIC :
 //         // break ;
@@ -102,9 +113,13 @@ handleCommand( const char* buffer, const Server& server, Client& person ) {
 //         // case MODE :
 //         // break ;
 //         default :
+// //             ERROR_444 error no login
 //             return ;
 //     }
 // }
+
+// ########################################################################## //
+// #_CLIENT GESTION_________________________________________________________# //
 
 static void
 ncCreation( const std::vector<std::string>& info, Client& person, const Server& server ) {
@@ -112,7 +127,7 @@ ncCreation( const std::vector<std::string>& info, Client& person, const Server& 
     std::vector<std::string>    word;
     size_t                      check = 0;
 
-    if ( info.empty() ) {
+    if ( info.empty() || info.size() == 1 ) {
         return ;
     }
 
@@ -129,7 +144,6 @@ ncCreation( const std::vector<std::string>& info, Client& person, const Server& 
                     "Require password\n", strlen( "Require password\n" ) + 1, 0 );
         return ;
     }
-    std::cout << "Test\n"; // TODO test
     for ( size_t i = 0; i < toParse.size() && person.GetStatementStep( PASSWD ); i++ ) {
         if ( toParse[i].find( "NICK" ) != std::string::npos ) {
             loadUserData( person, server, toParse[i], sNICK );
@@ -212,8 +226,8 @@ loadUserData( Client& person, const Server& server, const std::string& data, int
 
 static int
 wayChooser( const std::string& target ) {
-    std::string client[4] = { "CAP", "PASS", "NICK", "USER" };
     std::string cmd[6] = { "TOPIC", "INVITE", "PRIVMSG", "KICK", "JOIN", "MODE" };
+    std::string client[4] = { "CAP", "PASS", "NICK", "USER" };
 
     for ( int i = 0; i < 6; i++ ) {
         if ( cmd[i] == target ) {

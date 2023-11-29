@@ -3,7 +3,24 @@
 #include <algorithm>
 #include <ostream>
 
-Channel::Channel() {}
+Channel::Channel( void ) {}
+
+Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
+                           _Name( "Test" ),
+                           _Password( "password" ),
+                           _Topic( "Test" ),
+                           _LimitUsers( 5 )
+{
+    _Mode[ INVITE_ONLY  ] = false;
+    _Mode[ TOPIC_CHANGE ] = false;
+    _Mode[ PASSWORD_SET ] = false;
+
+    _Users[ &one ]   = true;
+    _Users[ &two ]   = false;
+    _Users[ &three ] = false;
+
+    _WaitingList.push_back( &four );
+}
 
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)
@@ -13,13 +30,33 @@ Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 	_Mode[PASSWORD_SET] = false;
 }
 
-Channel::~Channel(){}
+Channel::~Channel() {}
 
 Channel::Channel(Channel const &src) {*this = src;}
 
-Channel	&Channel::operator=(Channel const &rhs) {(void)rhs; return (*this);}
+Channel	&Channel::operator=(Channel const &rhs) 
+{
+    if ( this == &rhs )
+        return ( *this );
+
+    _Name                 = rhs._Name;
+    _Password             = rhs._Password;
+    _Topic                = rhs._Topic;
+    _LimitUsers           = rhs._LimitUsers;
+
+    _Mode[ INVITE_ONLY  ] = rhs._Mode[ INVITE_ONLY  ];
+    _Mode[ TOPIC_CHANGE ] = rhs._Mode[ TOPIC_CHANGE ];
+    _Mode[ PASSWORD_SET ] = rhs._Mode[ PASSWORD_SET ];
+
+    _Users                = rhs._Users;
+    _WaitingList          = rhs._WaitingList;
+
+    return ( *this );
+}
 
 //----------------Set/Get-------------------//
+
+std::map<Client*, bool> Channel::GetUser( void ) const { return ( _Users ); }
 
 void	Channel::SetName(std::string const &NewName)
 {
@@ -33,7 +70,7 @@ void	Channel::SetPassword(std::string const &NewPassword)
 
 void	Channel::SetTopic(std::string const &NewTopic)
 {
-	this->_Password = NewTopic;
+	this->_Topic = NewTopic;
 }
 
 void	Channel::SetLimitUsers(size_t const &NewLimit)
@@ -71,9 +108,14 @@ bool	Channel::GetMode(int Index) const
 	return (this->_Mode[Index]);
 }
 
+std::map<Client *, bool>	&Channel::GetUsers(void)
+{
+	return (this->_Users);
+}
+
 /*----------------------SpecificMethods----------------------------*/
 
-void	Channel::AddClientToChannel(Client &src, int Admin)
+void	Channel::AddClientToChannel(Client &src, bool Admin)
 {
 	if (this->_Users.find(&src) != this->_Users.end())
 		return ;
@@ -120,6 +162,52 @@ void	Channel::ModifyClientRights(Client &src, bool Admin)
 		It->second = true;
 	else
 		It->second = false;
+}
+
+bool	Channel::UserInChannel(Client &client) const
+{
+	if (this->_Users.find(&client) != this->_Users.end())
+		return (true);
+	return (false);
+}
+
+bool	Channel::UserInWaitingList(Client &client) const
+{
+	std::list<Client *>::const_iterator	ItBegin = this->_WaitingList.begin();
+	std::list<Client *>::const_iterator	ItEnd = this->_WaitingList.end();
+
+	if (std::find(ItBegin, ItEnd, &client) != ItEnd)
+		return (true);
+	return (false);
+}
+
+std::string	Channel::GetListClientIn(void)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.begin();
+	std::string							ClientList;
+
+	while (It != this->_Users.end())
+	{
+		if (It->second == true)
+			ClientList += "@";
+		ClientList += It->first->GetNickname() + " ";
+		It++;
+	}
+	ClientList.erase(ClientList.end() - 1);
+	return (ClientList);
+}
+
+void	Channel::SendMessageToClients(std::string const &Message, Client const &client)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.begin();
+
+	while (It != this->_Users.end())
+	{
+		if (It->first != &client)
+			It->first->SetMessageToSend(Message);
+		It++;
+	}
+	return ;
 }
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other)
