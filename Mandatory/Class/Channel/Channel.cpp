@@ -210,6 +210,15 @@ void	Channel::SendMessageToClients(std::string const &Message, Client const &cli
 	return ;
 }
 
+bool	Channel::IsClientOperator(Client &client)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.find(&client);
+
+	if (It != this->_Users.end() && It->second == true)
+		return (true);
+	return (false);
+}
+
 std::ostream&	operator<<(std::ostream& print, const Channel& other)
 {
 	print << "CHANNEL NAME : " << other.GetName() << std::endl;
