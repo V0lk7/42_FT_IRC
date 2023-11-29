@@ -5,6 +5,8 @@
 # include <vector>
 # include <string>
 
+# define CHAN_NAMESIZE_MAX 200
+
 class Server;
 class Client;
 class Channel;
@@ -25,6 +27,5 @@ bool	VerifyChannelLimit(Channel &chan);
 bool	VerifyInvitOnly(Channel const &chan, Client &client);
 bool	VerifyPasswordNeed(Channel const &chan, std::string const &Passwd);
 void	CreateReply(Client &client, Channel &channel, int flag);
-//void	ErrorHandling(Client &client, Error const Type);
 
 #endif
