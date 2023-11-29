@@ -13,5 +13,6 @@ ErrorFlag	ParsingModeCmd(	Server const &server,
 	Channel	*ptr = server.GetChannel(Cmd[0]);
 	if (ptr == NULL)
 		return (ERR_NOSUCHCHANNEL);
-	if ((ptr->GetUser())[client])
+	if (ptr->IsClientOperator(client) == false)
+		return (ERR_CHANOPRIVSNEEDED);
 }
