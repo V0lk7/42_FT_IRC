@@ -108,10 +108,10 @@ bool	Channel::GetMode(int Index) const
 	return (this->_Mode[Index]);
 }
 
-std::map<Client *, bool>	&Channel::GetUsers(void)
-{
-	return (this->_Users);
-}
+//std::map<Client *, bool>	&Channel::GetUsers(void)
+//{
+//	return (this->_Users);
+//}
 
 /*----------------------SpecificMethods----------------------------*/
 
