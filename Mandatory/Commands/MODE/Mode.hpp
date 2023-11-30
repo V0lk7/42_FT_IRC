@@ -2,9 +2,16 @@
 # define MODE_HPP
 
 # include <string>
+# include <vector>
+# include <list>
 
 class Server;
 class Client;
+
+typedef enum Operand {
+	SET = 43,
+	UNSET = 45
+} Operand;
 
 typedef struct CmdNode
 {
@@ -13,9 +20,10 @@ typedef struct CmdNode
 	std::string	Param;
 } CmdNode;
 
-int const	ParsingModeCmd(	Server const &server,
-							Client const &client,
-							std::vector<std::string> Cmd);
+int	ParsingModeCmd(	Server const &server,
+					Client &client,
+					std::vector<std::string> &Cmd,
+					std::list<CmdNode> &Modes);
 
 #endif
 
