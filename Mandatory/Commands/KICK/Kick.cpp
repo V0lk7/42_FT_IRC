@@ -39,10 +39,10 @@ kick( const Server& server, Client& client, const std::string& cmd )
     data.erase( data.begin() );
 
     channel = server.GetChannel( data[0] );
-    if ( !channel || parseCmd( cmd , *channel, client ) != NONE ) {
-        client.SetMessageToSend( "TODO" );                                       // TODO:1. msg a faire
+
+    if ( parseCmd( cmd , channel, client ) != NONE )
         return ;
-    }
+
     reason = msgMaker( client, *channel, data );
     rmClientOfChannel( *channel, data[2], reason );
     return ;

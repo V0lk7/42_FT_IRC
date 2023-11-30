@@ -7,7 +7,7 @@ TEST_CASE("IsClientOp_method")
 {
 	Server	serv;
 	Client	*Cliptr;
-	Channel	*Chanptr = serv.GetChannel("Test");
+	Channel	*Chanptr = serv.GetChannel("#Test");
 
 	SUBCASE("Client not on channel"){	
 		Client	client;

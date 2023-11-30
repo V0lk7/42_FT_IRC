@@ -1,3 +1,4 @@
+#include "Kick.hpp"
 #include "doctest.hpp"
 #include "../../../Mandatory/Commands/KICK/ParsingKick.cpp"
 
@@ -14,7 +15,7 @@
 TEST_SUITE ( "KICK TESTING" )
 {
     Server   server;
-    Channel* channel = server.GetChannel( "Test" );
+    Channel* channel = server.GetChannel( "#Test" );
     Client*  kicker = server.GetClient( "sudo" );
     Client*  target = server.GetClient( "Jean" );
     Client*  notTarget = server.GetClient( "Jimmy" );
@@ -64,16 +65,16 @@ TEST_SUITE ( "KICK TESTING" )
 // # PARSECMD_______________________________________________________________# //
     TEST_CASE ( "ParseCmd: true" )
     {
-        CHECK ( parseCmd( "KICK #Test Jean", *channel, *kicker  ) == NONE );
-        CHECK ( parseCmd( "KICK #test Jimmy", *channel, *kicker ) != NONE );
-        CHECK ( parseCmd( "KICK #Test Jimmy", *channel, *kicker ) == NOTARGET );
-        CHECK ( parseCmd( "KICK #Test Jean", *channel, *target  ) == NORIGHT );
+        CHECK ( parseCmd( "KICK #Test Jean", channel, *kicker  ) == NONE );
+        CHECK ( parseCmd( "KICK #test Jimmy", NULL, *kicker ) == NOCHANNEL );
+        CHECK ( parseCmd( "KICK #Test Jimmy", channel, *kicker ) == NOTARGET );
+        CHECK ( parseCmd( "KICK #Test Jean", channel, *target  ) == NORIGHT );
 
-        CHECK ( parseCmd( "KICK Jean #Test ", *channel, *kicker  ) != NONE );
+        CHECK ( parseCmd( "KICK Jean #Test ", channel, *kicker  ) != NONE );
 
-        CHECK ( parseCmd( "KICK Test #Jean", *channel, *kicker  ) != NONE );
+        CHECK ( parseCmd( "KICK Test #Jean", channel, *kicker  ) != NONE );
 
-        CHECK ( parseCmd( "KICK TTest #Jean", *channel, *kicker  ) != NONE );
+        CHECK ( parseCmd( "KICK TTest #Jean", channel, *kicker  ) != NONE );
     }
 // ########################################################################## //
 }

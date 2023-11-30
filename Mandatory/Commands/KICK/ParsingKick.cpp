@@ -14,12 +14,14 @@ static enum Err
 checkRight( const Channel& channel, Client& client );
 static enum Err
 findTarget( std::vector<std::string>& data, const Channel& channel, Client& client );
+static void
+kickReaply( Client& client, Channel* channel, int flag );
 
 // ########################################################################## //
 // #_PARSER_________________________________________________________________# //
 
 enum Err
-parseCmd( const std::string& cmd, const Channel& channel, Client& client )
+parseCmd( const std::string& cmd, Channel* channel, Client& client )
 {
     std::vector<std::string> splitOnSpace = split( cmd , " " );
 
@@ -27,11 +29,20 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
     if ( !splitOnSpace.size() )
         return ( EMPTY );
 
-    if ( checkRight( channel, client ) != CONTINUE )
-        return ( NORIGHT );
+    if ( !channel ) {
+        kickReaply( client, channel, NOCHANNEL );
+        return ( NOCHANNEL );
+    }
 
-    if ( findTarget( splitOnSpace, channel, client ) != CONTINUE )
+    if ( checkRight( *channel, client ) != CONTINUE ) {
+        kickReaply( client, channel, NORIGHT );
+        return ( NORIGHT );
+    }
+
+    if ( findTarget( splitOnSpace, *channel, client ) != CONTINUE ) {
+        kickReaply( client, channel, NOTARGET );
         return ( NOTARGET );
+    }
 
     return ( NONE );
 }
@@ -72,4 +83,38 @@ checkRight( const Channel& channel, Client& client )
         return ( CONTINUE );
     else
         return ( NORIGHT );
+}
+
+// ########################################################################## //
+// #_kickReaply_____________________________________________________________# //
+static void
+kickReaply( Client& client, Channel* channel, int flag )
+{
+    std::string reply;
+    std::string clientName( client.GetNickname() );
+    std::string channelName;
+    if ( channel )
+        std::string channelName = (*channel).GetName() ;
+
+    if ( flag == NOTARGET ) {
+        reply = ": 442 " + clientName + " " + channelName
+              + ":KICK cannot access to the target mentioned and has kicked it."
+              + "\r\n";
+    }
+
+    else if ( flag == NORIGHT ) {
+        reply = ": 482 " + clientName + " " + channelName
+              + ":KICK You are not an operator"
+              + "\r\n";
+    }
+
+    else if ( flag == NOCHANNEL ) {
+        reply = ": 476 " + clientName +
+              + ":KICK command is invalid or improperly formatted."
+              + "\r\n";
+    }
+    else 
+        reply = "" ;
+
+    client.SetMessageToSend( reply );
 }
