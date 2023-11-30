@@ -69,12 +69,12 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
     std::string msg;
     if ( data.size() <= 2 ) {
-        msg = client.GetNickname() + " KICK " + data[1] + " to #"
+        msg = client.GetNickname() + " KICK " + data[1] + " to "
             + channel.GetName() + "\r\n";
     }
     else
     {
-        msg = client.GetNickname() + " KICK " + data[1] + " to #"
+        msg = client.GetNickname() + " KICK " + data[1] + " to "
             + channel.GetName();
 
         for ( size_t idx = 4; idx < data.size(); idx++ )                         // TODO not sur about
