@@ -13,15 +13,15 @@
 static enum Err
 checkRight( const Channel& channel, Client& client );
 static enum Err
-findChannel( std::vector<std::string>& data, const Channel& channel );
-static enum Err
-findTarget( std::vector<std::string>& data, const Channel& channel );
+findTarget( std::vector<std::string>& data, const Channel& channel, Client& client );
+static void
+kickReaply( Client& client, Channel* channel, int flag );
 
 // ########################################################################## //
 // #_PARSER_________________________________________________________________# //
 
 enum Err
-parseCmd( const std::string& cmd, const Channel& channel, Client& client )
+parseCmd( const std::string& cmd, Channel* channel, Client& client )
 {
     std::vector<std::string> splitOnSpace = split( cmd , " " );
 
@@ -29,14 +29,20 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
     if ( !splitOnSpace.size() )
         return ( EMPTY );
 
-    else if ( findChannel( splitOnSpace, channel ) != CONTINUE )
+    if ( !channel ) {
+        kickReaply( client, channel, NOCHANNEL );
         return ( NOCHANNEL );
+    }
 
-    else if ( checkRight( channel, client ) != CONTINUE )
+    if ( checkRight( *channel, client ) != CONTINUE ) {
+        kickReaply( client, channel, NORIGHT );
         return ( NORIGHT );
+    }
 
-    else if ( findTarget( splitOnSpace, channel ) != CONTINUE )
+    if ( findTarget( splitOnSpace, *channel, client ) != CONTINUE ) {
+        kickReaply( client, channel, NOTARGET );
         return ( NOTARGET );
+    }
 
     return ( NONE );
 }
@@ -45,38 +51,28 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
 // #_TOOLS__________________________________________________________________# //
 
 static enum Err
-findChannel( std::vector<std::string>& data, const Channel& channel )
-{
-    bool    found = false;
-    size_t  pos = 0;
-    for ( std::vector<std::string>::iterator it = data.begin();
-                                               it != data.end(); it++, pos++ ) {
-        if ( !pos && !(*it).empty() && ( (*it)[0] == '#' ||(*it)[0] == '&' ) &&
-                (*it).substr( 1, std::string::npos ) == channel.GetName() ) {
-            found = true ; break ;
-        }
-    }
-    return ( found ? CONTINUE : NOCHANNEL );
-}
-
-static enum Err
-findTarget( std::vector<std::string>& data, const Channel& channel )
+findTarget( std::vector<std::string>& data, const Channel& channel, Client& client )
 {
     std::map<Client*, bool> target( channel.GetUser() );
-    bool found = false;
-    size_t  pos = 0;
+    bool                    found = false;
+    size_t                  pos = 0;
+    std::string             himself;
 
     for ( std::vector<std::string>::iterator itData = data.begin();
                                        itData != data.end(); itData++, pos++ ) {
         for ( std::map<Client*, bool>::iterator itTarget = target.begin();
                                         itTarget != target.end(); itTarget++ ) {
             if ( !itData->empty() && pos == 1 &&
-                    itTarget->first->GetNickname() == *itData ) {
-                found = true ; break ;
+                                   itTarget->first->GetNickname() == *itData ) {
+                himself = *itData;
+                found = true;
+                break ;
             }
         }
     }
-    return ( found ? CONTINUE : NOTARGET );
+    if ( himself == client.GetNickname() )
+        found = false;                                                           // TODO maybe specify it's
+    return ( found ? CONTINUE : NOTARGET );                                      // hiself
 }
 
 static enum Err
@@ -87,4 +83,38 @@ checkRight( const Channel& channel, Client& client )
         return ( CONTINUE );
     else
         return ( NORIGHT );
+}
+
+// ########################################################################## //
+// #_kickReaply_____________________________________________________________# //
+static void
+kickReaply( Client& client, Channel* channel, int flag )
+{
+    std::string reply;
+    std::string clientName( client.GetNickname() );
+    std::string channelName;
+    if ( channel )
+        std::string channelName = (*channel).GetName() ;
+
+    if ( flag == NOTARGET ) {
+        reply = ": 442 " + clientName + " " + channelName
+              + ":KICK cannot access to the target mentioned and has kicked it."
+              + "\r\n";
+    }
+
+    else if ( flag == NORIGHT ) {
+        reply = ": 482 " + clientName + " " + channelName
+              + ":KICK You are not an operator"
+              + "\r\n";
+    }
+
+    else if ( flag == NOCHANNEL ) {
+        reply = ": 476 " + clientName +
+              + ":KICK command is invalid or improperly formatted."
+              + "\r\n";
+    }
+    else 
+        reply = "" ;
+
+    client.SetMessageToSend( reply );
 }

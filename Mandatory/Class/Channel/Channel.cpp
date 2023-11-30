@@ -6,7 +6,7 @@
 Channel::Channel( void ) {}
 
 Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
-                           _Name( "Test" ),
+                           _Name( "#Test" ),
                            _Password( "password" ),
                            _Topic( "Test" ),
                            _LimitUsers( 5 )

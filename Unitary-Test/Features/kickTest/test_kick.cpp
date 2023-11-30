@@ -8,7 +8,7 @@
 TEST_SUITE ( "KICK HANDLING" )
 {
     Server                      server3;
-    Channel*                    channel3 = server3.GetChannel( "Test" );
+    Channel*                    channel3 = server3.GetChannel( "#Test" );
     Client*                     kicker3 = server3.GetClient( "sudo" );
     Client*                     target3 = server3.GetClient( "Jean" );
     std::vector<std::string>    msg;
@@ -33,6 +33,8 @@ TEST_SUITE ( "KICK HANDLING" )
                                   "sudo KICK Jean to #Test because racism\r\n");
     }
 // ########################################################################## //
+
+// ########################################################################## //
 // #_rmClientOfChannel______________________________________________________# //
     TEST_CASE ( "rmClientOfChannel" )
     {
@@ -40,3 +42,4 @@ TEST_SUITE ( "KICK HANDLING" )
         CHECK ( channel3->GetUser().count( &*target3 ) == 0 );
     }
 }
+// ########################################################################## //
