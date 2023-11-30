@@ -6,16 +6,6 @@
 class Server;
 class Client;
 
-typedef enum ErrorFlag {
-	ERR_NEEDMOREPARAMS = 461,
-	ERR_CHANOPRIVSNEEDED = 482,
-	ERR_NOSUCHNICK = 401,
-	ERR_NOSUCHCHANNEL = 403,
-	ERR_NOTONCHANNEL = 442,
-	ERR_KEYSET = 467,
-	ERR_UNKNOWMODE = 472,
-} ErrorFlag;
-
 typedef struct CmdNode
 {
 	Operand		Op;
@@ -23,7 +13,7 @@ typedef struct CmdNode
 	std::string	Param;
 } CmdNode;
 
-ErrorFlag	ParsingModeCmd(	Server const &server,
+int const	ParsingModeCmd(	Server const &server,
 							Client const &client,
 							std::vector<std::string> Cmd);
 
