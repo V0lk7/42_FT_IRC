@@ -25,6 +25,8 @@
 # define RPL_NOTOPIC			331
 # define RPL_TOPIC				332
 # define RPL_INVITING			341
+# define RPL_NAMREPLY			353
+# define RPL_ENDOFNAMES			366
 
 /*#######################################################################################
 ##########------PASS-----##########
@@ -82,7 +84,6 @@ RPL_NOTOPIC 331 // if a channel topic isn't set
 ERR_NOTREGISTERED		451 // when a client isn't registered yet and try to do a command.
 ERR_NEEDMOREPARAMS		461
 ERR_NOTONCHANNEL		442
-ERR_NOSUCHCHANNEL		403 //channel not found.
 ERR_CHANOPRIVSNEEDED	481
 ERR_NOSUCHNICK			401 // when user targeted doesn't exist
 ERR_USERONCHANNEL		443 // when a user is already in the channel
