@@ -80,6 +80,7 @@ class Channel{
 		void                        EraseClientFromWaitingList(Client &);
 		void                        ModifyClientRights(Client &, bool);
 		void                        SendMessageToClients(std::string const &, Client const &);
+		bool                        IsClientOperator(Client &client);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other);
