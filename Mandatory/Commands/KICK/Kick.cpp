@@ -18,6 +18,8 @@
 // #_TODO___________________________________________________________________# //
 // #-> better handling error msg: 1.                                        # //
 // #-> check idx 4 not sur i guess it would be 3                            # //
+// #-> i need a precise explanation of string storage 'Channel'             # //
+// #   Does it store '#' or '&' inside itself.                               # //
 // ########################################################################## //
 
 static std::string
@@ -25,25 +27,24 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data );
 static void
 rmClientOfChannel( Channel& channel, const std::string& key,
                                                     const std::string& reason );
-
 void
-kick( const Server& server, Client& client, Channel& channel,
-                                                        const std::string& cmd )
+kick( const Server& server, Client& client, const std::string& cmd )
 {
     (void)server;
     (void)client;
 
-    std::string reason;
-    std::vector<std::string> data = split( cmd, " " );
+    std::string                 reason;
+    Channel*                    channel;
+    std::vector<std::string>    data = split( cmd, " " );
     data.erase( data.begin() );
 
-
-    if ( parseCmd( cmd , channel, client ) != NONE ) {
+    channel = server.GetChannel( data[0] );
+    if ( !channel || parseCmd( cmd , *channel, client ) != NONE ) {
         client.SetMessageToSend( "TODO" );                                       // TODO:1. msg a faire
         return ;
     }
-    reason = msgMaker( client, channel, data );
-    rmClientOfChannel( channel, data[2], reason );
+    reason = msgMaker( client, *channel, data );
+    rmClientOfChannel( *channel, data[2], reason );
     return ;
 }
 

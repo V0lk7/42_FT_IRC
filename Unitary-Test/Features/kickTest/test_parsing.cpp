@@ -22,39 +22,6 @@ TEST_SUITE ( "KICK TESTING" )
 
 // ########################################################################## //
 // # FINDTARGET TRUE________________________________________________________# //
-    TEST_CASE ( "findChannel: true" )
-    {
-        data.push_back( "#Test" );
-        data.push_back( "Jean" );
-        CHECK ( findChannel( data, *channel) == CONTINUE );
-        data.clear();
-    }
-// ########################################################################## //
-
-// ########################################################################## //
-// # FINDTARGET FALSE_______________________________________________________# //
-    TEST_CASE ( "findChannel: false" )
-    {
-        data.clear();
-        data.push_back( "Jean" );
-        SUBCASE( "test" ) {
-            data.push_back( "#test" );
-            CHECK ( findChannel( data, *channel) == NOCHANNEL );
-        }
-        SUBCASE( "#test" ) {
-            data.push_back( "##test" );
-            CHECK ( findChannel( data, *channel) == NOCHANNEL );
-        }
-        SUBCASE( "empty case" ) {
-    std::list<Channel*> channelToK;
-            data.push_back("");
-            CHECK ( findChannel( data, *channel) == NOCHANNEL );
-        }
-    }
-// ########################################################################## //
-
-// ########################################################################## //
-// # FINDTARGET TRUE________________________________________________________# //
     TEST_CASE ( "findTarget: true" )
     {
         data.clear();
@@ -98,7 +65,7 @@ TEST_SUITE ( "KICK TESTING" )
     TEST_CASE ( "ParseCmd: true" )
     {
         CHECK ( parseCmd( "KICK #Test Jean", *channel, *kicker  ) == NONE );
-        CHECK ( parseCmd( "KICK #test Jimmy", *channel, *kicker ) == NOCHANNEL );
+        CHECK ( parseCmd( "KICK #test Jimmy", *channel, *kicker ) != NONE );
         CHECK ( parseCmd( "KICK #Test Jimmy", *channel, *kicker ) == NOTARGET );
         CHECK ( parseCmd( "KICK #Test Jean", *channel, *target  ) == NORIGHT );
 

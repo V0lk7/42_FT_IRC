@@ -13,8 +13,6 @@
 static enum Err
 checkRight( const Channel& channel, Client& client );
 static enum Err
-findChannel( std::vector<std::string>& data, const Channel& channel );
-static enum Err
 findTarget( std::vector<std::string>& data, const Channel& channel, Client& client );
 
 // ########################################################################## //
@@ -29,13 +27,10 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
     if ( !splitOnSpace.size() )
         return ( EMPTY );
 
-    else if ( findChannel( splitOnSpace, channel ) != CONTINUE )
-        return ( NOCHANNEL );
-
-    else if ( checkRight( channel, client ) != CONTINUE )
+    if ( checkRight( channel, client ) != CONTINUE )
         return ( NORIGHT );
 
-    else if ( findTarget( splitOnSpace, channel, client ) != CONTINUE )
+    if ( findTarget( splitOnSpace, channel, client ) != CONTINUE )
         return ( NOTARGET );
 
     return ( NONE );
@@ -43,21 +38,6 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
 
 // ########################################################################## //
 // #_TOOLS__________________________________________________________________# //
-
-static enum Err
-findChannel( std::vector<std::string>& data, const Channel& channel )
-{
-    bool    found = false;
-    size_t  pos = 0;
-    for ( std::vector<std::string>::iterator it = data.begin();
-                                               it != data.end(); it++, pos++ ) {
-        if ( !pos && !(*it).empty() && ( (*it)[0] == '#' ||(*it)[0] == '&' ) &&
-                (*it).substr( 1, std::string::npos ) == channel.GetName() ) {
-            found = true ; break ;
-        }
-    }
-    return ( found ? CONTINUE : NOCHANNEL );
-}
 
 static enum Err
 findTarget( std::vector<std::string>& data, const Channel& channel, Client& client )
