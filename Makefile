@@ -34,6 +34,8 @@ SRCS		+=	Class/Client/Client.cpp		\
 				Class/Channel/Channel.cpp	\
 				Class/Server/Server.cpp
 
+SRCS		+=	Commands/TOPIC/Topic.cpp		\
+
 SRCS		+=	Commands/JOIN/Join.cpp		\
 				Commands/JOIN/Join_parsing.cpp		\
 				Commands/JOIN/Join_utilities.cpp	\
