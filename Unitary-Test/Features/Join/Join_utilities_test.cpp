@@ -21,7 +21,7 @@ TEST_SUITE("Utilities")
 
 		SUBCASE("Create Channel with no password")
 		{
-			JoinCmd["Chan0"] = "";
+			JoinCmd["#Chan0"] = "";
 			Setup(server, 0, 1);
 
 			CliPtr = server.GetClient("Client0"); 
@@ -29,7 +29,7 @@ TEST_SUITE("Utilities")
 				REQUIRE(true == false);
 			It = JoinCmd.begin();
 			CreateNewChannel(server, *CliPtr, It);
-			ChanPtr = server.GetChannel("Chan0"); 
+			ChanPtr = server.GetChannel("#Chan0"); 
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			Users = ChanPtr->GetUsers();
@@ -43,7 +43,7 @@ TEST_SUITE("Utilities")
 		}
 		SUBCASE("Create Channel with passwd")
 		{
-			JoinCmd["Chan0"] = "lol";
+			JoinCmd["#Chan0"] = "lol";
 			Setup(server, 0, 1);
 
 			CliPtr = server.GetClient("Client0"); 
@@ -51,7 +51,7 @@ TEST_SUITE("Utilities")
 				REQUIRE(true == false);
 			It = JoinCmd.begin();
 			CreateNewChannel(server, *CliPtr, It);
-			ChanPtr = server.GetChannel("Chan0"); 
+			ChanPtr = server.GetChannel("#Chan0"); 
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			Users = ChanPtr->GetUsers();
@@ -78,7 +78,7 @@ TEST_SUITE("Utilities")
 			CliPtr = server.GetClient("Client0");
 			if (CliPtr == NULL)
 				REQUIRE(true == false);
-			ChanPtr = server.GetChannel("Chan0"); 
+			ChanPtr = server.GetChannel("#Chan0"); 
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			ChanPtr->AddClientToChannel(*CliPtr, false);
@@ -90,7 +90,7 @@ TEST_SUITE("Utilities")
 			CliPtr = server.GetClient("Client0");
 			if (CliPtr == NULL)
 				REQUIRE(true == false);
-			ChanPtr = server.GetChannel("Chan0"); 
+			ChanPtr = server.GetChannel("#Chan0"); 
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			CHECK(ChanPtr->UserInChannel(*CliPtr) == false);
@@ -107,7 +107,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("No limit")
 		{
 			Setup(server, 1, 0);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			CHECK(VerifyChannelLimit(*ChanPtr) == true);
@@ -115,7 +115,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("Limit = 1, 0 client in it")
 		{
 			Setup(server, 1, 0);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			ChanPtr->SetLimitUsers(1);
@@ -124,7 +124,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("Limit = 1, 1 client in it")
 		{
 			Setup(server, 1, 1);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			CliPtr = server.GetClient("Client0");
 			if (ChanPtr == NULL || CliPtr == NULL)
 				REQUIRE(true == false);
@@ -144,7 +144,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("Not on Invit Only mode")
 		{
 			Setup(server, 1, 1);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			CliPtr = server.GetClient("Client0");
 			if (ChanPtr == NULL || CliPtr == NULL)
 				REQUIRE(true == false);
@@ -153,7 +153,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("on Invit Only mode, client not on waiting list")
 		{
 			Setup(server, 1, 1);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			CliPtr = server.GetClient("Client0");
 			if (ChanPtr == NULL || CliPtr == NULL)
 				REQUIRE(true == false);
@@ -163,7 +163,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("on Invit Only mode, client on waiting list")
 		{
 			Setup(server, 1, 1);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			CliPtr = server.GetClient("Client0");
 			if (ChanPtr == NULL || CliPtr == NULL)
 				REQUIRE(true == false);
@@ -183,7 +183,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("No password needed")
 		{
 			Setup(server, 1, 0);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			CHECK(VerifyPasswordNeed(*ChanPtr, "") == true);
@@ -191,7 +191,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("Password needed, and valid")
 		{
 			Setup(server, 1, 0);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			ChanPtr->SetMode(PASSWORD_SET, true);
@@ -201,7 +201,7 @@ TEST_SUITE("Utilities")
 		SUBCASE("Password needed, and invalid")
 		{
 			Setup(server, 1, 0);
-			ChanPtr = server.GetChannel("Chan0");
+			ChanPtr = server.GetChannel("#Chan0");
 			if (ChanPtr == NULL)
 				REQUIRE(true == false);
 			ChanPtr->SetMode(PASSWORD_SET, true);
