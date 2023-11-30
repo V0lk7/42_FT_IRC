@@ -29,7 +29,7 @@ void	Setup(Server &serv, int ChanNbr, int CliNbr)
 
 	for (int i = 0; i < ChanNbr; i++)
 	{
-		ChanName = "Chan" + IntToString(i);
+		ChanName = "#Chan" + IntToString(i);
 		serv.AddChannel(new Channel(ChanName));
 	}
 	for (int i = 0; i < CliNbr; i++)

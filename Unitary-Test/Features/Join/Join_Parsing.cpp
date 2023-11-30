@@ -26,52 +26,6 @@ static bool	CheckNode(	std::map<std::string, std::string>::iterator Node,
 
 TEST_SUITE("PARSING")
 {
-	TEST_CASE("CheckDelimFormat_function")
-	{
-		CHECK(CheckDelimFormat("#chan1,#chan2,#chan3", ',') == true);
-		CHECK(CheckDelimFormat("#chan1", ',') == true);
-		CHECK(CheckDelimFormat(",#chan1", ',') == false);
-		CHECK(CheckDelimFormat(",,,,", ',') == false);
-		CHECK(CheckDelimFormat("#chan1,,#chan2", ',') == false);
-		CHECK(CheckDelimFormat("#chan1,#chan2,", ',') == false);
-		CHECK(CheckDelimFormat("#chan1,#chan2,,", ',') == false);
-	}
-
-	TEST_CASE("VerifyParamsFormat_function")
-	{
-		std::vector<std::string>	Test;
-
-		InitVectorTest(Test, "#chan1,#chan2", "key1,key2", 2);
-		CHECK(VerifyParamsFormat(Test) == true);
-
-		InitVectorTest(Test, "#chan1,#chan2", "key1", 2);
-		CHECK(VerifyParamsFormat(Test) == true);
-
-		InitVectorTest(Test, "#chan1,#chan2", "", 2);
-		CHECK(VerifyParamsFormat(Test) == true);
-
-		InitVectorTest(Test, "#chan1", "", 2);
-		CHECK(VerifyParamsFormat(Test) == true);
-
-		InitVectorTest(Test, "#chan1,#chan2", ",key1", 2);
-		CHECK(VerifyParamsFormat(Test) == false);
-
-		InitVectorTest(Test, "#chan1,#chan2", "key1,,key2", 2);
-		CHECK(VerifyParamsFormat(Test) == false);
-
-		InitVectorTest(Test, "#chan1,#chan2", "key2,", 2);
-		CHECK(VerifyParamsFormat(Test) == false);
-
-		InitVectorTest(Test, "#chan1,#chan2", "", 1);
-		CHECK(VerifyParamsFormat(Test) == true);
-
-		InitVectorTest(Test, "#chan1,,#chan2", "", 1);
-		CHECK(VerifyParamsFormat(Test) == false);
-
-		InitVectorTest(Test, ",#chan1,#chan2", "", 1);
-		CHECK(VerifyParamsFormat(Test) == false);
-	}
-
 	TEST_CASE("DivideParamsType_function")
 	{
 		std::vector<std::string>	CmdParts;
@@ -137,176 +91,36 @@ TEST_SUITE("PARSING")
 		SUBCASE("One Channel")
 		{
 			Channel.push_back("#chan1");
-			CHECK(AssignChannel(Request, Channel) == true);
+			AssignChannel(Request, Channel, Key);
 			CHECK(Request.size() == 1);
-			CHECK((Request.begin())->first == "chan1");
+			CHECK((Request.begin())->first == "#chan1");
 			CHECK((Request.begin())->second == "");
 		}
 		SUBCASE("Two Differents Channel")
 		{
 			Channel.push_back("#chan1");
 			Channel.push_back("&chan2");
-			CHECK(AssignChannel(Request, Channel) == true);
+			AssignChannel(Request, Channel, Key);
 			CHECK(Request.size() == 2);
 			It = Request.begin();
-			CHECK(It->first == "chan1");
+			CHECK(It->first == "#chan1");
 			CHECK(It->second == "");
 			It++;
-			CHECK(It->first == "chan2");
+			CHECK(It->first == "&chan2");
 			CHECK(It->second == "");
 		}
-		SUBCASE("Two same Channel")
+		SUBCASE("Two type ofChannel")
 		{
 			Channel.push_back("#chan1");
 			Channel.push_back("&chan1");
-			CHECK(AssignChannel(Request, Channel) == true);
-			CHECK(Request.size() == 1);
+			AssignChannel(Request, Channel, Key);
+			CHECK(Request.size() == 2);
 			It = Request.begin();
-			CHECK(It->first == "chan1");
-			CHECK(It->second == "");
-		}
-		SUBCASE("Wrong format Channel_1")
-		{
-			Channel.push_back("chan1");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-		SUBCASE("Wrong format Channel_2")
-		{
-			Channel.push_back("##chan1");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-		SUBCASE("Wrong format Channel_3")
-		{
-			Channel.push_back("&&chan1");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-		SUBCASE("Wrong format Channel_3")
-		{
-			Channel.push_back("&#chan1");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-		SUBCASE("Wrong format Channel_4")
-		{
-			Channel.push_back("#&chan1");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-		SUBCASE("Wrong format Channel_5")
-		{
-			Channel.push_back("#");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-		SUBCASE("Wrong format Channel_6")
-		{
-			Channel.push_back("&");
-			CHECK(AssignChannel(Request, Channel) == false);
-		}
-	}
-
-	TEST_CASE("AssignKeyToChan_function")
-	{
-		std::map<std::string, std::string>				Request;
-		std::map<std::string, std::string>::iterator	It;
-		std::vector<std::string>						Key;
-
-		SUBCASE("One Channel, zero Key")
-		{
-			Request["#chan1"] = "";
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "");
-		}
-		SUBCASE("One Channel, one Key")
-		{
-			Request["#chan1"] = "";
-			Key.push_back("Key1");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-		}
-		SUBCASE("One Channel, two Keys")
-		{
-			Request["#chan1"] = "";
-			Key.push_back("Key1");
-			Key.push_back("Key2");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-		}
-		SUBCASE("two Channels, zero Key")
-		{
-			Request["#chan1"] = "";
-			Request["#chan2"] = "";
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
+			CHECK(It->first == "#chan1");
 			CHECK(It->second == "");
 			It++;
+			CHECK(It->first == "&chan1");
 			CHECK(It->second == "");
-		}
-		SUBCASE("two Channels, one Key")
-		{
-			Request["#chan1"] = "";
-			Request["#chan2"] = "";
-			Key.push_back("Key1");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-			It++;
-			CHECK(It->second == "Key1");
-		}
-		SUBCASE("two Channels, two Keys")
-		{
-			Request["#chan1"] = "";
-			Request["#chan2"] = "";
-			Key.push_back("Key1");
-			Key.push_back("Key2");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-			It++;
-			CHECK(It->second == "Key2");
-		}
-		SUBCASE("two Channels, two Keys")
-		{
-			Request["#chan1"] = "";
-			Request["#chan2"] = "";
-			Key.push_back("Key1");
-			Key.push_back("Key2");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-			It++;
-			CHECK(It->second == "Key2");
-		}
-		SUBCASE("three Channels, two Keys")
-		{
-			Request["#chan1"] = "";
-			Request["#chan2"] = "";
-			Request["#chan3"] = "";
-			Key.push_back("Key1");
-			Key.push_back("Key2");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-			It++;
-			CHECK(It->second == "Key2");
-			It++;
-			CHECK(It->second == "");
-		}
-		SUBCASE("three Channels, three Keys")
-		{
-			Request["#chan1"] = "";
-			Request["#chan2"] = "";
-			Request["#chan3"] = "";
-			Key.push_back("Key1");
-			Key.push_back("Key2");
-			Key.push_back("Key3");
-			AssignKeyToChan(Request, Key);
-			It = Request.begin();
-			CHECK(It->second == "Key1");
-			It++;
-			CHECK(It->second == "Key2");
-			It++;
-			CHECK(It->second == "Key3");
 		}
 	}
 
@@ -335,19 +149,19 @@ TEST_SUITE("PARSING")
 		{
 			Cmd = "/JOIN #chan1 key1 key2";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == false);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 		}
 		SUBCASE("TEST4: /JOIN #chan1,,&chan2 key")
 		{
 			Cmd = "/JOIN #chan1,,&chan2 key";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == false);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 		}
 		SUBCASE("TEST5: /JOIN #chan1,chan2 key")
 		{
 			Cmd = "/JOIN #chan1,chan2 key";
 			Raw = split(Cmd, " ");
-			CHECK(OrganiseRequest(Request, Raw) == false);
+			CHECK(OrganiseRequest(Request, Raw) == true);
 		}
 		SUBCASE("TEST6: /JOIN #chan1,&chan2 key")
 		{
@@ -355,10 +169,15 @@ TEST_SUITE("PARSING")
 			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 2);
-			It = Request.begin();
-			CHECK(CheckNode(It, "chan1", "key") == true);
-			It++;
-			CHECK(CheckNode(It, "chan2", "key") == true);
+			It = Request.find("#chan1");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key");
+
+			It = Request.find("&chan2");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key");
 		}
 		SUBCASE("TEST7: /JOIN #chan1,&chan2,#chan3 key1,key2")
 		{
@@ -366,12 +185,20 @@ TEST_SUITE("PARSING")
 			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 3);
-			It = Request.begin();
-			CHECK(CheckNode(It, "chan1", "key1") == true);
-			It++;
-			CHECK(CheckNode(It, "chan2", "key2") == true);
-			It++;
-			CHECK(CheckNode(It, "chan3", "") == true);
+			It = Request.find("#chan1");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key1");
+
+			It = Request.find("&chan2");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key2");
+
+			It = Request.find("#chan3");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "");
 		}
 		SUBCASE("TEST8: /JOIN #chan1,&chan2,#chan3 key1,key2,key3")
 		{
@@ -379,12 +206,20 @@ TEST_SUITE("PARSING")
 			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 3);
-			It = Request.begin();
-			CHECK(CheckNode(It, "chan1", "key1") == true);
-			It++;
-			CHECK(CheckNode(It, "chan2", "key2") == true);
-			It++;
-			CHECK(CheckNode(It, "chan3", "key3") == true);
+			It = Request.find("#chan1");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key1");
+
+			It = Request.find("&chan2");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key2");
+
+			It = Request.find("#chan3");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key3");
 		}
 		SUBCASE("TEST9: /JOIN #chan,&chan1,#chan")
 		{
@@ -392,10 +227,36 @@ TEST_SUITE("PARSING")
 			Raw = split(Cmd, " ");
 			CHECK(OrganiseRequest(Request, Raw) == true);
 			CHECK(Request.size() == 2);
-			It = Request.begin();
-			CHECK(CheckNode(It, "chan", "") == true);
-			It++;
-			CHECK(CheckNode(It, "chan1", "") == true);
+			It = Request.find("#chan");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "");
+
+			It = Request.find("&chan1");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "");
+		}
+		SUBCASE("TEST10: /JOIN #,&,#chan1 key1,key2")
+		{
+			Cmd = "/JOIN ,#,,,,&,#chan1,, key1,key2";
+			Raw = split(Cmd, " ");
+			CHECK(OrganiseRequest(Request, Raw) == true);
+			CHECK(Request.size() == 3);
+			It = Request.find("#");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key1");
+
+			It = Request.find("&");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "key2");
+
+			It = Request.find("#chan1");
+			if (It == Request.end())
+				REQUIRE(true == false);
+			CHECK(It->second == "");
 		}
 	}
 }
