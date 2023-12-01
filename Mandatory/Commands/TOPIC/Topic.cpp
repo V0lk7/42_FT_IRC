@@ -46,8 +46,10 @@ topic( const Server& server, Client& client, const std::string& cmd )
     std::vector<std::string> data = split( cmd, " " );
     data.erase( data.begin() );
 
-    if ( !data.size() )
-        return ; // TODO Manage error msg
+    if ( !data.size() ) {
+        topicReaply( client, NULL, TOPICNOCHANNEL );
+        return ;
+    }
 
     channel = server.GetChannel( data[0] );
 
