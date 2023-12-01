@@ -5,5 +5,6 @@
 # include "Client.hpp"
 # include "Channel.hpp"
 # include "Parsing.hpp"
+# include "Tools.hpp"
 
 #endif

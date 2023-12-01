@@ -45,7 +45,7 @@ TEST_CASE ( "privateMessage" )
 		std::string	str( "PRIVMSGCharles :Commande colle au user" );
 		privateMessage( server, *Jean, str );
 		std::string test = (*Jean).GetMessage();
-		CHECK( (*Jean).GetMessage() == "ERROR : no recipients" );
+		CHECK( (*Jean).GetMessage() == ": 441 PRIVMSG : No recipient.\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG Charles:Deux points colle au user" )
@@ -59,14 +59,27 @@ TEST_CASE ( "privateMessage" )
 	{
 		std::string	str( "PRIVMSG pacome : Utilisateur inconnu" );
 		privateMessage( server, *Jean, str );
-		CHECK(  (*Jean).GetMessage() == "ERROR : unknown user" );
+		CHECK(  (*Jean).GetMessage() == ": 401 PRIVMSG : Unknown user.\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG jean charles : 2 user" )
 	{
 		std::string	str( "PRIVMSG jean charles : 2 user" );
 		privateMessage( server, *Jean, str );
-		CHECK(  (*Jean).GetMessage() == "ERROR : too many recipients" );
+		CHECK(  (*Jean).GetMessage() == ": 441 PRIVMSG : Too many recipients.\r\n" );
 	}
 
+	SUBCASE ( "PRIVMSG #test :Channel" )
+	{
+		std::string	str( "PRIVMSG #test :Channel" );
+		privateMessage( server, *Jean, str );
+		CHECK(  (*Jean).GetMessage() == ": 403 PRIVMSG : Unknown channel.\r\n" );
+	}
+
+	SUBCASE ( "PRIVMSG #Test :Channel" )
+	{
+		std::string	str( "PRIVMSG #Test :Channel" );
+		privateMessage( server, *Jean, str );
+		CHECK(  (*Jean).GetMessage() == ": 403 PRIVMSG : Unknown channel.\r\n" );
+	}
 }
