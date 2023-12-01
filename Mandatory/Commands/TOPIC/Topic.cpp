@@ -30,7 +30,7 @@ typedef enum TErr {
 } TErr;
 
 static enum TErr
-topicParsing( std::vector<std::string>& data, Client& client, Channel* channel );
+topicParsing( Client& client, Channel* channel );
 static enum TErr
 topicChange( std::vector<std::string>& data, Channel* channel, Client& client );
 static void
@@ -46,9 +46,14 @@ topic( const Server& server, Client& client, const std::string& cmd )
     std::vector<std::string> data = split( cmd, " " );
     data.erase( data.begin() );
 
+    if ( !data.size() ) {
+        topicReaply( client, NULL, TOPICNOCHANNEL );
+        return ;
+    }
+
     channel = server.GetChannel( data[0] );
 
-    if ( data.size() && topicParsing( data, client, channel) != TOPICNONE )
+    if ( topicParsing( client, channel) != TOPICNONE )
         return ;
 
     if ( data.size() == 1 ) {
@@ -88,16 +93,12 @@ topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
 }
 
 static enum TErr
-topicParsing( std::vector<std::string>& data, Client& client, Channel* channel )
+topicParsing( Client& client, Channel* channel )
 {
     std::map<Client*, bool>             key; 
-    std::vector<std::string>::iterator  check = data.begin();
     bool                                right = false;
 
-    if (    !channel ||
-          ( !check->empty() && ( (*check)[0] != '#' || (*check)[0] != '&' ) &&
-            (*check).substr( 1, std::string::npos ) != channel->GetName() ) )
-    {
+    if ( !channel ) {
         topicReaply( client, channel, TOPICNOCHANNEL );
         return ( TOPICNOCHANNEL );
     }
