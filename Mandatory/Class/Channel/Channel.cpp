@@ -56,7 +56,9 @@ Channel	&Channel::operator=(Channel const &rhs)
 
 //----------------Set/Get-------------------//
 
-std::map<Client*, bool> Channel::GetUser( void ) const { return ( _Users ); }
+std::map<Client*, bool>& Channel::GetUsers( void ) { return ( _Users ); }
+
+std::list<Client*>&  Channel::GetWaitingList( void ) { return ( _WaitingList); }
 
 void	Channel::SetName(std::string const &NewName)
 {

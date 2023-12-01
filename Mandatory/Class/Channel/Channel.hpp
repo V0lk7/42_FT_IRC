@@ -33,11 +33,11 @@ class Client;
 class Channel{
 
 	private :
-		std::string				_Name;
-		std::string				_Password;
-		std::string				_Topic;
-		size_t					_LimitUsers;
-		bool					_Mode[3];
+		std::string				    _Name;
+		std::string				    _Password;
+		std::string				    _Topic;
+		size_t					    _LimitUsers;
+		bool					    _Mode[3];
 
 		std::map<Client *, bool>	_Users;
 		std::list<Client *>			_WaitingList;
@@ -65,7 +65,8 @@ class Channel{
 		size_t						GetLimitUsers(void) const;
 		bool						GetMode(int) const;
 		std::string					GetListClientIn(void);
-		std::map<Client *, bool>&	GetUsers(void) const;
+		std::map<Client *, bool>&	GetUsers(void) ;
+		std::list<Client*>&	        GetWaitingList(void) ;
 
 		void		                AddClientToChannel(Client &, bool);
 		void		                EraseClientFromChannel(Client &);

@@ -3,24 +3,30 @@
 #include "Channel.hpp"
 #include "Tools.hpp"
 #include <exception>
+#include <stdexcept>
 
 /* Paramètres: <pseudonyme> <canal> */
 
+typedef enum IErr {
+    NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,
+    CLIENTISTARGET, BADRIGHT, BADCHANNEL, TARGETINWAITLIST
+} IErr;
+
 static Client&
 extractTarget( const std::string& key, Server& server );
-static bool
+static IErr
 findTargetInServer( const std::string& target, Server& server );
-static Channel*
-findChannel( const std::string& target, Server& server );
-static bool
+static IErr
 targetAlreadyInChannel( Channel& channel, const std::string& target );
-static bool
+static IErr
 hostRight( Channel& channel, Client& client );
-static bool
+static IErr
 isValidRight( Client& client, Channel& channel, std::string& target );
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
-                                             Client& client, Channel& channel );
+               Client& client, Channel& channel );
+static void
+inviteReaply( Client& client, Client* target, Channel* channel, int flag );
 
 static void
 invite( Server& server, Client& client, const std::string& cmd )
@@ -35,16 +41,16 @@ invite( Server& server, Client& client, const std::string& cmd )
     if ( cuttingCmd.size() != 2 )
         return ;
 
-    channel = findChannel( cuttingCmd[1], server );
+    channel = server.GetChannel( cuttingCmd[0] );
 
-    if ( !channel || !inviteParsing( cuttingCmd, server, client, *channel ) ) {
-        // TODO MANAGING ERROR
+    if ( !inviteParsing( cuttingCmd, server, client, *channel ) )
         return ;
+
+    try {
+        target = &extractTarget( cuttingCmd[1] , server );
+        inviteReaply( client, target, channel, NEXT );
     }
-
-    target = &extractTarget( cuttingCmd[1] , server );
-    target->SetMessageToSend( "GPT" );
-
+    catch ( std::exception& e) {}
 }
 
 static Client&
@@ -58,76 +64,148 @@ extractTarget( const std::string& key, Server& server )
         check++;
     }
 
-    throw std::runtime_error( "UNREACHABLE" );
+    throw std::logic_error( "UNREACHABLE" );
 }
 
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
-                                              Client& client, Channel& channel )
+               Client& client, Channel& channel )
 {
-    if ( !findTargetInServer( key[0], server ) )
+    if ( findTargetInServer( key[0], server ) != NEXT )
         return ( false );
 
-    if ( !isValidRight( client, channel, key[0] ) )
+    if ( isValidRight( client, channel, key[0] ) != NEXT )
         return ( false );
 
     else
         return ( true );
 }
 
-static bool
+static IErr
 isValidRight( Client& client, Channel& channel, std::string& target )
 {
-    if ( client.GetNickname() == target ||
-                                     targetAlreadyInChannel( channel, target ) )
-        return ( false );
+    if ( client.GetNickname() == target ) 
+        return ( CLIENTISTARGET );
+
+    if ( targetAlreadyInChannel( channel, target ) != NEXT )
+        return ( TARGETALREADYINCHANNEL );
 
     if ( channel.GetMode( INVITE_ONLY ) || !hostRight( channel, client ) )
-        return ( false );
+        return ( BADRIGHT );
 
     else
-        return ( true );
+        return ( NEXT );
 }
 
-static bool
+static IErr
 hostRight( Channel& channel, Client& client )
 {
     std::map<Client*, bool> clientList( channel.GetUsers() );
     if ( clientList.count( &client ) && clientList[ &client ] )
-        return ( true );
+        return ( NEXT );
     else
-        return ( false );
+        return ( BADRIGHT );
 }
 
-static bool
+static IErr
 targetAlreadyInChannel( Channel& channel, const std::string& target )
 {
     std::map<Client*, bool>             clientInChannel( channel.GetUsers() );
+    std::list<Client*>                  clientInWaitingList( channel.GetWaitingList() );
     std::map<Client*, bool>::iterator   check = clientInChannel.begin();
+    std::list<Client*>::iterator        checkWL = clientInWaitingList.begin();
 
     while ( check != clientInChannel.end() ) {
         if ( check->first->GetNickname() == target )
-            return ( true );
+            return ( TARGETALREADYINCHANNEL );
         check++;
     }
-    return ( false );
+    while ( checkWL != clientInWaitingList.end() ) {
+        if ( (**checkWL).GetNickname() == target )
+            return ( TARGETINWAITLIST );
+        checkWL++;
+    }
+    return ( NEXT );
 }
 
-static bool
+static IErr
 findTargetInServer( const std::string& target, Server& server )
 {
     std::list<Client*>              clientList( server.getCllist() );
     std::list<Client*>::iterator    check = clientList.begin();
-    bool                            found = false;
+
     while ( check != clientList.end() ) {
         if ( (**check).GetNickname() == target )
-            found = true;
+            return ( NEXT );
         check++;
     }
-    return ( found );
+
+    return ( NOTARGETINSERVER );
 }
 
-static Channel*
-findChannel( const std::string& target, Server& server ) {
-    return ( server.GetChannel( target ) );
+// ########################################################################## //
+// #_inviteReaply___________________________________________________________# //
+static void
+inviteReaply( Client& client, Client* target, Channel* channel, int flag )
+{
+    std::string reaply;
+    std::string clientName( client.GetNickname() );
+    std::string clientTarget;
+    std::string channelName;
+
+    if ( channel )
+        channelName = (*channel).GetName();
+    if ( target )
+        clientTarget = (*target).GetNickname();
+
+    if ( flag == NOTARGETINSERVER ) {
+        reaply = ": 401 " + clientName + " " + channelName
+               + ":INVITE cannot access to the target mentioned in server."
+               + "\r\n";
+    }
+
+    else if ( flag == BADRIGHT ) {
+        reaply = ": 473 " + clientName + " " + channelName
+               + ":INVITE You are not a channel operator."
+               + "\r\n";
+    }
+
+    else if ( flag == BADCHANNEL ) {
+        reaply = ": 442 " + clientName +
+               + ":INVITE command is invalid or improperly formatted."
+               + "\r\n";
+    }
+
+    else if ( flag == TARGETALREADYINCHANNEL ) {
+        reaply = ": 443 " + clientName + " "  + channelName
+               + ":INVITE target is already in channel."
+               + "\r\n";
+    }
+
+    else if ( flag == TARGETINWAITLIST ) {
+        reaply = ": 443 " + clientName + " "  + channelName
+               + ":INVITE target is already invited."
+               + "\r\n";
+    }
+
+    else if ( flag == CLIENTISTARGET ) {
+        reaply = ": 401 " + clientName + " "  + channelName
+               + ":INVITE you can't invite yourself in a channel."
+               + "\r\n";
+    }
+
+    else if ( flag == NEXT ) {
+        reaply = ": 301 " + clientName + " " + channelName
+               + ":INVITE you've been invited in channel."
+               + "\r\n";
+    }
+
+    else
+        reaply = "" ;
+
+    if ( target )
+        target->SetMessageToSend( reaply );
+    else
+        client.SetMessageToSend( reaply );
 }
+// ########################################################################## //
