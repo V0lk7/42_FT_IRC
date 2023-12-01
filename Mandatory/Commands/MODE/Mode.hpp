@@ -16,7 +16,7 @@ typedef enum Operand {
 typedef struct CmdNode
 {
 	Operand		Op;
-	std::string	Mode;
+	char		Mode;
 	std::string	Param;
 } CmdNode;
 
