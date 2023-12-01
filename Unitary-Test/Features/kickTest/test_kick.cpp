@@ -8,7 +8,7 @@
 TEST_SUITE ( "KICK HANDLING" )
 {
     Server                      server3;
-    Channel*                    channel3 = server3.GetChannel( "Test" );
+    Channel*                    channel3 = server3.GetChannel( "#Test" );
     Client*                     kicker3 = server3.GetClient( "sudo" );
     Client*                     target3 = server3.GetClient( "Jean" );
     std::vector<std::string>    msg;
@@ -37,6 +37,6 @@ TEST_SUITE ( "KICK HANDLING" )
     TEST_CASE ( "rmClientOfChannel" )
     {
         rmClientOfChannel( *channel3, "Jean", "ok" );
-        CHECK ( channel3->GetUser().count( &*target3 ) == 0 );
+        CHECK ( channel3->GetUsers().count( &*target3 ) == 0 );
     }
 }

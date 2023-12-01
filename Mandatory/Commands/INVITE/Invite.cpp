@@ -28,7 +28,7 @@ inviteParsing( std::vector<std::string>& key, Server& server,
 static void
 inviteReaply( Client& client, Client* target, Channel* channel, int flag );
 
-static void
+void
 invite( Server& server, Client& client, const std::string& cmd )
 {
     (void)server;

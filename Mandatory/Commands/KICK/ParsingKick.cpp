@@ -11,17 +11,17 @@
 // ########################################################################## //
 
 static enum Err
-checkRight( const Channel& channel, Client& client );
+checkRight( Channel& channel, Client& client );
 static enum Err
-findChannel( std::vector<std::string>& data, const Channel& channel );
+findChannel( std::vector<std::string>& data, Channel& channel );
 static enum Err
-findTarget( std::vector<std::string>& data, const Channel& channel );
+findTarget( std::vector<std::string>& data, Channel& channel );
 
 // ########################################################################## //
 // #_PARSER_________________________________________________________________# //
 
 enum Err
-parseCmd( const std::string& cmd, const Channel& channel, Client& client )
+parseCmd( const std::string& cmd, Channel& channel, Client& client )
 {
     std::vector<std::string> splitOnSpace = split( cmd , " " );
 
@@ -45,7 +45,7 @@ parseCmd( const std::string& cmd, const Channel& channel, Client& client )
 // #_TOOLS__________________________________________________________________# //
 
 static enum Err
-findChannel( std::vector<std::string>& data, const Channel& channel )
+findChannel( std::vector<std::string>& data, Channel& channel )
 {
     bool    found = false;
     size_t  pos = 0;
@@ -60,9 +60,9 @@ findChannel( std::vector<std::string>& data, const Channel& channel )
 }
 
 static enum Err
-findTarget( std::vector<std::string>& data, const Channel& channel )
+findTarget( std::vector<std::string>& data, Channel& channel )
 {
-    std::map<Client*, bool> target( channel.GetUser() );
+    std::map<Client*, bool> target( channel.GetUsers() );
     bool found = false;
     size_t  pos = 0;
 
@@ -80,9 +80,9 @@ findTarget( std::vector<std::string>& data, const Channel& channel )
 }
 
 static enum Err
-checkRight( const Channel& channel, Client& client )
+checkRight( Channel& channel, Client& client )
 {
-    std::map<Client*, bool> target( channel.GetUser() );
+    std::map<Client*, bool> target( channel.GetUsers() );
     if ( target.count( &client ) != 0 && target[&client] == true )
         return ( CONTINUE );
     else

@@ -6,7 +6,7 @@
 Channel::Channel( void ) {}
 
 Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
-                           _Name( "Test" ),
+                           _Name( "#Test" ),
                            _Password( "password" ),
                            _Topic( "Test" ),
                            _LimitUsers( 5 )
@@ -108,11 +108,6 @@ size_t	Channel::GetLimitUsers(void) const
 bool	Channel::GetMode(int Index) const
 {
 	return (this->_Mode[Index]);
-}
-
-std::map<Client *, bool>	&Channel::GetUsers(void)
-{
-	return (this->_Users);
 }
 
 /*----------------------SpecificMethods----------------------------*/

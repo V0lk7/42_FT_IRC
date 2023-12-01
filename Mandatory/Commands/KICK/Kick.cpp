@@ -54,7 +54,7 @@ static void
 rmClientOfChannel( Channel& channel, const std::string& key,
                                                      const std::string& reason )
 {
-    std::map<Client*, bool> target( channel.GetUser() );
+    std::map<Client*, bool> target( channel.GetUsers() );
 
     for ( std::map<Client*, bool>::iterator it = target.begin();
                                                       it != target.end(); it++ )
