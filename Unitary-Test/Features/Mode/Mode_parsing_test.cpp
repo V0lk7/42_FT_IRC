@@ -72,12 +72,12 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 	{
 		CmdNode	Node;
 		char	c;
-		Operand	Op;
+		bool	Op;
 
 		SUBCASE("TEST_1")
 		{
 			c = 'i';
-			Op = static_cast<Operand>('-');
+			Op = false;
 			Node = CreateNode(Op, c);
 			CHECK(Node.Op == Op);
 			CHECK(Node.Mode == c);
@@ -85,7 +85,7 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 		SUBCASE("TEST_2")
 		{
 			c = 'k';
-			Op = static_cast<Operand>('+');
+			Op = true;
 			Node = CreateNode(Op, c);
 			CHECK(Node.Op == Op);
 			CHECK(Node.Mode == c);
@@ -98,28 +98,28 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 
 		SUBCASE("TEST_1, don't need param")
 		{
-			Node.Op = static_cast<Operand>('-');
+			Node.Op = false;
 			Node.Mode = 'i';
 			CHECK(InsertParameter(Node, "") == 0);
 			CHECK(Node.Param == "");
 		}
 		SUBCASE("TEST_2, don't need param, but send one")
 		{
-			Node.Op = static_cast<Operand>('-');
+			Node.Op = false;
 			Node.Mode = 't';
 			CHECK(InsertParameter(Node, "HEY HEY HEY") == 0);
 			CHECK(Node.Param == "");
 		}
 		SUBCASE("TEST_3, need param")
 		{
-			Node.Op = static_cast<Operand>('-');
+			Node.Op = false;
 			Node.Mode = 'l';
 			CHECK(InsertParameter(Node, "The param") == 1);
 			CHECK(Node.Param == "The param");
 		}
 		SUBCASE("TEST_4, need param")
 		{
-			Node.Op = static_cast<Operand>('+');
+			Node.Op = true;
 			Node.Mode = 'k';
 			CHECK(InsertParameter(Node, "The param") == 1);
 			CHECK(Node.Param == "The param");
@@ -139,7 +139,7 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 1);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 		}
@@ -151,11 +151,11 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 2);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 't');
 			CHECK((*It).Param == "");
 		}
@@ -167,11 +167,11 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 2);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'l');
 			CHECK((*It).Param == "5");
 		}
@@ -183,15 +183,15 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 3);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'l');
 			CHECK((*It).Param == "5");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'k');
 			CHECK((*It).Param == "mdp");
 		}
@@ -203,15 +203,15 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 3);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'l');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'k');
 			CHECK((*It).Param == "");
 		}
@@ -223,11 +223,11 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 2);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 		}
@@ -239,15 +239,15 @@ TEST_SUITE("Test of Mode_parsing.cpp file")
 			CreateModes(Cmd, Modes);
 			REQUIRE(Modes.size() == 3);
 			It = Modes.begin();
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'i');
 			CHECK((*It).Param == "");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'l');
 			CHECK((*It).Param == "5");
 			It++;
-			CHECK((*It).Op == static_cast<Operand>('+'));
+			CHECK((*It).Op == true);
 			CHECK((*It).Mode == 'k');
 			CHECK((*It).Param == "");
 		}

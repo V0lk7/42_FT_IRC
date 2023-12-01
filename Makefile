@@ -24,26 +24,27 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Channel/	\
 				$(SRC_DIR)/Commands/KICK/	\
 
-SRCS		:=	MainCore/main.cpp \
+SRCS		:=	MainCore/main.cpp 					\
 
-SRCS		+=	Parsing/Parsing.cpp \
+SRCS		+=	Parsing/Parsing.cpp 				\
 
-SRCS		+=	Tools/cSplit.cpp \
+SRCS		+=	Tools/cSplit.cpp 					\
 
-SRCS		+=	Class/Client/Client.cpp		\
-				Class/Channel/Channel.cpp	\
+SRCS		+=	Class/Client/Client.cpp				\
+				Class/Channel/Channel.cpp			\
 				Class/Server/Server.cpp
 
-SRCS		+=	Commands/TOPIC/Topic.cpp		\
+SRCS		+=	Commands/TOPIC/Topic.cpp			\
 
-SRCS		+=	Commands/JOIN/Join.cpp		\
+SRCS		+=	Commands/JOIN/Join.cpp				\
 				Commands/JOIN/Join_parsing.cpp		\
 				Commands/JOIN/Join_utilities.cpp	\
 
-SRCS		+=	Commands/KICK/Kick.cpp		\
+SRCS		+=	Commands/KICK/Kick.cpp				\
 				Commands/KICK/ParsingKick.cpp		\
 
-SRCS		+=	Commands/MODE/Mode_parsing.cpp
+SRCS		+=	Commands/MODE/Mode_parsing.cpp		\
+				Commands/MODE/Mode_utilities.cpp	\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 

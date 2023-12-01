@@ -8,7 +8,7 @@
 static bool		CheckModeFormat(std::string const &Modes);
 static void		CreateModes(std::vector<std::string> &Cmd,
 							std::list<CmdNode> &Modes);
-static CmdNode	CreateNode(Operand const Op, char const Mode);
+static CmdNode	CreateNode(bool const Op, char const Mode);
 static int		InsertParameter(CmdNode &Node, std::string Parameter);
 	
 int	ParsingModeCmd(	Server const &server,
@@ -52,7 +52,7 @@ static void	CreateModes(	std::vector<std::string> &Cmd,
 {
 	std::vector<std::string>	Parameters;
 	std::string const			RawModes(Cmd[1]);
-	Operand const				Op = static_cast<Operand>(RawModes[0]);
+	bool						Op = (RawModes[0] == '+' ? true : false);
 	size_t						j = 0;
 
 	if (Cmd.size() > 2)
@@ -66,7 +66,7 @@ static void	CreateModes(	std::vector<std::string> &Cmd,
 	}
 }
 
-static CmdNode	CreateNode(Operand const Op, char const Mode)
+static CmdNode	CreateNode(bool const Op, char const Mode)
 {
 	CmdNode	Node;
 

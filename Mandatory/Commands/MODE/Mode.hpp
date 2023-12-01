@@ -5,17 +5,21 @@
 # include <vector>
 # include <list>
 
-class Server;
-class Client;
+# define SILENT 0
+# define INVITONLY_CHANGED 1
+# define TOPIC_CHANGED 2
+# define PASSWORD_CHANGED 3
+# define CLIENTRIGHT_CHANGED 4
+# define LIMIT_CHANGED 5 
+# define OUT_OF_RANGE 5 
 
-typedef enum Operand {
-	SET = 43,
-	UNSET = 45
-} Operand;
+class Server;
+class Channel;
+class Client;
 
 typedef struct CmdNode
 {
-	Operand		Op;
+	bool		Op;
 	char		Mode;
 	std::string	Param;
 } CmdNode;
@@ -24,6 +28,12 @@ int	ParsingModeCmd(	Server const &server,
 					Client &client,
 					std::vector<std::string> &Cmd,
 					std::list<CmdNode> &Modes);
+
+int	ChangeInvitOnlyMode(Channel *ChanPtr, CmdNode const &Mode);
+int ChangeTopicMode(Channel *ChanPtr, CmdNode const &Mode);
+int	ChangePasswordMode(Channel *ChanPtr, CmdNode const &Mode);
+int	ChangeOperatorPrivilege(Server &server, Channel *ChanPtr, CmdNode const &Mode);
+int ChangeLimitMode(Channel *ChanPtr, CmdNode const &Mode);
 
 #endif
 
