@@ -22,7 +22,6 @@ TEST_CASE ( "privateMessage" )
 	Client*		Henry = server.GetClient( "Henry" );
 	Channel*	channel = server.GetChannel( "#Test" );
 
-
 	channel->AddClientToChannel( *Hanri, 0 );
 	channel->AddClientToChannel( *Enri, 0 );
 	channel->AddClientToChannel( *Anri, 0 );
@@ -32,28 +31,28 @@ TEST_CASE ( "privateMessage" )
 	{
 		std::string	str( "PRIVMSG Charles : Unmot" );
 		privateMessage( server, *Jean, str );
-		CHECK( (*Charles).GetMessage() == " Unmot");
+		CHECK( (*Charles).GetMessage() == "Jean :  Unmot");
 	}
 
 	SUBCASE ( "PRIVMSG Charles : Deux mots" )
 	{
 		std::string	str( "PRIVMSG Charles : Deux mots" );
 		privateMessage( server, *Jean, str );
-		CHECK( (*Charles).GetMessage() == " Deux mots");
+		CHECK( (*Charles).GetMessage() == "Jean :  Deux mots");
 	}
 
 	SUBCASE ( "PRIVMSG Charles : Beaucoup                 d'espaces" )
 	{
 		std::string	str( "PRIVMSG Charles : Beaucoup                 d'espaces" );
 		privateMessage( server, *Jean, str );
-		CHECK( (*Charles).GetMessage() == " Beaucoup                 d'espaces");
+		CHECK( (*Charles).GetMessage() == "Jean :  Beaucoup                 d'espaces");
 	}
 
 	SUBCASE ( "PRIVMSG Charles :Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:" )
 	{
 		std::string	str( "PRIVMSG Charles :Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:" );
 		privateMessage( server, *Jean, str );
-		CHECK( (*Charles).GetMessage() == "Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:");
+		CHECK( (*Charles).GetMessage() == "Jean : Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:");
 	}
 
 	SUBCASE ( "PRIVMSGCharles :Commande colle au user" )
@@ -68,7 +67,7 @@ TEST_CASE ( "privateMessage" )
 	{
 		std::string	str( "PRIVMSG Charles:Deux points colle au user" );
 		privateMessage( server, *Jean, str );
-		CHECK( (*Charles).GetMessage() == "Deux points colle au user");
+		CHECK( (*Charles).GetMessage() == "Jean : Deux points colle au user");
 	}
 
 	SUBCASE ( "PRIVMSG pacome : Utilisateur inconnu" )
@@ -96,18 +95,18 @@ TEST_CASE ( "privateMessage" )
 	{
 		std::string	str( "PRIVMSG #Test :Bonjour Henri" );
 		privateMessage( server, *Jean, str );
-		CHECK(  (*Hanri).GetMessage() == "Bonjour Henri" );
-		CHECK(  (*Anri).GetMessage() == "Bonjour Henri" );
-		CHECK(  (*Enri).GetMessage() == "Bonjour Henri" );
-		CHECK(  (*Henry).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Hanri).GetMessage() == "Jean : Bonjour Henri" );
+		CHECK(  (*Anri).GetMessage() == "Jean : Bonjour Henri" );
+		CHECK(  (*Enri).GetMessage() == "Jean : Bonjour Henri" );
+		CHECK(  (*Henry).GetMessage() == "Jean : Bonjour Henri" );
 	}
 
 	SUBCASE ( "PRIVMSG #Test :Bonjour Henri" )
 	{
 		std::string	str( "PRIVMSG #Test :Bonjour Henri" );
 		privateMessage( server, *Hanri, str );
-		CHECK(  (*Anri).GetMessage() == "Bonjour Henri" );
-		CHECK(  (*Enri).GetMessage() == "Bonjour Henri" );
-		CHECK(  (*Henry).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Anri).GetMessage() == "Hanri : Bonjour Henri" );
+		CHECK(  (*Enri).GetMessage() == "Hanri : Bonjour Henri" );
+		CHECK(  (*Henry).GetMessage() == "Hanri : Bonjour Henri" );
 	}
 }

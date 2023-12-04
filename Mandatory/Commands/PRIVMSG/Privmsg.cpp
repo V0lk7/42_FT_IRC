@@ -1,9 +1,9 @@
-#include "Privmsg.hpp"
-
-#define ERR_NORECIPIENT		441
-#define ERR_NOTEXTTOSEND	412
-#define ERR_NOSUCHNICK		401
-#define ERR_NOSUCHCHANNEL	403
+#include "Error_code.hpp"
+#include "Parsing.hpp"
+#include "Channel.hpp"
+#include "Server.hpp"
+#include "Client.hpp"
+#include "Tools.hpp"
 
 static void
 privMsgError( int code, std::string message, Client& client)
@@ -18,11 +18,9 @@ privMsgError( int code, std::string message, Client& client)
 void
 privateMessage( Server& server, Client& client, std::string& rawCommand )
 {
-    // check message
     if( rawCommand.find ( ":" ) == std::string::npos )
         return privMsgError( ERR_NOTEXTTOSEND, "No message", client );
 
-    // grab target
     std::string target = rawCommand.substr( 0, rawCommand.find( ":" ) );
 
     std::vector<std::string> splitCmd = split( target , " " );
@@ -35,10 +33,10 @@ privateMessage( Server& server, Client& client, std::string& rawCommand )
 
     target = splitCmd[1];
 
-    // grab message
-    std::string message = rawCommand.substr( rawCommand.find( ":" ) + 1 );
+    std::string message = client.GetNickname();
+    message += " : ";
+    message += rawCommand.substr( rawCommand.find( ":" ) + 1 );
 
-    // check target
     if( target.find ( "#" ) == 0 || target.find( "&" ) == 0 )
     {
         Channel* targetChannel = server.GetChannel( target );
