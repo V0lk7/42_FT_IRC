@@ -8,10 +8,26 @@
 TEST_CASE ( "privateMessage" )
 {
 	Server		server;
+
+	server.AddClient( new Client( "Hanri", CLIENT ) );
+	server.AddClient( new Client( "Enri", CLIENT ) );
+	server.AddClient( new Client( "Anri", CLIENT ) );
+	server.AddClient( new Client( "Henry", CLIENT ) );
+
 	Client*		Jean = server.GetClient( "Jean" );
 	Client*		Charles = server.GetClient( "Charles" );
+	Client*		Hanri = server.GetClient( "Hanri" );
+	Client*		Enri = server.GetClient( "Enri" );
+	Client*		Anri = server.GetClient( "Anri" );
+	Client*		Henry = server.GetClient( "Henry" );
 	Channel*	channel = server.GetChannel( "#Test" );
-	
+
+
+	channel->AddClientToChannel( *Hanri, 0 );
+	channel->AddClientToChannel( *Enri, 0 );
+	channel->AddClientToChannel( *Anri, 0 );
+	channel->AddClientToChannel( *Henry, 0 );
+
 	SUBCASE ( "PRIVMSG Charles : Unmot" )
 	{
 		std::string	str( "PRIVMSG Charles : Unmot" );
@@ -76,10 +92,22 @@ TEST_CASE ( "privateMessage" )
 		CHECK(  (*Jean).GetMessage() == ": 403 PRIVMSG : Unknown channel.\r\n" );
 	}
 
-	SUBCASE ( "PRIVMSG #Test :Channel" )
+	SUBCASE ( "PRIVMSG #Test :Bonjour Henri" )
 	{
-		std::string	str( "PRIVMSG #Test :Channel" );
+		std::string	str( "PRIVMSG #Test :Bonjour Henri" );
 		privateMessage( server, *Jean, str );
-		CHECK(  (*Jean).GetMessage() == ": 403 PRIVMSG : Unknown channel.\r\n" );
+		CHECK(  (*Hanri).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Anri).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Enri).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Henry).GetMessage() == "Bonjour Henri" );
+	}
+
+	SUBCASE ( "PRIVMSG #Test :Bonjour Henri" )
+	{
+		std::string	str( "PRIVMSG #Test :Bonjour Henri" );
+		privateMessage( server, *Hanri, str );
+		CHECK(  (*Anri).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Enri).GetMessage() == "Bonjour Henri" );
+		CHECK(  (*Henry).GetMessage() == "Bonjour Henri" );
 	}
 }
