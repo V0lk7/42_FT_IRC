@@ -41,16 +41,17 @@ invite( Server& server, Client& client, const std::string& cmd )
     if ( cuttingCmd.size() != 2 )
         return ;
 
-    channel = server.GetChannel( cuttingCmd[0] );
+    channel = server.GetChannel( cuttingCmd[1] );
 
     if ( !inviteParsing( cuttingCmd, server, client, *channel ) )
         return ;
 
     try {
-        target = &extractTarget( cuttingCmd[1] , server );
+        target = &extractTarget( cuttingCmd[0] , server );
+        channel->PutClientOnWaitingList( *target );
         inviteReaply( client, target, channel, NEXT );
     }
-    catch ( std::exception& e) {}
+    catch ( std::exception& e ) {}
 }
 
 static Client&
@@ -84,13 +85,13 @@ inviteParsing( std::vector<std::string>& key, Server& server,
 static IErr
 isValidRight( Client& client, Channel& channel, std::string& target )
 {
-    if ( client.GetNickname() == target ) 
+    if ( client.GetNickname() == target )
         return ( CLIENTISTARGET );
 
     if ( targetAlreadyInChannel( channel, target ) != NEXT )
         return ( TARGETALREADYINCHANNEL );
 
-    if ( channel.GetMode( INVITE_ONLY_SET ) || !hostRight( channel, client ) )
+    if ( channel.GetMode( INVITE_ONLY_SET ) && hostRight( channel, client ) != NEXT )
         return ( BADRIGHT );
 
     else
