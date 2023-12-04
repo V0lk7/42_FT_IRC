@@ -6,6 +6,8 @@ TEST_OBJS	:=	$(TEST:%.cpp=$(OBJ_DIR)/%.o)
 ARCHIVE		:=	$(DIRUNITEST)/irc.a
 RUNNER		:=	$(DIRUNITEST)/runtest
 
+#CXX = g++;
+
 $(ARCHIVE): $(OBJS)
 	ar rcs $(ARCHIVE) $(OBJS)
 

@@ -1,18 +1,16 @@
 #include "Tools.hpp"
 #include "Join.hpp"
 
+/*#############################################################################*/
 static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 								std::vector<std::string> &Channel,
 								std::vector<std::string> &Key);
 
-static bool	AssignChannel(	std::map<std::string, std::string> &Request,
-							std::vector<std::string> &Channel);
-static void	AssignKeyToChan(	std::map<std::string, std::string> &Request,
-								std::vector<std::string> &Key);
+static void	AssignChannel(	std::map<std::string, std::string> &Request,
+							std::vector<std::string> &Channel,
+							std::vector<std::string> &Keys);
 
-static bool	CheckDelimFormat(std::string const &src, const char &delim);
-static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts);
-
+/*#############################################################################*/
 
 bool	OrganiseRequest(	std::map<std::string, std::string> &Request,
 							std::vector<std::string> &CmdParts)
@@ -21,14 +19,10 @@ bool	OrganiseRequest(	std::map<std::string, std::string> &Request,
 	std::vector<std::string>	Key;
 
 	CmdParts.erase(CmdParts.begin());
-	if (CmdParts.size() == 0 || CmdParts.size() > 2
-			|| VerifyParamsFormat(CmdParts) != true)
+	if (CmdParts.size() == 0)
 		return (false);
 	DivideParamsType(CmdParts, Channel, Key);
-	if (AssignChannel(Request, Channel) != true)
-		return (false);
-	if (Key.empty() != true)
-		AssignKeyToChan(Request, Key);
+	AssignChannel(Request, Channel, Key);
 	return (true);
 }
 
@@ -41,73 +35,19 @@ static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 		Key = split(CmdParts[1], ",");
 }
 
-static bool	AssignChannel(	std::map<std::string, std::string> &Request,
-							std::vector<std::string> &Channel)
+static void	AssignChannel(	std::map<std::string, std::string> &Request,
+							std::vector<std::string> &Channel,
+							std::vector<std::string> &Keys)
 {
-	std::string	tmp;
+	size_t	SizeKeys = Keys.size();
 
 	for (size_t i = 0; i < Channel.size(); i++)
 	{
-		tmp = Channel[i];
-		if (tmp.size() == 1)
-			return (false);
-		else if ((tmp[0] != '#' && tmp[0] != '&') || (tmp[1] == '#' || tmp[1] == '&'))
-			return (false);
+		if (SizeKeys > 1 && SizeKeys - 1 >= i)
+			Request[Channel[i]] = Keys[i];
+		else if (SizeKeys == 1)
+			Request[Channel[i]] = Keys[0];
 		else
-		{
-			tmp.erase(tmp.begin());
-			Request[tmp] = "";
-		}
+			Request[Channel[i]] = "";
 	}
-	return (true);
-}
-
-static void	AssignKeyToChan(	std::map<std::string, std::string> &Request,
-								std::vector<std::string> &Key)
-{
-	std::map<std::string, std::string>::iterator	It = Request.begin();
-	std::vector<std::string>::iterator				ItKey = Key.begin();
-
-	while (It != Request.end())
-	{
-		if (ItKey != Key.end())
-		{
-			It->second = *ItKey;
-			if (Key.size() > 1)
-				ItKey++;
-		}
-		It++;
-	}
-}
-
-static bool	VerifyParamsFormat(std::vector<std::string> &CmdParts)
-{
-	if (CheckDelimFormat(CmdParts[0], ',') == false)
-		return (false);
-	if (CmdParts.size() > 1)
-	{
-		if (CheckDelimFormat(CmdParts[1], ',') == false)
-			return (false);
-	}
-	return (true);
-}
-
-static bool	CheckDelimFormat(std::string const &src, const char &delim)
-{
-	size_t	pos = 0;
-
-	if (src[0] == delim || src[src.size() - 1] == delim)
-		return (false);
-	while (pos < src.size() || pos != std::string::npos)
-	{
-		pos = src.find(delim, pos);
-		if (pos != std::string::npos)
-		{
-			if (src[pos + 1] == delim)
-				return (false);
-			else
-				pos++;
-		}
-	}
-	return (true);
 }
