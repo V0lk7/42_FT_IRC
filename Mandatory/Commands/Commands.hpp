@@ -6,6 +6,8 @@
 class Server;
 class Client;
 
+void	privateMessage( Server& server, Client& client, std::string& rawCommand );
+
 void    Join(Server &server, Client &client, std::string &RawCmd);
 
 void
