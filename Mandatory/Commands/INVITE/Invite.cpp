@@ -5,8 +5,6 @@
 #include <exception>
 #include <stdexcept>
 
-/* Paramètres: <pseudonyme> <canal> */
-
 typedef enum IErr {
     NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,
     CLIENTISTARGET, BADRIGHT, BADCHANNEL, TARGETINWAITLIST
