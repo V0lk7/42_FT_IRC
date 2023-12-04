@@ -5,13 +5,11 @@
 # include <vector>
 # include <list>
 
-# define SILENT 0
-# define INVITONLY_CHANGED 1
-# define TOPIC_CHANGED 2
-# define PASSWORD_CHANGED 3
-# define CLIENTRIGHT_CHANGED 4
-# define LIMIT_CHANGED 5 
-# define OUT_OF_RANGE 5 
+# define INVITONLY_CHANGED 0
+# define TOPIC_CHANGED 1
+# define PASSWORD_CHANGED 2
+# define CLIENTRIGHT_CHANGED 3
+# define LIMIT_CHANGED 4 
 
 class Server;
 class Channel;

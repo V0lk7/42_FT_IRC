@@ -15,7 +15,7 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 	std::map<std::string, std::string>::iterator	It;
 	std::vector<std::string>						CmdParts;
 
-	RawCmd.erase(RawCmd.find_first_of("\r\n"), std::string::npos);
+//	RawCmd.erase(RawCmd.find_first_of("\r\n"), std::string::npos);
 	CmdParts = split(RawCmd, " ");
 	if (OrganiseRequest(Request, CmdParts) == false)
 	{

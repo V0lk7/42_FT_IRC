@@ -43,7 +43,8 @@ SRCS		+=	Commands/JOIN/Join.cpp				\
 SRCS		+=	Commands/KICK/Kick.cpp				\
 				Commands/KICK/ParsingKick.cpp		\
 
-SRCS		+=	Commands/MODE/Mode_parsing.cpp		\
+SRCS		+=	Commands/MODE/Mode.cpp				\
+				Commands/MODE/Mode_parsing.cpp		\
 				Commands/MODE/Mode_utilities.cpp	\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)

@@ -18,7 +18,7 @@ TEST_SUITE("Utilities_test")
 
 		SUBCASE("Test_1 : Same state"){
 			Node = CreateNode(false, 'i', "");
-			CHECK(ChangeInvitOnlyMode(ChanPtr, Node) == SILENT);
+			CHECK(ChangeInvitOnlyMode(ChanPtr, Node) == ERR_KEYSET);
 			CHECK(ChanPtr->GetMode(INVITE_ONLY_SET) == false);
 		}
 		SUBCASE("Test_2 : Change the state"){
@@ -26,7 +26,7 @@ TEST_SUITE("Utilities_test")
 			CHECK(ChangeInvitOnlyMode(ChanPtr, Node) == INVITONLY_CHANGED);
 			CHECK(ChanPtr->GetMode(INVITE_ONLY_SET) == true);
 		}
-		SUBCASE("Test_3 : Change the state: return SILENT"){
+		SUBCASE("Test_3 : Change the state: return ERR_KEYSET"){
 			Node = CreateNode(false, 'i', "");
 			ChanPtr->SetMode(INVITE_ONLY_SET, true);
 			CHECK(ChangeInvitOnlyMode(ChanPtr, Node) == INVITONLY_CHANGED);
@@ -42,7 +42,7 @@ TEST_SUITE("Utilities_test")
 
 		SUBCASE("Test_1 : Same state"){
 			Node = CreateNode(false, 't', "");
-			CHECK(ChangeTopicMode(ChanPtr, Node) == SILENT);
+			CHECK(ChangeTopicMode(ChanPtr, Node) == ERR_KEYSET);
 			CHECK(ChanPtr->GetMode(TOPIC_CHANGE_SET) == false);
 		}
 		SUBCASE("Test_2 : Change the state"){
@@ -104,7 +104,7 @@ TEST_SUITE("Utilities_test")
 		}
 		SUBCASE("TEST_3 : same state"){
 			Node = CreateNode(true, 'o', "sudo");
-			CHECK(ChangeOperatorPrivilege(serv, ChanPtr, Node) == SILENT);
+			CHECK(ChangeOperatorPrivilege(serv, ChanPtr, Node) == ERR_KEYSET);
 		}
 		SUBCASE("TEST_4 : change into Op"){
 			Node = CreateNode(true, 'o', "Jean");
@@ -118,7 +118,7 @@ TEST_SUITE("Utilities_test")
 		}
 		SUBCASE("TEST_6 : same state 2"){
 			Node = CreateNode(false, 'o', "Jean");
-			CHECK(ChangeOperatorPrivilege(serv, ChanPtr, Node) == SILENT);
+			CHECK(ChangeOperatorPrivilege(serv, ChanPtr, Node) == ERR_KEYSET);
 		}
 	}
 	TEST_CASE("ChangeLimitMode_function"){
@@ -147,12 +147,12 @@ TEST_SUITE("Utilities_test")
 			CHECK(ChanPtr->GetLimitUsers() == 2);
 		}
 		SUBCASE("Test_5 : same state, overflow limit"){
-			Node = CreateNode(true, 'l', "214483648");
-			CHECK(ChangeLimitMode(ChanPtr, Node) == OUT_OF_RANGE);
+			Node = CreateNode(true, 'l', "2147483648");
+			CHECK(ChangeLimitMode(ChanPtr, Node) == ERR_NEEDMOREPARAMS);
 		}
 		SUBCASE("Test_6 : same state, underfow limit"){
 			Node = CreateNode(true, 'l', "0");
-			CHECK(ChangeLimitMode(ChanPtr, Node) == OUT_OF_RANGE);
+			CHECK(ChangeLimitMode(ChanPtr, Node) == ERR_NEEDMOREPARAMS);
 		}
 		SUBCASE("Test_7 : same state, negative"){
 			Node = CreateNode(true, 'l', "-1");

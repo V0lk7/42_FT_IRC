@@ -12,7 +12,7 @@ int	ChangeInvitOnlyMode(Channel *ChanPtr, CmdNode const &Mode)
 	bool	ActualState = ChanPtr->GetMode(INVITE_ONLY_SET);
 
 	if (ActualState == Mode.Op)
-		return (SILENT);
+		return (ERR_KEYSET);
 	ChanPtr->SetMode(INVITE_ONLY_SET, Mode.Op);
 	return (INVITONLY_CHANGED);
 }
@@ -22,7 +22,7 @@ int ChangeTopicMode(Channel *ChanPtr, CmdNode const &Mode)
 	bool	ActualState = ChanPtr->GetMode(TOPIC_CHANGE_SET);
 
 	if (ActualState == Mode.Op)
-		return (SILENT);
+		return (ERR_KEYSET);
 	ChanPtr->SetMode(TOPIC_CHANGE_SET, Mode.Op);
 	return (TOPIC_CHANGED);
 }
@@ -51,23 +51,24 @@ int	ChangeOperatorPrivilege(Server &serv, Channel *ChanPtr, CmdNode const &Mode)
 	if (CliPtr == NULL)
 		return (ERR_NOSUCHNICK);
 	else if (ChanPtr->IsClientOperator(*CliPtr) == Mode.Op)
-		return (SILENT);
+		return (ERR_KEYSET);
 	ChanPtr->ModifyClientRights(*CliPtr, Mode.Op);
 	return (CLIENTRIGHT_CHANGED);
 }
 
 int ChangeLimitMode(Channel *ChanPtr, CmdNode const &Mode)
 {
-	int		limit = 0;
+	double		limit = 0;
 
 	if (Mode.Param.empty() == true && Mode.Op == true)
 		return (ERR_NEEDMOREPARAMS);
-	else if (Mode.Param.find_first_not_of("0123456789") != std::string::npos)
-		return (ERR_NEEDMOREPARAMS);
-	if (Mode.Op == true)
-		limit = static_cast<int>(strtod(Mode.Param.c_str(), NULL));
-	if (errno == ERANGE || limit == 0)
-		return (OUT_OF_RANGE);
+	else if (Mode.Op == true){
+		if (Mode.Param.find_first_not_of("0123456789") != std::string::npos)
+			return (ERR_NEEDMOREPARAMS);
+		limit = strtod(Mode.Param.c_str(), NULL);
+		if (errno == ERANGE || limit == 0.0 || !(limit < 2147483648.0 && limit > -2147483648.0))
+			return (ERR_NEEDMOREPARAMS);
+	}
 	ChanPtr->SetLimitUsers(limit);
 	return (LIMIT_CHANGED);
 }
