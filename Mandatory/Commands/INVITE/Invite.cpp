@@ -29,8 +29,6 @@ inviteReaply( Client& client, Client* target, Channel* channel, int flag );
 void
 invite( Server& server, Client& client, const std::string& cmd )
 {
-    (void)server;
-    (void)client;
     Channel*                    channel;
     std::vector<std::string>    cuttingCmd = split( cmd, " " );
     Client*                     target = NULL;

@@ -18,8 +18,6 @@
 // #_TODO___________________________________________________________________# //
 // #-> better handling error msg: 1.                                        # //
 // #-> check idx 4 not sur i guess it would be 3                            # //
-// #-> i need a precise explanation of string storage 'Channel'             # //
-// #   Does it store '#' or '&' inside itself.                               # //
 // ########################################################################## //
 
 static std::string
@@ -30,11 +28,9 @@ rmClientOfChannel( Channel& channel, const std::string& key,
 void
 kick( const Server& server, Client& client, const std::string& cmd )
 {
-    (void)server;
-    (void)client;
-
     std::string                 reason;
     Channel*                    channel;
+
     std::vector<std::string>    data = split( cmd, " " );
     data.erase( data.begin() );
 

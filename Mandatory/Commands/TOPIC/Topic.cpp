@@ -39,8 +39,6 @@ topicReaply( Client& client, Channel* channel, int flag );
 void
 topic( const Server& server, Client& client, const std::string& cmd )
 {
-    (void)server;
-    (void)client;
     Channel* channel;
 
     std::vector<std::string> data = split( cmd, " " );
