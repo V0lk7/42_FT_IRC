@@ -18,7 +18,7 @@ privMsgError( int code, std::string message, Client& client)
 void
 privateMessage( Server& server, Client& client, std::string& rawCommand )
 {
-    if( rawCommand.find ( ":" ) == std::string::npos )
+    if( rawCommand.find ( ":" ) == std::string::npos || rawCommand.find ( ":" ) == rawCommand.size() - 1 )
         return privMsgError( ERR_NOTEXTTOSEND, "No message", client );
 
     std::string target = rawCommand.substr( 0, rawCommand.find( ":" ) );
@@ -36,6 +36,7 @@ privateMessage( Server& server, Client& client, std::string& rawCommand )
     std::string message = client.GetNickname();
     message += " : ";
     message += rawCommand.substr( rawCommand.find( ":" ) + 1 );
+    message += "\r\n";
 
     if( target.find ( "#" ) == 0 || target.find( "&" ) == 0 )
     {
