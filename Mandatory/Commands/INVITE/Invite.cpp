@@ -90,7 +90,7 @@ isValidRight( Client& client, Channel& channel, std::string& target )
     if ( targetAlreadyInChannel( channel, target ) != NEXT )
         return ( TARGETALREADYINCHANNEL );
 
-    if ( channel.GetMode( INVITE_ONLY ) || !hostRight( channel, client ) )
+    if ( channel.GetMode( INVITE_ONLY_SET ) || !hostRight( channel, client ) )
         return ( BADRIGHT );
 
     else

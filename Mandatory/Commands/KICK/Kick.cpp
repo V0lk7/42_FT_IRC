@@ -18,9 +18,8 @@
 // #_TODO___________________________________________________________________# //
 // #-> better handling error msg: 1.                                        # //
 // #-> check idx 4 not sur i guess it would be 3                            # //
-// #-> care about commment code to test: 2.                                 # //
-// #-> Send msg handling need to be modify put msg in client buffer         # //
-// #        ClientMsgToSend                                                 # //
+// #-> i need a precise explanation of string storage 'Channel'             # //
+// #   Does it store '#' or '&' inside itself.                               # //
 // ########################################################################## //
 
 static std::string
@@ -28,25 +27,24 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data );
 static void
 rmClientOfChannel( Channel& channel, const std::string& key,
                                                     const std::string& reason );
-
 void
-kick( const Server& server, Client& client, Channel& channel,
-                                                        const std::string& cmd )
+kick( const Server& server, Client& client, const std::string& cmd )
 {
     (void)server;
     (void)client;
 
-    std::string reason;
-    std::vector<std::string> data = split( cmd, " " );
+    std::string                 reason;
+    Channel*                    channel;
+    std::vector<std::string>    data = split( cmd, " " );
     data.erase( data.begin() );
 
+    channel = server.GetChannel( data[0] );
 
-    if ( parseCmd( cmd , channel, client ) != NONE ) {
-        std::cerr << "\t*NEED MSG HANDLING*" << std::endl;                       // TODO 1.
+    if ( parseCmd( cmd , channel, client ) != NONE )
         return ;
-    }
-    reason = msgMaker( client, channel, data );
-    rmClientOfChannel( channel, data[2], reason );
+
+    reason = msgMaker( client, *channel, data );
+    rmClientOfChannel( *channel, data[2], reason );
     return ;
 }
 
@@ -60,10 +58,7 @@ rmClientOfChannel( Channel& channel, const std::string& key,
                                                       it != target.end(); it++ )
     {
 
-        (void)reason;
-        // send( it->first->GetSocket(),                                          // TODO 2.
-        //                           reason.c_str(), strlen( reason.c_str() ), 0 );
-
+        it->first->SetMessageToSend( reason );
         if ( it->first->GetNickname() == key )
             channel.EraseClientFromChannel( *it->first );
     }
@@ -74,12 +69,12 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
     std::string msg;
     if ( data.size() <= 2 ) {
-        msg = client.GetNickname() + " KICK " + data[1] + " to #"
+        msg = client.GetNickname() + " KICK " + data[1] + " to "
             + channel.GetName() + "\r\n";
     }
     else
     {
-        msg = client.GetNickname() + " KICK " + data[1] + " to #"
+        msg = client.GetNickname() + " KICK " + data[1] + " to "
             + channel.GetName();
 
         for ( size_t idx = 4; idx < data.size(); idx++ )                         // TODO not sur about

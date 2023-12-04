@@ -11,8 +11,8 @@ Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
                            _Topic( "Test" ),
                            _LimitUsers( 5 )
 {
-    _Mode[ INVITE_ONLY  ] = false;
-    _Mode[ TOPIC_CHANGE ] = false;
+    _Mode[ INVITE_ONLY_SET  ] = false;
+    _Mode[ TOPIC_CHANGE_SET ] = false;
     _Mode[ PASSWORD_SET ] = false;
 
     _Users[ &one ]   = true;
@@ -25,8 +25,8 @@ Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)
 {
-	_Mode[INVITE_ONLY] = false;
-	_Mode[TOPIC_CHANGE] = false;
+	_Mode[INVITE_ONLY_SET] = false;
+	_Mode[TOPIC_CHANGE_SET] = false;
 	_Mode[PASSWORD_SET] = false;
 }
 
@@ -44,8 +44,8 @@ Channel	&Channel::operator=(Channel const &rhs)
     _Topic                = rhs._Topic;
     _LimitUsers           = rhs._LimitUsers;
 
-    _Mode[ INVITE_ONLY  ] = rhs._Mode[ INVITE_ONLY  ];
-    _Mode[ TOPIC_CHANGE ] = rhs._Mode[ TOPIC_CHANGE ];
+    _Mode[ INVITE_ONLY_SET  ] = rhs._Mode[ INVITE_ONLY_SET  ];
+    _Mode[ TOPIC_CHANGE_SET ] = rhs._Mode[ TOPIC_CHANGE_SET ];
     _Mode[ PASSWORD_SET ] = rhs._Mode[ PASSWORD_SET ];
 
     _Users                = rhs._Users;
@@ -207,14 +207,23 @@ void	Channel::SendMessageToClients(std::string const &Message, Client const &cli
 	return ;
 }
 
+bool	Channel::IsClientOperator(Client &client)
+{
+	std::map<Client *, bool>::iterator	It = this->_Users.find(&client);
+
+	if (It != this->_Users.end() && It->second == true)
+		return (true);
+	return (false);
+}
+
 std::ostream&	operator<<(std::ostream& print, const Channel& other)
 {
 	print << "CHANNEL NAME : " << other.GetName() << std::endl;
 	print << "PASSWORD : " << other.GetPassword() << std::endl;
 	print << "TOPIC : " << other.GetTopic() << std::endl;
 	print << "LIMIT USERS : " << other.GetLimitUsers() << std::endl;
-	print << "INVITE ONLY : " << other.GetMode(INVITE_ONLY) << std::endl;
-	print << "TOPIC CHANGE : " << other.GetMode(TOPIC_CHANGE) << std::endl;
+	print << "INVITE ONLY : " << other.GetMode(INVITE_ONLY_SET) << std::endl;
+	print << "TOPIC CHANGE : " << other.GetMode(TOPIC_CHANGE_SET) << std::endl;
 	print << "PASSWORD SET : " << other.GetMode(PASSWORD_SET) << std::endl;
 	return (print);
 }

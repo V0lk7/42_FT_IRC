@@ -2,12 +2,21 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "Error_code.hpp"
 
-void	CreateNewChannel(	Server &server, Client &client,
+bool	CreateNewChannel(	Server &server, Client &client,
 							std::map<std::string, std::string>::iterator &ChanParams)
 {
-	Channel	*NewChannel = new Channel(ChanParams->first);
+	std::string	ChanName(ChanParams->first);
+	std::string	ChanKey(ChanParams->second);
+	Channel		*NewChannel;
 
+	if ((ChanName[0] != '#' && ChanName[0] != '&')
+		|| ChanName.size() > static_cast<size_t>(CHAN_NAMESIZE_MAX)
+		|| ChanName.find('\a') != std::string::npos)
+		return (false);
+
+	NewChannel = new Channel(ChanParams->first);
 	if (ChanParams->second.empty() != true)
 	{
 		NewChannel->SetPassword(ChanParams->second);
@@ -15,6 +24,7 @@ void	CreateNewChannel(	Server &server, Client &client,
 	}
 	NewChannel->AddClientToChannel(client, true);
 	server.AddChannel(NewChannel);
+	return (true);
 }
 
 bool	VerifyChannelLimit(Channel &chan)
@@ -32,7 +42,7 @@ bool	VerifyChannelLimit(Channel &chan)
 
 bool	VerifyInvitOnly(Channel const &chan, Client &client)
 {
-	if (chan.GetMode(INVITE_ONLY) != true)
+	if (chan.GetMode(INVITE_ONLY_SET) != true)
 		return (true);
 	if (chan.UserInWaitingList(client) == true)
 		return (true);
@@ -50,59 +60,53 @@ bool	VerifyPasswordNeed(Channel const &chan, std::string const &Passwd)
 		return (false);
 }
 
-void	ErrorHandling(Client &client, Error const Type)
-{
-	std::string	ClientName;
-	std::string	Reply;
-
-	if (Type == SYNTAX_ERROR)
-	{
-		ClientName = client.GetNickname();
-		Reply	= ": 461 " + ClientName +
-			" JOIN :Syntax error. Proper usage /JOIN [# | &]<channel_name> <key>\r\n";
-	}
-	else
-		Reply = ": 451 :You have not registered. Please authenticate before executing commands.\r\n";
-	client.SetMessageToSend(Reply);
-}
-
 void	CreateReply(Client &client, Channel &channel, int flag)
 {
 	std::string	Reply;
 	std::string	ClientName(client.GetNickname());
-	std::string	ChannelName(channel.GetName());
+	std::string	ChannelName;
+
+	if (flag != BAD_CHANNEL)
+		ChannelName = channel.GetName();
 
 	if (flag == NEW_CHANNEL){
-		Reply	= ":" + ClientName + " JOIN #" + ChannelName + "\r\n";
-		Reply	+= ": 353 " + ClientName + " = #"
-				+ ChannelName + " :@" + ClientName + "\r\n";
-		Reply	+= ": 366 " + ClientName + " #"
+		Reply	= ":" + ClientName + " JOIN " + ChannelName + ".\r\n";
+		Reply	+= ": 353 " + ClientName + " = "
+				+ ChannelName + " :@" + ClientName + ".\r\n";
+		Reply	+= ": 366 " + ClientName + " "
 				+ ChannelName + " :End of /NAMES list.\r\n";
+	}
+	else if (flag == BAD_CHANNEL){
+		Reply = ": 461 " + ClientName + " JOIN :Bad Channel name.\r\n";
 	}
 	else if (flag == EXISTING_CHANNEL){
-		Reply	= ":" + ClientName + " JOIN #" + ChannelName + "\r\n";
+		Reply	= ":" + ClientName + " JOIN " + ChannelName + ".\r\n";
 		channel.SendMessageToClients(Reply, client);
 		if (channel.GetTopic().empty() == false)
-			Reply	+= ": 332 " + ClientName + " #" + ChannelName + " :" + channel.GetTopic() + "\r\n";
-		Reply	+= ": 353 " + ClientName + " = #" + ChannelName + " :" + channel.GetListClientIn() + "\r\n";
-		Reply	+= ": 366 " + ClientName + " #"
+			Reply	+= ": 332 " + ClientName + " " + ChannelName
+					+ " :" + channel.GetTopic() + ".\r\n";
+		else
+			Reply	+= ": 331 " + ClientName + " " + ChannelName + " :No Topic set.\r\n";
+		Reply	+= ": 353 " + ClientName + " = " + ChannelName
+				+ " :" + channel.GetListClientIn() + ".\r\n";
+		Reply	+= ": 366 " + ClientName + " "
 				+ ChannelName + " :End of /NAMES list.\r\n";
 	}
-	else if (flag == BAD_KEY){
-		Reply	= ": 475 " + ClientName + " #" + ChannelName
-				+ " :Cannot join channel (+k) - bad key\r\n";
+	else if (flag == ERR_BADCHANNELKEY){
+		Reply	= ": 475 " + ClientName + " " + ChannelName
+				+ " :Cannot join channel (+k) - bad key.\r\n";
 	}
-	else if (flag == TOO_MANY_CLIENT){
-		Reply	= ": 471 " + ClientName + " #" + ChannelName
-				+ " :Cannot join channel (+l) - channel full\r\n";
+	else if (flag == ERR_CHANNELISFULL){
+		Reply	= ": 471 " + ClientName + " " + ChannelName
+				+ " :Cannot join channel (+l) - channel full.\r\n";
 	}
-	else if (flag == NOT_INVITED){
-		Reply	= ": 473 " + ClientName + " #" + ChannelName
-				+ " :Cannot join channel (+i) - not invited\r\n";
+	else if (flag == ERR_INVITEONLYCHAN){
+		Reply	= ": 473 " + ClientName + " " + ChannelName
+				+ " :Cannot join channel (+i) - not invited.\r\n";
 	}
-	else if (flag == ALREADY_IN){
-		Reply	= ": 338 " + ClientName + " #" + ChannelName
-				+ " :Cannot join channel, you're already in\r\n";
+	else if (flag == ERR_USERONCHANNEL){
+		Reply	= ": 443 " + ClientName + " " + ChannelName
+				+ " :Cannot join channel, you're already in.\r\n";
 	}
 	else
 		Reply = "";

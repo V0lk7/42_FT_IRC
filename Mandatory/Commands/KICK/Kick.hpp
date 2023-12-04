@@ -25,6 +25,6 @@
 typedef enum Err { NONE, EMPTY, NOTARGET, CONTINUE, NOCHANNEL, NORIGHT } Err;
 
 enum Err
-parseCmd( const std::string& cmd, Channel& channel, Client& client );
+parseCmd( const std::string& cmd, Channel* channel, Client& client );
 
 #endif 
