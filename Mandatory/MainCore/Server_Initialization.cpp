@@ -46,12 +46,12 @@ static bool SetupTcpSocket(Server &ServerData, char const *Port)
 
 	std::cout << "Binding the socket" << std::endl;
 	if (bind(MasterSocket, (SockAddr *)&Address, sizeof(Address)) == -1){
-		std::cerr << "Error: " << errno << " : Socket Binding" << std::endl;
+		std::cerr << "Error: " << errno << " : bind function" << std::endl;
 		return (false);
 	}
 	std::cout << "Put the socket in listen mode" << std::endl;
 	if (listen(MasterSocket, BACKLOG) == -1){
-		std::cerr << "Error: " << errno << " : Socket Listening" << std::endl;
+		std::cerr << "Error: " << errno << " : listen function" << std::endl;
 		return (false);
 	}
 	return (true);
