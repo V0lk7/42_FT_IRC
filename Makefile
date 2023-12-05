@@ -24,7 +24,7 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Channel/	\
 				$(SRC_DIR)/Commands/KICK/	\
 
-SRCS		:=	MainCore/main.cpp \
+SRCS		:=	MainCore/old_main.cpp \
 
 SRCS		+=	Parsing/Parsing.cpp \
 

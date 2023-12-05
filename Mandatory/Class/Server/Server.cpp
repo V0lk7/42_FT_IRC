@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
+#include <unistd.h>
 
 Server::Server() : _Password( "password" ),
                    _MasterSocket( -1 )
@@ -81,6 +82,13 @@ void	Server::SetPassword(std::string const &NewPassword)
 	this->_Password = NewPassword;
 }
 
+void	Server::SetTcpConfig(uint16_t const &Port)
+{
+	_TcpConfig.sin_family = AF_INET; 
+	_TcpConfig.sin_addr.s_addr = INADDR_ANY; 
+	_TcpConfig.sin_port = htons(Port);
+}
+
 void	Server::SetMasterSocket(int const &NewMasterSocket)
 {
 	this->_MasterSocket = NewMasterSocket;
@@ -124,6 +132,11 @@ std::string	Server::GetPassword(void) const
 int	Server::GetMasterSocket(void) const
 {
 	return (this->_MasterSocket);
+}
+
+struct sockaddr_in	Server::GetTcpConfig(void) const
+{
+	return (this->_TcpConfig);
 }
 
 Channel	*Server::GetChannel(std::string const &Name) const

@@ -13,26 +13,7 @@
 /*																			  */
 /*============================================================================*/
 
-#include "Core.hpp"
-
-int	main(int ac, char **av)
+void	ProcessServer(Server &ServerData)
 {
-	//Set singnal handler
-	//PARSE USER ARGUMENTS
-	ErrArgs	Error = ParseArguments(ac, av);
-	if (Error != NONE){
-		ErrorArguments(Error);
-		return (1);
-	}
-	Server	ServerData(av[2]);
-	if (InitializeMasterSocket(ServerData, av[1]) != true)
-		return (1);
-	try {
-		ProcessServer(ServerData);
-	}
-	catch (std::exception &e){
-		std::cerr << "IrcServ: Error: " << e.what() << std::endl;
-		return (1);
-	}
-	return (0);
+	
 }

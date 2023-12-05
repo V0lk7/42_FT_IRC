@@ -13,26 +13,24 @@
 /*																			  */
 /*============================================================================*/
 
-#include "Core.hpp"
+#ifndef CORE_HPP
+# define CORE_HPP
 
-int	main(int ac, char **av)
-{
-	//Set singnal handler
-	//PARSE USER ARGUMENTS
-	ErrArgs	Error = ParseArguments(ac, av);
-	if (Error != NONE){
-		ErrorArguments(Error);
-		return (1);
-	}
-	Server	ServerData(av[2]);
-	if (InitializeMasterSocket(ServerData, av[1]) != true)
-		return (1);
-	try {
-		ProcessServer(ServerData);
-	}
-	catch (std::exception &e){
-		std::cerr << "IrcServ: Error: " << e.what() << std::endl;
-		return (1);
-	}
-	return (0);
-}
+# define BACKLOG 4096
+
+typedef struct sockaddr_in SockAdrrIn;
+typedef struct sockaddr SockAdrr;
+
+typedef enum ErrArgs {
+	NONE,
+	WRONG_PARAMETERS,
+	WRONG_PORT
+} ErrArgs;
+
+class Server;
+
+ErrArgs	ParseArguments(int ac, char **av);
+void	ErrorArguments(ErrArgs flag);
+bool	InitializeMasterSocket(Server &ServerData);
+
+#endif
