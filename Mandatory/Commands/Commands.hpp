@@ -8,5 +8,6 @@ class Client;
 
 void	Join(Server &server, Client &client, std::string &RawCmd);
 void	Mode(Server &server, Client &client, std::string &RawCmd);
+void	privateMessage( Server& server, Client& client, std::string& rawCommand );
 
 #endif
