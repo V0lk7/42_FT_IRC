@@ -67,9 +67,8 @@ class Channel{
 		size_t						GetLimitUsers(void) const;
 		bool						GetMode(int) const;
 		std::string					GetListClientIn(void);
-		std::map<Client *, bool>	&GetUsers(void);
-
-        std::map<Client *, bool>    GetUser( void ) const;
+		std::map<Client *, bool>&	GetUsers(void) ;
+		std::list<Client*>&	        GetWaitingList(void) ;
 
 		void                        AddClientToChannel(Client &, bool);
 		void                        EraseClientFromChannel(Client &);

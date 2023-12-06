@@ -39,8 +39,6 @@ topicReaply( Client& client, Channel* channel, int flag );
 void
 topic( const Server& server, Client& client, const std::string& cmd )
 {
-    (void)server;
-    (void)client;
     Channel* channel;
 
     std::vector<std::string> data = split( cmd, " " );
@@ -103,7 +101,7 @@ topicParsing( Client& client, Channel* channel )
         return ( TOPICNOCHANNEL );
     }
 
-    key = channel->GetUser();
+    key = channel->GetUsers();
     if ( !channel->GetMode( TOPIC_CHANGE_SET ) )
         right = true;
     else if ( !key.count( &client ) ) {
