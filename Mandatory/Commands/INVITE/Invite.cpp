@@ -7,17 +7,12 @@
 
 typedef enum IErr {
     NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,
-    CLIENTISTARGET, BADRIGHT, BADCHANNEL, TARGETINWAITLIST
+    CLIENTISTARGET, BADRIGHT, BADCHANNEL, TARGETINWAITLIST,
+    BADPARAMS
 } IErr;
 
-static Client&
-extractTarget( const std::string& key, Server& server );
-static IErr
-findTargetInServer( const std::string& target, Server& server );
 static IErr
 targetAlreadyInChannel( Channel& channel, const std::string& target, Client& client );
-static IErr
-hostRight( Channel& channel, Client& client );
 static IErr
 isValidRight( Client& client, Channel& channel, std::string& target );
 static bool
@@ -34,8 +29,10 @@ invite( Server& server, Client& client, const std::string& cmd )
     Client*                     target = NULL;
 
     cuttingCmd.erase( cuttingCmd.begin() );
-    if ( cuttingCmd.size() != 2 )
+    if ( cuttingCmd.size() != 2 ) {
+        inviteReaply( client, NULL, NULL, BADPARAMS );
         return ;
+    }
 
     channel = server.GetChannel( cuttingCmd[1] );
 
@@ -43,32 +40,18 @@ invite( Server& server, Client& client, const std::string& cmd )
         return ;
 
     try {
-        target = &extractTarget( cuttingCmd[0] , server );
+        target = server.GetClient( cuttingCmd[0] );
         channel->PutClientOnWaitingList( *target );
         inviteReaply( client, target, channel, NEXT );
     }
     catch ( std::exception& e ) {}
 }
 
-static Client&
-extractTarget( const std::string& key, Server& server )
-{
-    std::list<Client*>              clientList( server.getCllist() );
-    std::list<Client*>::iterator    check = clientList.begin();
-    while ( check != clientList.end() ) {
-        if ( (**check).GetNickname() == key )
-            return ( **check );
-        check++;
-    }
-
-    throw std::logic_error( "UNREACHABLE" );
-}
-
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
                Client& client, Channel& channel )
 {
-    if ( findTargetInServer( key[0], server ) != NEXT ) {
+    if ( !server.GetClient( key[0] ) ) {
         inviteReaply( client, NULL, &channel, NOTARGETINSERVER );
         return ( false );
     }
@@ -92,7 +75,7 @@ isValidRight( Client& client, Channel& channel, std::string& target )
         return ( TARGETALREADYINCHANNEL );
 
     if ( channel.GetMode( INVITE_ONLY_SET )
-        && hostRight( channel, client ) != NEXT )
+        && !channel.IsClientOperator( client ) )
     {
         inviteReaply( client, NULL, &channel, BADRIGHT );
         return ( BADRIGHT );
@@ -100,16 +83,6 @@ isValidRight( Client& client, Channel& channel, std::string& target )
 
     else
         return ( NEXT );
-}
-
-static IErr
-hostRight( Channel& channel, Client& client )
-{
-    std::map<Client*, bool> clientList( channel.GetUsers() );
-    if ( clientList.count( &client ) && clientList[ &client ] )
-        return ( NEXT );
-    else
-        return ( BADRIGHT );
 }
 
 static IErr
@@ -135,21 +108,6 @@ targetAlreadyInChannel( Channel& channel, const std::string& target, Client& cli
         checkWL++;
     }
     return ( NEXT );
-}
-
-static IErr
-findTargetInServer( const std::string& target, Server& server )
-{
-    std::list<Client*>              clientList( server.getCllist() );
-    std::list<Client*>::iterator    check = clientList.begin();
-
-    while ( check != clientList.end() ) {
-        if ( (**check).GetNickname() == target )
-            return ( NEXT );
-        check++;
-    }
-
-    return ( NOTARGETINSERVER );
 }
 
 // ########################################################################## //
@@ -200,6 +158,12 @@ inviteReaply( Client& client, Client* target, Channel* channel, int flag )
     else if ( flag == CLIENTISTARGET ) {
         reaply = ": 401 " + clientName + " "  + channelName
                + ":INVITE you can't invite yourself in a channel."
+               + "\r\n";
+    }
+
+    else if ( flag == BADPARAMS ) {
+        reaply = ": 461 " + clientName +
+               + ":INVITE command is invalid or improperly formatted."
                + "\r\n";
     }
 

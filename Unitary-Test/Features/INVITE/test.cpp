@@ -7,18 +7,18 @@
 #include "Channel.hpp"
 #include "../../../Mandatory/Commands/INVITE/Invite.cpp"
 
-TEST_CASE( "function: FindTargetInServer" ) 
-{
-    Server server;
-    std::string inServer( "Jimmy" );
-    std::string notInServer( "Henri" );
-    SUBCASE( "true" ) {
-        CHECK( findTargetInServer( inServer, server) == NEXT );
-    }
-    SUBCASE( "false" ) {
-        CHECK( findTargetInServer( notInServer, server) == NOTARGETINSERVER );
-    }
-}
+// TEST_CASE( "function: FindTargetInServer" ) 
+// {
+//     Server server;
+//     std::string inServer( "Jimmy" );
+//     std::string notInServer( "Henri" );
+//     SUBCASE( "true" ) {
+//         CHECK( findTargetInServer( inServer, server) == NEXT );
+//     }
+//     SUBCASE( "false" ) {
+//         CHECK( findTargetInServer( notInServer, server) == NOTARGETINSERVER );
+//     }
+// }
 
 TEST_CASE( "function: TargetAlreadyInChannel" )
 {
@@ -39,19 +39,19 @@ TEST_CASE( "function: TargetAlreadyInChannel" )
     }
 }
 
-TEST_CASE( "function: hostRight" )
-{
-    Server      server;
-    Channel*    channel( server.GetChannel( "#Test" ) );
-    Client*     validRight = server.GetClient( "sudo" );
-    Client*     noRight = server.GetClient( "Charles" );
-    SUBCASE( "valid right" ) {
-        CHECK( hostRight(*channel, *validRight) == NEXT );
-    }
-    SUBCASE( "unvalid Right" ) {
-            CHECK( hostRight(*channel, *noRight) == BADRIGHT );
-    }
-}
+// TEST_CASE( "function: hostRight" )
+// {
+//     Server      server;
+//     Channel*    channel( server.GetChannel( "#Test" ) );
+//     Client*     validRight = server.GetClient( "sudo" );
+//     Client*     noRight = server.GetClient( "Charles" );
+//     SUBCASE( "valid right" ) {
+//         CHECK( hostRight(*channel, *validRight) == NEXT );
+//     }
+//     SUBCASE( "unvalid Right" ) {
+//             CHECK( hostRight(*channel, *noRight) == BADRIGHT );
+//     }
+// }
 
 TEST_CASE( "function: isValidRight" )
 {
@@ -130,22 +130,22 @@ TEST_CASE( "function: invitePArsing" )
     }
 }
 
-TEST_CASE( "extractTarget" )
-{
-    Server      server;
-    Client*     Henri = new Client ( "Henri", CLIENT );
-    server.AddClient( Henri );
-    Channel*    channel( server.GetChannel( "#Test" ) );
-    Client*     sudo = server.GetClient( "sudo" );
-    Client*     Charles = server.GetClient( "Charles" );
-    std::string henri( "Henri" );
-    std::string itself( "sudo" );
-    std::string charles( "Charles" );
-    SUBCASE( "OK" ) {
-        if ( &extractTarget( henri, server ) != &*Henri  )
-            CHECK( true == false );
-    }
-}
+// TEST_CASE( "extractTarget" )
+// {
+//     Server      server;
+//     Client*     Henri = new Client ( "Henri", CLIENT );
+//     server.AddClient( Henri );
+//     Channel*    channel( server.GetChannel( "#Test" ) );
+//     Client*     sudo = server.GetClient( "sudo" );
+//     Client*     Charles = server.GetClient( "Charles" );
+//     std::string henri( "Henri" );
+//     std::string itself( "sudo" );
+//     std::string charles( "Charles" );
+//     SUBCASE( "OK" ) {
+//         if ( &extractTarget( henri, server ) != &*Henri  )
+//             CHECK( true == false );
+//     }
+// }
 
 TEST_CASE( "invite" )
 {
@@ -192,5 +192,10 @@ TEST_CASE( "inviteReaply" )
         invite( server, *sudo, "INVITE Damien #Test" );
         CHECK( sudo->GetMessage() ==
               ": 401 sudo #Test:INVITE cannot access to the target mentioned in server.\r\n" );
+    }
+    SUBCASE( "need more params" ) {
+        invite( server, *sudo, "INVITE Damien #Test caca" );
+        CHECK( sudo->GetMessage() ==
+              ": 461 sudo:INVITE command is invalid or improperly formatted.\r\n" );
     }
 }
