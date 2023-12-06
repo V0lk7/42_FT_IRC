@@ -43,6 +43,8 @@ SRCS		+=	Commands/JOIN/Join.cpp		\
 SRCS		+=	Commands/KICK/Kick.cpp		\
 				Commands/KICK/ParsingKick.cpp		\
 
+SRCS		+=	Commands/INVITE/Invite.cpp		\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
