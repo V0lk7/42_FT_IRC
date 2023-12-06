@@ -39,7 +39,7 @@ TEST_SUITE ( "KICK HANDLING" )
     TEST_CASE ( "rmClientOfChannel" )
     {
         rmClientOfChannel( *channel3, "Jean", "ok" );
-        CHECK ( channel3->GetUser().count( &*target3 ) == 0 );
+        CHECK ( channel3->GetUsers().count( &*target3 ) == 0 );
     }
 }
 // ########################################################################## //

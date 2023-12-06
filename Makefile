@@ -47,6 +47,8 @@ SRCS		+=	Commands/MODE/Mode.cpp				\
 				Commands/MODE/Mode_parsing.cpp		\
 				Commands/MODE/Mode_utilities.cpp	\
 
+SRCS		+=	Commands/INVITE/Invite.cpp			\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
