@@ -17,6 +17,7 @@
 # define CORE_HPP
 
 # define BACKLOG 4096
+# define BUFFER_SIZE 
 
 typedef struct sockaddr_in SockAdrrIn;
 typedef struct sockaddr SockAdrr;

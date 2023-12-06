@@ -74,3 +74,21 @@ static void	ProcessMasterSocket(Server &ServerData, fd_set &ListSd, int MasterSo
 	ServerData.AddClient(NewClient);
 	return ;
 }
+
+static void	ProcessClientsSocket(Server &ServerData, fd_set &ListSd)
+{
+	std::list<Client *>				&ClientList = ServerData.getCllist();
+	std::list<Client *>::iterator	It = ClientList.begin();
+	std::list<Client *>::iterator	ItEnd = ClientList.end();
+	std::string						Buffer;
+	int								Sd;
+
+	while (It != ItEnd){
+		Sd = It->GetSocket();
+		if (FD_ISSET(Sd, &ListSd) != 0){
+			buffer = ReadData(Sd, BUFFER_SIZE);
+			It->SetInputBuffer(buffer);
+		}
+		It++;
+	}
+}
