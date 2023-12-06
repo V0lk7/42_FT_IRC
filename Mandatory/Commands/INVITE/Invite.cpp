@@ -15,7 +15,7 @@ extractTarget( const std::string& key, Server& server );
 static IErr
 findTargetInServer( const std::string& target, Server& server );
 static IErr
-targetAlreadyInChannel( Channel& channel, const std::string& target );
+targetAlreadyInChannel( Channel& channel, const std::string& target, Client& client );
 static IErr
 hostRight( Channel& channel, Client& client );
 static IErr
@@ -68,8 +68,10 @@ static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
                Client& client, Channel& channel )
 {
-    if ( findTargetInServer( key[0], server ) != NEXT )
+    if ( findTargetInServer( key[0], server ) != NEXT ) {
+        inviteReaply( client, NULL, &channel, NOTARGETINSERVER );
         return ( false );
+    }
 
     if ( isValidRight( client, channel, key[0] ) != NEXT )
         return ( false );
@@ -81,14 +83,20 @@ inviteParsing( std::vector<std::string>& key, Server& server,
 static IErr
 isValidRight( Client& client, Channel& channel, std::string& target )
 {
-    if ( client.GetNickname() == target )
+    if ( client.GetNickname() == target ) {
+        inviteReaply( client, NULL, &channel, CLIENTISTARGET );
         return ( CLIENTISTARGET );
+    }
 
-    if ( targetAlreadyInChannel( channel, target ) != NEXT )
+    if ( targetAlreadyInChannel( channel, target, client ) != NEXT )
         return ( TARGETALREADYINCHANNEL );
 
-    if ( channel.GetMode( INVITE_ONLY_SET ) && hostRight( channel, client ) != NEXT )
+    if ( channel.GetMode( INVITE_ONLY_SET )
+        && hostRight( channel, client ) != NEXT )
+    {
+        inviteReaply( client, NULL, &channel, BADRIGHT );
         return ( BADRIGHT );
+    }
 
     else
         return ( NEXT );
@@ -105,7 +113,7 @@ hostRight( Channel& channel, Client& client )
 }
 
 static IErr
-targetAlreadyInChannel( Channel& channel, const std::string& target )
+targetAlreadyInChannel( Channel& channel, const std::string& target, Client& client )
 {
     std::map<Client*, bool>             clientInChannel( channel.GetUsers() );
     std::list<Client*>                  clientInWaitingList( channel.GetWaitingList() );
@@ -113,13 +121,17 @@ targetAlreadyInChannel( Channel& channel, const std::string& target )
     std::list<Client*>::iterator        checkWL = clientInWaitingList.begin();
 
     while ( check != clientInChannel.end() ) {
-        if ( check->first->GetNickname() == target )
+        if ( check->first->GetNickname() == target ) {
+            inviteReaply( client, NULL, &channel, TARGETALREADYINCHANNEL );
             return ( TARGETALREADYINCHANNEL );
+        }
         check++;
     }
     while ( checkWL != clientInWaitingList.end() ) {
-        if ( (**checkWL).GetNickname() == target )
+        if ( (**checkWL).GetNickname() == target ) {
+            inviteReaply( client, NULL, &channel, TARGETINWAITLIST );
             return ( TARGETINWAITLIST );
+        }
         checkWL++;
     }
     return ( NEXT );
