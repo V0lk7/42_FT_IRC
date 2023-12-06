@@ -13,18 +13,22 @@
 #include <sstream>
 #include <vector>
 
-#define TOPIC    0
-#define INVITE   1
-#define PRIVMSG  2
-#define KICK     3
-#define JOIN     4
-#define MODE     5
-#define CAP      6
-#define sPASS    7
-#define sNICK    8
-#define sUSER    9
-#define NC      10
-#define CLIENT  11
+typedef enum e_value {
+     TOPIC,
+     INVITE,
+     PRIVMSG,
+     KICK,
+     JOIN,
+     MODE,
+     CAP,
+     sPASS,
+     sNICK,
+     sUSER,
+     NC,
+     sCLIENT, 
+     NOLOGIN,
+     MOREPARAMS
+} e_value;
 
 
 // ########################################################################## //
@@ -82,19 +86,24 @@ handleCommand( const char* buffer, Server& server, Client& person ) {
         line = split(  tab[i], " " );
         if ( line.size() != 0 )
             way = wayChooser( line[0] );
-        if ( way == CLIENT )
+        if ( way == sCLIENT )
             break ;
-        else if ( way != -1 && line.size() > 1 )
+        else if ( way != -1 && line.size() > 1 ) {
              dispatch( tab[i], way, person, server );
+             person.ClearInputBuffer();
+        }
         else
-             // ERR_NEEDMOREPARAMS;
+            parsingReaply( person, MOREPARAMS );
         line.clear();                                                    // i need to split cmd one by one
     }
-    if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos )
+    if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos ) {
         ncCreation( tab, person, server );
-    else
+        person.ClearInputBuffer();
+    }
+    else {
         userCreation( tab, person, server );
-    person.ClearInputBuffer();
+        person.ClearInputBuffer();
+    }
     return ( way );
 }
 
@@ -121,7 +130,7 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
         // case MODE :
             // break ;
         default :
-//             ERROR_444 error no login
+            parsingReaply( person, NOLOGIN );
             return ;
     }
 }
@@ -255,10 +264,10 @@ wayChooser( const std::string& target ) {
     }
     for ( int i = 0; i < 4; i++ ) {
         if ( client[i] == target ) {
-            return ( CLIENT );
+            return ( sCLIENT );
         }
     }
-    return ( CLIENT );
+    return ( sCLIENT );
 }
 
 static void
@@ -266,15 +275,20 @@ parsingReaply( Client& person, int flag )
 {
 	std::string	reply;
 
-    if ( flag  == sPASS ) {
+    if ( flag  == sPASS )
         reply = "Require password.\r\n";
-    }
-    else if ( flag == sUSER ) {
+
+    else if ( flag == sUSER )
         reply = "Require username.\r\n";
-    }
-    else if ( flag == sNICK ) {
+
+    else if ( flag == sNICK )
         reply = "Require nickname.\r\n";
-    }
+
+    else if ( flag == NOLOGIN )
+        reply = ": 444 :LOGIN error no login.\r\n";
+
+    else if ( flag == MOREPARAMS )
+        reply = "More params requiert\r\n";
 
     person.SetMessageToSend( reply );
 }
