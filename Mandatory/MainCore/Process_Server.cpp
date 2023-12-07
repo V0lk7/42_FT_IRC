@@ -15,11 +15,14 @@
 
 #include "Server.hpp"
 #include "Core.hpp"
+#include "Parsing.hpp"
+#include <cstring>
 
 static int	SetListSd(	std::list<Client *> &ClientList,
 						fd_set &ListSd, int MasterSocket);
 
 static void	ProcessMasterSocket(Server &ServerData, fd_set &ListSd, int MasterSocket);
+static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd);
 
 void	ProcessServer(Server &ServerData)
 {
@@ -32,7 +35,9 @@ void	ProcessServer(Server &ServerData)
 		if (select(MaxSd + 1, &ListSd, NULL, NULL, NULL) == -1)
 			throw std::runtime_error("Error on select function");
 		ProcessMasterSocket(ServerData, ListSd, MasterSocket);
-		ProcessClientsSocket(ServerData, ListSd, MasterSocket);
+		ProcessClientSocket(ServerData, ListSd);
+		if (ServerData.SendReply() != true)
+			throw std::runtime_error("Error send system call");
 	}
 }
 
@@ -47,7 +52,7 @@ static int	SetListSd(	std::list<Client *> &ClientList,
 	FD_ZERO(&ListSd);
 	FD_SET(MasterSocket, &ListSd);
 	while (It != ItEnd){
-		Sd = It->GetSocket();
+		Sd = (*It)->GetSocket();
 		if (Sd > 0)
 			FD_SET(Sd, &ListSd);
 		if (Sd > MasterSocket)
@@ -62,32 +67,39 @@ static void	ProcessMasterSocket(Server &ServerData, fd_set &ListSd, int MasterSo
 	if (FD_ISSET(MasterSocket, &ListSd) == 0)
 		return ;
 
-	SockAddr	Addr		= static_cast<SockAddr>(Server.GetTcpConfig());
+	SockAddrIn	Addr		= ServerData.GetTcpConfig();
 	socklen_t	AddrSize	= static_cast<socklen_t>(sizeof(Addr));
-	int	NewSocket			= accept(MasterSocket, &Addr, &AddrSize);
+	int			NewSocket	= accept(MasterSocket, (sockaddr *)&Addr, &AddrSize);
 
 	if (NewSocket == -1)
 		throw std::runtime_error("Error on accept system call");
-
 	Client	*NewClient = new Client();
 	NewClient->SetSocket(NewSocket);
 	ServerData.AddClient(NewClient);
 	return ;
 }
 
-static void	ProcessClientsSocket(Server &ServerData, fd_set &ListSd)
+static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 {
 	std::list<Client *>				&ClientList = ServerData.getCllist();
 	std::list<Client *>::iterator	It = ClientList.begin();
-	std::list<Client *>::iterator	ItEnd = ClientList.end();
-	std::string						Buffer;
-	int								Sd;
+	char							Buffer[BUFFER_SIZE];
+	int								Sd, flag;
 
-	while (It != ItEnd){
-		Sd = It->GetSocket();
+	while (It != ClientList.end()){
+		Sd = (*It)->GetSocket();
 		if (FD_ISSET(Sd, &ListSd) != 0){
-			buffer = ReadData(Sd, BUFFER_SIZE);
-			It->SetInputBuffer(buffer);
+			flag = recv(Sd, Buffer, BUFFER_SIZE, 0);
+			if (flag == -1)
+				throw std::runtime_error("Error on read system call");
+			else if (flag == 0)
+				ServerData.DisconnectClient(**It);
+			else {
+				(*It)->SetInputBuffer(Buffer);
+				std::cout << "Buffer => $" << Buffer << std::endl;
+				handleCommand(Buffer, ServerData, *(*It));
+				bzero(Buffer, BUFFER_SIZE);
+			}
 		}
 		It++;
 	}

@@ -14,12 +14,16 @@
 /*============================================================================*/
 
 #include "Server.hpp"
+#include "Core.hpp"
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cerrno>
 #include <iostream>
 
-bool	InitializeMasterSocket(Server &ServerData, char const *port)
+static bool SetupTcpSocket(Server &ServerData, int MasterSocket, char const *Port);
+
+bool	InitializeMasterSocket(Server &ServerData, char const *Port)
 {
 	std::cout << "Create the master socket" << std::endl;
 	int MasterSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,12 +37,12 @@ bool	InitializeMasterSocket(Server &ServerData, char const *port)
 //	if (setsockopt(server->GetMasterSocket(), SOL_SOCKET, SO_REUSEADDR, (char *)&opt, 
 //		sizeof(opt)) < 0)
 //
-	if (SetupTcpSocket(MasterSocket, static_cast<uint16_t>(atoi(Port))) == false)
+	if (SetupTcpSocket(ServerData, MasterSocket, Port) == false)
 		return (false);
 	return (true);
 }
 
-static bool SetupTcpSocket(Server &ServerData, char const *Port)
+static bool SetupTcpSocket(Server &ServerData, int MasterSocket, char const *Port)
 {
 	ServerData.SetTcpConfig(static_cast<uint16_t>(atoi(Port)));
 

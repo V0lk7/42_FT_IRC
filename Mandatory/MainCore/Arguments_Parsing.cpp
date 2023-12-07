@@ -16,6 +16,8 @@
 #include "Core.hpp"
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <cerrno>
 
 ErrArgs	ParseArguments(int ac, char **av)
 {
@@ -35,14 +37,10 @@ ErrArgs	ParseArguments(int ac, char **av)
 
 void	ErrorArguments(ErrArgs flag)
 {
-	switch(flag){
-		case WRONG_PARAMETERS:
-			std::cerr << "Usage: ircserv \"Port\" \"Password\"";
-			break ;
-		case WRONG_PORT:
-			std::cerr << "Error: Port number invalid";
-			break ;
-	}
+	if (flag == WRONG_PARAMETERS)
+		std::cerr << "Usage: ircserv \"Port\" \"Password\"";
+	else
+		std::cerr << "Error: Port number invalid";
 	std::cerr << std::endl;
 	return ;
 }

@@ -7,7 +7,6 @@
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netinet/in.h>
-//# include <netinet/ip.h>
 
 class Channel;
 class Client;
@@ -49,6 +48,9 @@ class Server {
 		Channel				*GetChannel(std::string const &) const;
 		Client				*GetClient(std::string const &) const;
 
+		bool				SendReply(void);
+		void				DisconnectClient(Client &);	
+		void				ClearClients(void);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Server& other);

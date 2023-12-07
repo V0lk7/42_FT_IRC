@@ -2,6 +2,8 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include <unistd.h>
+#include <algorithm>
+#include <iostream>
 
 Server::Server() : _Password( "password" ),
                    _MasterSocket( -1 )
@@ -175,6 +177,60 @@ void	Server::AddChannel(Channel *NewChannel)
 void	Server::AddClient(Client *NewClient)
 {
 	this->_ClientList.push_back(NewClient);
+}
+
+bool	Server::SendReply(void)
+{
+	std::list<Client *>::iterator	It = _ClientList.begin();
+	std::string						Msg;
+
+	while (It != _ClientList.end()){
+		Msg = (*It)->GetMessage();
+		if (Msg.empty() != true){
+			if (send((*It)->GetSocket(), Msg.c_str(), Msg.size(), 0) == -1)
+				return (false);
+			(*It)->ClearMessage();
+		}
+		It++;
+	}
+	return (true);
+}
+
+void	Server::DisconnectClient(Client &client)
+{
+	std::list<Channel *>::iterator	It = _ChannelList.begin();
+	std::string						Reply;
+
+	Reply = ":" + client.GetNickname() + " QUIT : Disconnected.\r\n";
+	while (It != _ChannelList.end()){
+		if ((*It)->UserInChannel(client) == true){
+			(*It)->SendMessageToClients(Reply, client);
+			if ((*It)->UserInWaitingList(client) == true){
+				(*It)->EraseClientFromWaitingList(client);	
+			}
+			(*It)->EraseClientFromChannel(client);
+		}
+		It++;
+	}
+	close(client.GetSocket());
+	client.SetSocket(-1);
+}
+
+void	Server::ClearClients(void)
+{
+	std::list<Client *>::iterator	It;
+
+	while (true){
+		It = _ClientList.begin();
+		if ((*It)->GetSocket() == -1){
+			delete *It;
+			_ClientList.erase(It);
+			continue ;
+		}
+		It++;
+		if (It == _ClientList.end())
+			return ;
+	}
 }
 
 std::ostream&	operator<<(std::ostream& print, const Server& other)

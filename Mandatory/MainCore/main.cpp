@@ -14,6 +14,8 @@
 /*============================================================================*/
 
 #include "Core.hpp"
+#include "Server.hpp"
+#include <iostream>
 
 int	main(int ac, char **av)
 {

@@ -17,10 +17,10 @@
 # define CORE_HPP
 
 # define BACKLOG 4096
-# define BUFFER_SIZE 
+# define BUFFER_SIZE 512 
 
-typedef struct sockaddr_in SockAdrrIn;
-typedef struct sockaddr SockAdrr;
+typedef struct sockaddr_in SockAddrIn;
+typedef struct sockaddr SockAddr;
 
 typedef enum ErrArgs {
 	NONE,
@@ -32,6 +32,9 @@ class Server;
 
 ErrArgs	ParseArguments(int ac, char **av);
 void	ErrorArguments(ErrArgs flag);
-bool	InitializeMasterSocket(Server &ServerData);
+
+bool	InitializeMasterSocket(Server &ServerData, char const *Port);
+
+void	ProcessServer(Server &ServerData);
 
 #endif
