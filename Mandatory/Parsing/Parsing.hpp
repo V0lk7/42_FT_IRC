@@ -8,7 +8,7 @@
 # include "Server.hpp"
 
 void
-handleCommand( const char* buffer, const Server& server, Client& person );
+handleCommand( const char* buffer, Server& server, Client& person );
 void
 test( Client& person );
 

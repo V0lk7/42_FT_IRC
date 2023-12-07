@@ -23,6 +23,7 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
 				$(SRC_DIR)/Commands/KICK/	\
+				$(SRC_DIR)/
 
 SRCS		:=	MainCore/main.cpp \
 
