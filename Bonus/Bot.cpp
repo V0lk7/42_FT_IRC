@@ -3,7 +3,7 @@
 Bot::Bot() {}
 Bot::~Bot() {}
 
-Bot::Bot( int port ) : _port(port) {}
+Bot::Bot( int port, std::string const &pass) : _port(port), _password(pass){}
 
 Bot::Bot( Bot const &src )
 {

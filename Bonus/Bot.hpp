@@ -12,13 +12,14 @@ class Bot
 {
 	private :
 
-		int	_port;
-		int	_socket;
+		int			_port;
+		int			_socket;
+		std::string	_password;
 
 	public :
 
 		Bot();
-		Bot( int port );
+		Bot( int port, std::string const &password);
 		~Bot();
 		Bot( Bot const &src );
 
