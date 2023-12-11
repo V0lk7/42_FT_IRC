@@ -1,6 +1,9 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
+#include <unistd.h>
+#include <algorithm>
+#include <iostream>
 
 Server::Server() : _Password( "password" ),
                    _MasterSocket( -1 )
@@ -81,6 +84,13 @@ void	Server::SetPassword(std::string const &NewPassword)
 	this->_Password = NewPassword;
 }
 
+void	Server::SetTcpConfig(uint16_t const &Port)
+{
+	_TcpConfig.sin_family = AF_INET; 
+	_TcpConfig.sin_addr.s_addr = INADDR_ANY; 
+	_TcpConfig.sin_port = htons(Port);
+}
+
 void	Server::SetMasterSocket(int const &NewMasterSocket)
 {
 	this->_MasterSocket = NewMasterSocket;
@@ -126,6 +136,11 @@ int	Server::GetMasterSocket(void) const
 	return (this->_MasterSocket);
 }
 
+struct sockaddr_in	Server::GetTcpConfig(void) const
+{
+	return (this->_TcpConfig);
+}
+
 Channel	*Server::GetChannel(std::string const &Name) const
 {
 	std::list<Channel *>::const_iterator	ItBegin = this->_ChannelList.begin();
@@ -162,6 +177,58 @@ void	Server::AddChannel(Channel *NewChannel)
 void	Server::AddClient(Client *NewClient)
 {
 	this->_ClientList.push_back(NewClient);
+}
+
+bool	Server::SendReply(void)
+{
+	std::list<Client *>::iterator	It = _ClientList.begin();
+	std::string						Msg;
+
+	while (It != _ClientList.end()){
+		Msg = (*It)->GetMessage();
+		if (Msg.empty() != true){
+			if (send((*It)->GetSocket(), Msg.c_str(), Msg.size(), 0) == -1)
+				return (false);
+			(*It)->ClearMessage();
+		}
+		It++;
+	}
+	return (true);
+}
+
+void	Server::DisconnectClient(Client &client)
+{
+	std::list<Channel *>::iterator	It = _ChannelList.begin();
+	std::string						Reply;
+
+	Reply = ":" + client.GetNickname() + " QUIT : Disconnected.\r\n";
+	while (It != _ChannelList.end()){
+		if ((*It)->UserInChannel(client) == true){
+			(*It)->SendMessageToClients(Reply, client);
+			if ((*It)->UserInWaitingList(client) == true){
+				(*It)->EraseClientFromWaitingList(client);	
+			}
+			(*It)->EraseClientFromChannel(client);
+		}
+		It++;
+	}
+	close(client.GetSocket());
+	client.SetSocket(-1);
+}
+
+void	Server::EraseClientDisconnected(void)
+{
+	std::list<Client *>::iterator	It = _ClientList.begin();
+
+	while (It != _ClientList.end()){
+		if ((*It)->GetSocket() == -1){
+			delete (*It);
+			_ClientList.erase(It);
+			It = _ClientList.begin();
+			continue ;
+		}
+		It++;
+	}
 }
 
 std::ostream&	operator<<(std::ostream& print, const Server& other)
