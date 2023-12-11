@@ -112,18 +112,20 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
     (void)info;
     (void)person;
     (void)server;
-    if ( !person.GetStatement() )
-         way = -1;
+    // if ( !person.GetStatement() )
+    //      way = -1;
     switch ( way ) {
-        // case TOPIC :
-            // break ;
-        // case INVITE :
-            // break ;
+        case TOPIC :
+            topic( server, person, info );
+            break ;
+        case INVITE :
+            break ;
         case PRIVMSG :
             privateMessage( server, person, info );
             break ;
-        // case KICK :
-            // break ;
+        case KICK :
+            kick ( server, person, info );
+            break ;
         case JOIN :
             Join( server, person, info );
             break ;

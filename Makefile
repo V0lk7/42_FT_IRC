@@ -46,6 +46,8 @@ SRCS		+=	Commands/KICK/Kick.cpp		\
 
 SRCS		+=	Commands/INVITE/Invite.cpp		\
 
+SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)

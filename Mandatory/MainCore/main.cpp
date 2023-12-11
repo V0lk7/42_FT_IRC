@@ -21,6 +21,7 @@
 #include "Parsing.hpp"
 
 #include <algorithm>
+#include <iterator>
 #include <stdio.h> 
 #include <cstring> //strlen 
 #include <stdlib.h> 
@@ -190,18 +191,24 @@ int main(int argc , char *argv[])
                 }
                 else
                     buffer[ valread ] = '\0';
-
-                std::cout << "\t*buffer*\n" << buffer                         // TODO DEBUG
-                    << "socket: " << (*it)->GetSocket() << "\n" << std::endl; // TODO DEBUG
-
             }
-            // test( **it );                                                  // TODO debug
 
             if ( *buffer ) {
                 handleCommand( buffer, *server, **it );
                 bzero(buffer, sizeof(buffer));
             }
-            std::cout << **it << std::endl;
+
+        for ( std::list<Client *>::iterator it = list.begin();
+                it != list.end(); it++ )
+        {
+            if ( !(*it)->GetMessage().empty() )
+            {
+                send( (*it)->GetSocket(), (*it)->GetMessage().c_str(),
+                     (*it)->GetMessage().size(), 0 ); 
+                (*it)->ClearMessage();
+            }
+        }
+
         }
     }
     // TODO handle routine of kill program idea check socket descriptor of       // TODO
