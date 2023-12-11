@@ -55,6 +55,8 @@ SRCS		+=	Commands/INVITE/Invite.cpp			\
 
 SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
 
+SRCS		+=	Commands/WHO/Who.cpp				\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)

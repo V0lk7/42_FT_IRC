@@ -22,6 +22,9 @@ void
 invite( Server& server, Client& client, const std::string& cmd );
 
 void
-Mode(Server &server, Client &client, std::string &RawCmd);
+Mode(Server &server, Client &client, std::string &rawcmd);
+
+void
+Who(Server &server, Client &client, std::string &rawcmd);
 
 #endif

@@ -13,7 +13,8 @@ bool	CreateNewChannel(	Server &server, Client &client,
 
 	if ((ChanName[0] != '#' && ChanName[0] != '&')
 		|| ChanName.size() > static_cast<size_t>(CHAN_NAMESIZE_MAX)
-		|| ChanName.find('\a') != std::string::npos)
+		|| ChanName.find('\a') != std::string::npos
+		|| ChanName.find(':') != std::string::npos)
 		return (false);
 
 	NewChannel = new Channel(ChanParams->first);
@@ -69,16 +70,10 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 	if (flag != BAD_CHANNEL)
 		ChannelName = channel.GetName();
 
-	if (flag == NEW_CHANNEL){
+	if (flag == NEW_CHANNEL)
 		Reply	= ":" + ClientName + " JOIN " + ChannelName + "\r\n";
-		Reply	+= ": 353 " + ClientName + " = "
-				+ ChannelName + " :@" + ClientName + "\r\n";
-		Reply	+= ": 366 " + ClientName + " "
-				+ ChannelName + " :End of /NAMES list\r\n";
-	}
-	else if (flag == BAD_CHANNEL){
+	else if (flag == BAD_CHANNEL)
 		Reply = ": 461 " + ClientName + " JOIN :Bad Channel name\r\n";
-	}
 	else if (flag == EXISTING_CHANNEL){
 		Reply	= ":" + ClientName + " JOIN " + ChannelName + "\r\n";
 		channel.SendMessageToClients(Reply, client);
@@ -87,10 +82,6 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 					+ " :" + channel.GetTopic() + "\r\n";
 		else
 			Reply	+= ": 331 " + ClientName + " " + ChannelName + " :No Topic set\r\n";
-		Reply	+= ": 353 " + ClientName + " = " + ChannelName
-				+ " :" + channel.GetListClientIn() + "\r\n";
-		Reply	+= ": 366 " + ClientName + " "
-				+ ChannelName + " :End of /NAMES list\r\n";
 	}
 	else if (flag == ERR_BADCHANNELKEY){
 		Reply	= ": 475 " + ClientName + " " + ChannelName
