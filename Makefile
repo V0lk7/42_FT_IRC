@@ -52,6 +52,8 @@ SRCS		+=	Commands/MODE/Mode.cpp				\
 
 SRCS		+=	Commands/INVITE/Invite.cpp			\
 
+SRCS		+=	Commands/WHO/Who.cpp				\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
