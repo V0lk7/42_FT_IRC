@@ -67,7 +67,8 @@ DEPS		:=	$(OBJS:.o=.d)
 #								FLAGS										  #
 ###############################################################################
 
-CXX			=	c++
+#CXX			=	c++
+CXX			=	g++
 
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98 -ggdb3
 

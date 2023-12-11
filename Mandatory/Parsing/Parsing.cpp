@@ -20,6 +20,7 @@ typedef enum e_value {
      KICK,
      JOIN,
      MODE,
+	 WHO,
      CAP,
      sPASS,
      sNICK,
@@ -70,16 +71,16 @@ parsingReaply( Client& person, int flag );
 // ########################################################################## //
 // #_PARSER COMMAND_________________________________________________________# //
 int
-handleCommand( /* const char* buffer, */ Server& server, Client& person ) {
-    std::string                 work;
+handleCommand(Server& server, Client& person ) {
+    std::string                 work(person.GetInputBuffer());
     std::vector<std::string>    tab;
     std::vector<std::string>    line;
     int                         way = -1;
 
     // TODO need a APPEND with previous cmd maybe manage here
-    // person.SetInputBuffer( buffer );
-    work = person.GetInputBuffer();
+	//
     tab = split( work, "\r\n" );
+	std::cout << "Cmd *-" << work << "-*" << std::endl;
     if ( tab.empty() )
         return ( way ) ;
     for ( size_t i = 0; tab.size() != 0  && i < tab.size(); i++ ) {
@@ -105,13 +106,14 @@ handleCommand( /* const char* buffer, */ Server& server, Client& person ) {
         userCreation( tab, person, server );
         person.ClearInputBuffer();
     }
+	std::cout << "Reply\n*-" << person.GetMessage() << "-*" << std::endl;
     return ( way );
 }
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server ) {
     if ( !person.GetStatement() )
-         way = -1;
+		way = -1 ;
     switch ( way ) {
         case TOPIC :
             topic( server, person, info );
@@ -129,6 +131,9 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
             break ;
         case MODE :
             Mode( server, person, info );
+            break ;
+		case WHO :
+            Who( server, person, info );
             break ;
         default :
             parsingReaply( person, NOLOGIN );
@@ -255,10 +260,10 @@ isValidNickName( Server& server, std::string key )
 
 static int
 wayChooser( const std::string& target ) {
-    std::string cmd[6] = { "TOPIC", "INVITE", "PRIVMSG", "KICK", "JOIN", "MODE" };
+    std::string cmd[7] = { "TOPIC", "INVITE", "PRIVMSG", "KICK", "JOIN", "MODE", "WHO" };
     std::string client[4] = { "CAP", "PASS", "NICK", "USER" };
 
-    for ( int i = 0; i < 6; i++ ) {
+    for ( int i = 0; i < 7; i++ ) {
         if ( cmd[i] == target ) {
             return ( i );
         }
