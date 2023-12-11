@@ -70,43 +70,43 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 		ChannelName = channel.GetName();
 
 	if (flag == NEW_CHANNEL){
-		Reply	= ":" + ClientName + " JOIN " + ChannelName + ".\r\n";
+		Reply	= ":" + ClientName + " JOIN " + ChannelName + "\r\n";
 		Reply	+= ": 353 " + ClientName + " = "
-				+ ChannelName + " :@" + ClientName + ".\r\n";
+				+ ChannelName + " :@" + ClientName + "\r\n";
 		Reply	+= ": 366 " + ClientName + " "
-				+ ChannelName + " :End of /NAMES list.\r\n";
+				+ ChannelName + " :End of /NAMES list\r\n";
 	}
 	else if (flag == BAD_CHANNEL){
-		Reply = ": 461 " + ClientName + " JOIN :Bad Channel name.\r\n";
+		Reply = ": 461 " + ClientName + " JOIN :Bad Channel name\r\n";
 	}
 	else if (flag == EXISTING_CHANNEL){
-		Reply	= ":" + ClientName + " JOIN " + ChannelName + ".\r\n";
+		Reply	= ":" + ClientName + " JOIN " + ChannelName + "\r\n";
 		channel.SendMessageToClients(Reply, client);
 		if (channel.GetTopic().empty() == false)
 			Reply	+= ": 332 " + ClientName + " " + ChannelName
-					+ " :" + channel.GetTopic() + ".\r\n";
+					+ " :" + channel.GetTopic() + "\r\n";
 		else
-			Reply	+= ": 331 " + ClientName + " " + ChannelName + " :No Topic set.\r\n";
+			Reply	+= ": 331 " + ClientName + " " + ChannelName + " :No Topic set\r\n";
 		Reply	+= ": 353 " + ClientName + " = " + ChannelName
-				+ " :" + channel.GetListClientIn() + ".\r\n";
+				+ " :" + channel.GetListClientIn() + "\r\n";
 		Reply	+= ": 366 " + ClientName + " "
-				+ ChannelName + " :End of /NAMES list.\r\n";
+				+ ChannelName + " :End of /NAMES list\r\n";
 	}
 	else if (flag == ERR_BADCHANNELKEY){
 		Reply	= ": 475 " + ClientName + " " + ChannelName
-				+ " :Cannot join channel (+k) - bad key.\r\n";
+				+ " :Cannot join channel (+k) - bad key\r\n";
 	}
 	else if (flag == ERR_CHANNELISFULL){
 		Reply	= ": 471 " + ClientName + " " + ChannelName
-				+ " :Cannot join channel (+l) - channel full.\r\n";
+				+ " :Cannot join channel (+l) - channel full\r\n";
 	}
 	else if (flag == ERR_INVITEONLYCHAN){
 		Reply	= ": 473 " + ClientName + " " + ChannelName
-				+ " :Cannot join channel (+i) - not invited.\r\n";
+				+ " :Cannot join channel (+i) - not invited\r\n";
 	}
 	else if (flag == ERR_USERONCHANNEL){
 		Reply	= ": 443 " + ClientName + " " + ChannelName
-				+ " :Cannot join channel, you're already in.\r\n";
+				+ " :Cannot join channel, you're already in\r\n";
 	}
 	else
 		Reply = "";

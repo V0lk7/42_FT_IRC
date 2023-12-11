@@ -18,6 +18,8 @@
 // #_TODO___________________________________________________________________# //
 // #-> better handling error msg: 1.                                        # //
 // #-> check idx 4 not sur i guess it would be 3                            # //
+// #-> i need a precise explanation of string storage 'Channel'             # //
+// #   Does it store '#' or '&' inside itself.                               # //
 // ########################################################################## //
 
 static std::string

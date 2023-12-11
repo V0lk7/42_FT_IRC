@@ -70,14 +70,14 @@ parsingReaply( Client& person, int flag );
 // ########################################################################## //
 // #_PARSER COMMAND_________________________________________________________# //
 int
-handleCommand( const char* buffer, Server& server, Client& person ) {
+handleCommand( /* const char* buffer, */ Server& server, Client& person ) {
     std::string                 work;
     std::vector<std::string>    tab;
     std::vector<std::string>    line;
     int                         way = -1;
 
     // TODO need a APPEND with previous cmd maybe manage here
-    person.SetInputBuffer( buffer );
+    // person.SetInputBuffer( buffer );
     work = person.GetInputBuffer();
     tab = split( work, "\r\n" );
     if ( tab.empty() )
@@ -91,6 +91,7 @@ handleCommand( const char* buffer, Server& server, Client& person ) {
         else if ( way != -1 && line.size() > 1 ) {
              dispatch( tab[i], way, person, server );
              person.ClearInputBuffer();
+             break ;
         }
         else
             parsingReaply( person, MOREPARAMS );
@@ -109,11 +110,8 @@ handleCommand( const char* buffer, Server& server, Client& person ) {
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server ) {
-    (void)info;
-    (void)person;
-    (void)server;
-    // if ( !person.GetStatement() )
-    //      way = -1;
+    if ( !person.GetStatement() )
+         way = -1;
     switch ( way ) {
         case TOPIC :
             topic( server, person, info );
@@ -129,8 +127,9 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
         case JOIN :
             Join( server, person, info );
             break ;
-        // case MODE :
-            // break ;
+        case MODE :
+            Mode( server, person, info );
+            break ;
         default :
             parsingReaply( person, NOLOGIN );
             return ;
@@ -145,9 +144,9 @@ ncCreation( const std::vector<std::string>& info, Client& person, Server& server
     std::vector<std::string>    word;
     size_t                      check = 0;
 
-    if ( info.empty() || info.size() == 1 ) {
-        return ;
-    }
+    // if ( info.empty() ) {
+    //     return ;
+    // }
 
     toParse = info;
     if ( !person.GetStatementStep( PASSWD ) ) {
@@ -217,7 +216,7 @@ loadUserData( Client& person, Server& server, const std::string& data, int word 
         buffer = toWork.substr( it + 5, std::string::npos );
         if ( isValidNickName(server, buffer) )
             person.SetNickname( buffer );
-        else
+        else if ( person.GetNickname().empty() )
             parsingReaply( person, sNICK );
         buffer.clear();
     }
@@ -240,7 +239,7 @@ loadUserData( Client& person, Server& server, const std::string& data, int word 
 static bool
 isValidNickName( Server& server, std::string key )
 {
-    if ( key.length() < 9 )
+    if ( key.length() > 8 )
         return ( false );
 
     for( size_t i = 0; i < key.length(); i++) {
@@ -291,6 +290,9 @@ parsingReaply( Client& person, int flag )
 
     else if ( flag == MOREPARAMS )
         reply = "More params requiert\r\n";
+
+    else
+        reply = "";
 
     person.SetMessageToSend( reply );
 }

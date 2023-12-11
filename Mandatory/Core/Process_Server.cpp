@@ -96,7 +96,7 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 				ServerData.DisconnectClient(**It);
 			else {
 				(*It)->SetInputBuffer(Buffer);
-				handleCommand(Buffer, ServerData, *(*It));
+				handleCommand(/* Buffer, */ ServerData, *(*It));
 				bzero(Buffer, BUFFER_SIZE);
 			}
 		}
