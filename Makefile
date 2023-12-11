@@ -29,24 +29,28 @@ SRCS		:=	MainCore/main.cpp 					\
 				MainCore/Server_Initialization.cpp	\
 				MainCore/Process_Server.cpp			\
 
-SRCS		+=	Parsing/Parsing.cpp \
+SRCS		+=	Parsing/Parsing.cpp 				\
 
-SRCS		+=	Tools/cSplit.cpp \
+SRCS		+=	Tools/cSplit.cpp 					\
 
-SRCS		+=	Class/Client/Client.cpp		\
-				Class/Channel/Channel.cpp	\
+SRCS		+=	Class/Client/Client.cpp				\
+				Class/Channel/Channel.cpp			\
 				Class/Server/Server.cpp
 
-SRCS		+=	Commands/TOPIC/Topic.cpp		\
+SRCS		+=	Commands/TOPIC/Topic.cpp			\
 
-SRCS		+=	Commands/JOIN/Join.cpp		\
+SRCS		+=	Commands/JOIN/Join.cpp				\
 				Commands/JOIN/Join_parsing.cpp		\
 				Commands/JOIN/Join_utilities.cpp	\
 
-SRCS		+=	Commands/KICK/Kick.cpp		\
+SRCS		+=	Commands/KICK/Kick.cpp				\
 				Commands/KICK/ParsingKick.cpp		\
 
-SRCS		+=	Commands/INVITE/Invite.cpp		\
+SRCS		+=	Commands/MODE/Mode.cpp				\
+				Commands/MODE/Mode_parsing.cpp		\
+				Commands/MODE/Mode_utilities.cpp	\
+
+SRCS		+=	Commands/INVITE/Invite.cpp			\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
