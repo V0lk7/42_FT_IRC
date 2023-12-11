@@ -25,7 +25,7 @@ TEST_SUITE("Test of Join Main file")
 
 		SUBCASE("Test1: Valid client, join existing channel.")
 		{
-			cmd = "/JOIN #Chan0\r\n";
+			cmd = "/JOIN #Chan0";
 			Join(server, *cli, cmd);
 			reply = ":Client2 JOIN #Chan0.\r\n";
 			CHECK(server.GetClient("Client0")->GetMessage() == reply);
@@ -34,14 +34,14 @@ TEST_SUITE("Test of Join Main file")
 		}
 		SUBCASE("Test2: Valid client, join new channel.")
 		{
-			cmd = "/JOIN #Chan1\r\n";
+			cmd = "/JOIN #Chan1";
 			Join(server, *cli, cmd);
 			chan = server.GetChannel("#Chan1");
 			CHECK(chan->GetUsers().size() == 1);
 		}
 		SUBCASE("Test3: Valid client, join existing and new")
 		{
-			cmd = "/JOIN #Chan0,&Chan1\r\n";
+			cmd = "/JOIN #Chan0,&Chan1";
 			Join(server, *cli, cmd);
 			reply = ":Client2 JOIN #Chan0.\r\n";
 			CHECK(server.GetClient("Client0")->GetMessage() == reply);
@@ -52,14 +52,14 @@ TEST_SUITE("Test of Join Main file")
 		}
 		SUBCASE("Test4: Valid client, wrong format cmd")
 		{
-			cmd = "/JOIN Chan0\r\n";
+			cmd = "/JOIN Chan0";
 			reply = ": 461 Client2 JOIN :Bad Channel name.\r\n";
 			Join(server, *cli, cmd);
 			CHECK(cli->GetMessage() == reply);
 		}
 		SUBCASE("Test5: Valid client, wrong format cmd")
 		{
-			cmd = "/JOIN\r\n";
+			cmd = "/JOIN";
 			reply = ": 461 Client2 JOIN :Need more parameters.\r\n";
 			Join(server, *cli, cmd);
 			CHECK(cli->GetMessage() == reply);
