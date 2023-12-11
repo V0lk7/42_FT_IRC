@@ -16,11 +16,17 @@
 #include "Core.hpp"
 #include "Server.hpp"
 #include <iostream>
+#include <signal.h>
+
+#define EXIT 1
+void	ExitHandlerSignal(int Signal);
 
 int	main(int ac, char **av)
 {
-	//Set singnal handler
-	//PARSE USER ARGUMENTS
+	if (signal(SIGINT, ExitHandlerSignal) == SIG_ERR){
+		std::cout << "IrcServer: Error signal function" << std::endl;
+		return (1);
+	}
 	ErrArgs	Error = ParseArguments(ac, av);
 	if (Error != NONE){
 		ErrorArguments(Error);
@@ -32,9 +38,18 @@ int	main(int ac, char **av)
 	try {
 		ProcessServer(ServerData);
 	}
+	catch (int exit){
+		std::cout << "IrcServ: Server disconnected." << std::endl;
+	}
 	catch (std::exception &e){
 		std::cerr << "IrcServ: Error: " << e.what() << std::endl;
 		return (1);
 	}
 	return (0);
+}
+
+void	ExitHandlerSignal(int Signal)
+{
+	if (Signal == SIGINT)
+		throw EXIT;
 }

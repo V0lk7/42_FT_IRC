@@ -96,7 +96,6 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 				ServerData.DisconnectClient(**It);
 			else {
 				(*It)->SetInputBuffer(Buffer);
-				std::cout << "Buffer => $" << Buffer << std::endl;
 				handleCommand(Buffer, ServerData, *(*It));
 				bzero(Buffer, BUFFER_SIZE);
 			}
