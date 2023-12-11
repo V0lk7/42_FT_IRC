@@ -50,7 +50,7 @@ class Server {
 
 		bool				SendReply(void);
 		void				DisconnectClient(Client &);	
-		void				ClearClients(void);
+		void				EraseClientDisconnected(void);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Server& other);

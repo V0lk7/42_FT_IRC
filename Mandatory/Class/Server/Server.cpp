@@ -216,20 +216,18 @@ void	Server::DisconnectClient(Client &client)
 	client.SetSocket(-1);
 }
 
-void	Server::ClearClients(void)
+void	Server::EraseClientDisconnected(void)
 {
-	std::list<Client *>::iterator	It;
+	std::list<Client *>::iterator	It = _ClientList.begin();
 
-	while (true){
-		It = _ClientList.begin();
+	while (It != _ClientList.end()){
 		if ((*It)->GetSocket() == -1){
-			delete *It;
+			delete (*It);
 			_ClientList.erase(It);
+			It = _ClientList.begin();
 			continue ;
 		}
 		It++;
-		if (It == _ClientList.end())
-			return ;
 	}
 }
 

@@ -102,4 +102,5 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 		}
 		It++;
 	}
+	ServerData.EraseClientDisconnected();
 }
