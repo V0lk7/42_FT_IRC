@@ -15,12 +15,11 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 	std::map<std::string, std::string>::iterator	It;
 	std::vector<std::string>						CmdParts;
 
-//	RawCmd.erase(RawCmd.find_first_of("\r\n"), std::string::npos);
 	CmdParts = split(RawCmd, " ");
 	if (OrganiseRequest(Request, CmdParts) == false)
 	{
 		client.SetMessageToSend(": 461 " + client.GetNickname() +
-								" JOIN :Need more parameters.\r\n");
+								" JOIN :Need more parameters\r\n");
 		return ;
 	}
 	for (std::map<std::string, std::string>::iterator It = Request.begin(); 
