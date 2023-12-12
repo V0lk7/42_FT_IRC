@@ -1,4 +1,10 @@
 #include "Kick.hpp"
+#include "Tools.hpp"
+#include "Channel.hpp"
+#include "Client.hpp"
+#include <vector>
+
+#include <iostream>
 
 // ########################################################################## //
 // #_TODO___________________________________________________________________# //
@@ -13,7 +19,7 @@
 static enum Err
 checkRight( Channel& channel, Client& client );
 static enum Err
-findTarget( std::vector<std::string>& data, Channel& channel, Client& client );
+findTarget( std::string& key, Channel& channel, Client& client );
 static void
 kickReaply( Client& client, Channel* channel, int flag );
 
@@ -39,7 +45,7 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
         return ( NORIGHT );
     }
 
-    if ( findTarget( splitOnSpace, *channel, client ) != CONTINUE ) {
+    if ( findTarget( splitOnSpace[1], *channel, client ) != CONTINUE ) {
         kickReaply( client, channel, NOTARGET );
         return ( NOTARGET );
     }
@@ -51,28 +57,23 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
 // #_TOOLS__________________________________________________________________# //
 
 static enum Err
-findTarget( std::vector<std::string>& data, Channel& channel, Client& client )
+findTarget( std::string& key, Channel& channel, Client& client )
 {
     std::map<Client*, bool> target( channel.GetUsers() );
     bool                    found = false;
-    size_t                  pos = 0;
-    std::string             himself;
 
-    for ( std::vector<std::string>::iterator itData = data.begin();
-                                       itData != data.end(); itData++, pos++ ) {
-        for ( std::map<Client*, bool>::iterator itTarget = target.begin();
-                                        itTarget != target.end(); itTarget++ ) {
-            if ( !itData->empty() && pos == 1 &&
-                                   itTarget->first->GetNickname() == *itData ) {
-                himself = *itData;
-                found = true;
-                break ;
-            }
+    std::cout << "key: " << key << std::endl; // TODO
+    for ( std::map<Client*, bool>::iterator itTarget = target.begin();
+                  itTarget != target.end(); itTarget++                 )
+    {
+        if ( itTarget->first->GetNickname() == key ) {
+            found = true; break ;
         }
     }
-    if ( himself == client.GetNickname() )
-        found = false;                                                           // TODO maybe specify it's
-    return ( found ? CONTINUE : NOTARGET );                                      // hiself
+
+    if ( key == client.GetNickname() )
+        found = false;
+    return ( found ? CONTINUE : NOTARGET );
 }
 
 static enum Err
@@ -98,7 +99,7 @@ kickReaply( Client& client, Channel* channel, int flag )
 
     if ( flag == NOTARGET ) {
         reply = ": 442 " + clientName + " " + channelName
-              + ":KICK cannot access to the target mentioned and has kicked it."
+              + ":KICK cannot access to the target mentioned and has kicked it"
               + "\r\n";
     }
 
@@ -110,7 +111,7 @@ kickReaply( Client& client, Channel* channel, int flag )
 
     else if ( flag == NOCHANNEL ) {
         reply = ": 476 " + clientName +
-              + ":KICK command is invalid or improperly formatted."
+              + ":KICK command is invalid or improperly formatted"
               + "\r\n";
     }
     else 

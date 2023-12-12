@@ -80,6 +80,8 @@ class Channel{
 		void                        ModifyClientRights(Client &, bool);
 		void                        SendMessageToClients(std::string const &, Client const &);
 		bool                        IsClientOperator(Client &client);
+
+        void                        displayUsers( void );
 };
 
 std::ostream&	operator<<(std::ostream& print, const Channel& other);

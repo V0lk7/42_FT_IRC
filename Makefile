@@ -2,6 +2,10 @@ SHELL = /bin/sh
 
 -include Variables.mk
 
+SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
+
+SRCS		+=	Commands/WHO/Who.cpp				\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
@@ -13,6 +17,7 @@ DEPS		:=	$(OBJS:.o=.d)
 ###############################################################################
 
 CXX			=	c++
+#CXX			=	g++
 
 CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98 -ggdb3
 

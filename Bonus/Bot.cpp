@@ -22,32 +22,40 @@ Bot	&Bot::operator=( Bot const &rhs )
 void	Bot::on()
 {
 	std::string pass = "PASS " + _password + "\r\n";
-	std::string nick = "NICK Minouchka\r\n";
+
+	std::string nick = "NICK Sarah\r\n";
+
 	std::string user = "USER StupidBot\r\n";
-	std::string channel = "JOIN #CutestBot\r\n";
+
+	std::string channel = "JOIN #Bot\r\n";
+
     send(this->_socket, pass.c_str(), pass.size(), 0);
     send(this->_socket, nick.c_str(), nick.size(), 0);
     send(this->_socket, user.c_str(), user.size(), 0);
+    puts( "top" );
+    usleep(1000000);
+    puts( "top" );
     send(this->_socket, channel.c_str(), channel.size(), 0);
-
+    usleep(1000000);
 	puts( "Bot on" );
 
-	std::string fishing = "PRIVMSG #CutestBot :Hello, I'm Minouchka and I'm here to help you. Ask me any question and I'll answer it.\r\n";
-    send(this->_socket, fishing.c_str(), fishing.size(), 0);
+	std::string fishing = "PRIVMSG #Bot :Hello, I'm Sarah and I'm here to help you. Ask me any question and I'll answer it.\r\n";
 
     while (true)
     {
-        char buffer[1024];
-        int ret = recv(this->_socket, buffer, 1023, 0);
-        if (ret <= 0)
-            break;
-        buffer[ret] = 0;
-        std::cout << buffer;
-        if (std::string(buffer).find("PING") == 0)
-        {
-            std::string pong = "PONG " + std::string(buffer).substr(5) + "\r\n";
-            send(this->_socket, pong.c_str(), pong.size(), 0);
-        }
+        send(this->_socket, fishing.c_str(), fishing.size(), 0);
+        usleep(1000000);
+        // char buffer[1024];
+        // int ret = recv(this->_socket, buffer, 1023, 0);
+        // if (ret <= 0)
+        //     break;
+        // buffer[ret] = 0;
+        // std::cout << buffer;
+        // if (std::string(buffer).find("PING") == 0)
+        // {
+        //     std::string pong = "PONG " + std::string(buffer).substr(5) + "\r\n";
+        //     send(this->_socket, pong.c_str(), pong.size(), 0);
+        // }
     }
 	// std::string nop = "PRIVMSG #CutestBot :I didn't understand your question, can you rephrase it?\r\n";
 }
