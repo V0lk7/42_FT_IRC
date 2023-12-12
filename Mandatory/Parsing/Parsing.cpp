@@ -2,6 +2,7 @@
 #include "Client.hpp"
 #include "Server.hpp"
 #include "Commands.hpp"
+#include "Authentication.hpp"
 
 #include <iostream>
 #include <vector>
@@ -48,16 +49,16 @@ typedef enum e_value {
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server );
-static void
-ncCreation( const std::vector<std::string>& info, Client& person, Server& server );
-static void
-userCreation( const std::vector<std::string>& info, Client& person, Server& server );
+//static void
+//ncCreation( const std::vector<std::string>& info, Client& person, Server& server );
+//static void
+//userCreation( const std::vector<std::string>& info, Client& person, Server& server );
 static int
 wayChooser( const std::string& target );
-static void
-loadUserData( Client& person, Server& server, const std::string& data, int word );
-static bool
-isValidNickName( Server& server, std::string key );
+//static void
+//loadUserData( Client& person, Server& server, const std::string& data, int word );
+//static bool
+//isValidNickName( Server& server, std::string key );
 static void
 parsingReaply( Client& person, int flag );
 
@@ -89,16 +90,16 @@ handleCommand(Server& server, Client& person ) {
         }
         else
             parsingReaply( person, MOREPARAMS );
-        line.clear();                                                    // i need to split cmd one by one
+        line.clear();                              // i need to split cmd one by one
     }
-    if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos ) {
+/*    if ( tab.size() == 1 && tab[0].find( "CAP" ) == std::string::npos ) {
         ncCreation( tab, person, server );
         person.ClearInputBuffer();
     }
     else {
         userCreation( tab, person, server );
         person.ClearInputBuffer();
-    }
+    }*/
 	std::cout << "Reply\n*-" << person.GetMessage() << "-*" << std::endl;
     return ( way );
 }
@@ -137,7 +138,7 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
 
 // ########################################################################## //
 // #_CLIENT GESTION_________________________________________________________# //
-static void
+/*static void
 ncCreation( const std::vector<std::string>& info, Client& person, Server& server ) {
     std::vector<std::string>    toParse;
     std::vector<std::string>    word;
@@ -251,7 +252,7 @@ isValidNickName( Server& server, std::string key )
 
     return ( true );
 }
-
+*/
 static int
 wayChooser( const std::string& target ) {
     std::string cmd[7] = { "TOPIC", "INVITE", "PRIVMSG", "KICK", "JOIN", "MODE", "WHO" };

@@ -23,7 +23,7 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
 				$(SRC_DIR)/Commands/KICK/	\
-				$(SRC_DIR)/
+				$(SRC_DIR)/Authentication/	\
 
 SRCS		:=	Core/main.cpp 					\
 				Core/Arguments_Parsing.cpp		\
@@ -56,6 +56,10 @@ SRCS		+=	Commands/INVITE/Invite.cpp			\
 SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
 
 SRCS		+=	Commands/WHO/Who.cpp				\
+
+SRCS		+=	Authentication/Pass.cpp				\
+				Authentication/Nick.cpp				\
+				Authentication/User.cpp				\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 

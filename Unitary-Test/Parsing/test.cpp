@@ -18,7 +18,7 @@ TEST_SUITE( "PARSING" ) {
         // CHECK ( handleCommand( "MODE", server2, *Charles ) == MODE );
         //
         // CHECK ( handleCommand( "PASS", server2, *Charles ) == CLIENT );
-        CHECK ( handleCommand( "NICK", server2, *Charles ) == CLIENT );
+        //CHECK ( handleCommand( "NICK", server2, *Charles ) == CLIENT );
         // CHECK ( handleCommand( "USER", server2, *Charles ) == CLIENT );
     }
 }
