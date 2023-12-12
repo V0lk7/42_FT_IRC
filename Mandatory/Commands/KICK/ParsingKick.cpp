@@ -1,4 +1,10 @@
 #include "Kick.hpp"
+#include "Tools.hpp"
+#include "Channel.hpp"
+#include "Client.hpp"
+#include <vector>
+
+#include <iostream>
 
 // ########################################################################## //
 // #_TODO___________________________________________________________________# //
@@ -93,7 +99,7 @@ kickReaply( Client& client, Channel* channel, int flag )
 
     if ( flag == NOTARGET ) {
         reply = ": 442 " + clientName + " " + channelName
-              + ":KICK cannot access to the target mentioned and has kicked it."
+              + ":KICK cannot access to the target mentioned and has kicked it"
               + "\r\n";
     }
 
@@ -105,7 +111,7 @@ kickReaply( Client& client, Channel* channel, int flag )
 
     else if ( flag == NOCHANNEL ) {
         reply = ": 476 " + clientName +
-              + ":KICK command is invalid or improperly formatted."
+              + ":KICK command is invalid or improperly formatted"
               + "\r\n";
     }
     else 

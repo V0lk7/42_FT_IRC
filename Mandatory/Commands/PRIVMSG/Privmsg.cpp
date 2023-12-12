@@ -1,9 +1,9 @@
 #include "Error_code.hpp"
-#include "Parsing.hpp"
 #include "Channel.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Tools.hpp"
+#include <sstream>
 
 static void
 privMsgError( int code, std::string message, Client& client)
@@ -16,7 +16,7 @@ privMsgError( int code, std::string message, Client& client)
 }
 
 void
-privateMessage( Server& server, Client& client, std::string& rawCommand )
+PrivateMessage( Server& server, Client& client, std::string& rawCommand )
 {
     if( rawCommand.find ( ":" ) == std::string::npos || rawCommand.find ( ":" ) == rawCommand.size() - 1 )
         return privMsgError( ERR_NOTEXTTOSEND, "No message", client );

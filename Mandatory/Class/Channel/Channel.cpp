@@ -202,6 +202,8 @@ std::string	Channel::GetListClientIn(void)
 	{
 		if (It->second == true)
 			ClientList += "@";
+		else
+			ClientList += "+";
 		ClientList += It->first->GetNickname() + " ";
 		It++;
 	}

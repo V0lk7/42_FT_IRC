@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <sstream>
 
 // FUNCTION BEHAVIOUR:
 // this split cut on all delimiter found.

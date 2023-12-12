@@ -1,5 +1,7 @@
 #include "Tools.hpp"
-#include "Join.hpp"
+#include <vector>
+#include <map>
+#include <string>
 
 /*#############################################################################*/
 static void	DivideParamsType(	std::vector<std::string> &CmdParts,
@@ -9,7 +11,6 @@ static void	DivideParamsType(	std::vector<std::string> &CmdParts,
 static void	AssignChannel(	std::map<std::string, std::string> &Request,
 							std::vector<std::string> &Channel,
 							std::vector<std::string> &Keys);
-
 /*#############################################################################*/
 
 bool	OrganiseRequest(	std::map<std::string, std::string> &Request,

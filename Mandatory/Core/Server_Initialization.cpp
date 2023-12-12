@@ -15,7 +15,6 @@
 
 #include "Server.hpp"
 #include "Core.hpp"
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <cstdlib>
 #include <cerrno>

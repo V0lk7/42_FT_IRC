@@ -16,8 +16,8 @@
 #ifndef CORE_HPP
 # define CORE_HPP
 
-# define BACKLOG 4096
-# define BUFFER_SIZE 512 
+# define BACKLOG 4096		//see /proc/sys/net/core/somaxconn
+# define BUFFER_SIZE 512	//RFC 1459 section 8.2 
 
 typedef struct sockaddr_in SockAddrIn;
 typedef struct sockaddr SockAddr;

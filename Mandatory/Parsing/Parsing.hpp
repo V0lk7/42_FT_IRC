@@ -1,14 +1,11 @@
 #ifndef PARSING_HPP
 # define PARSING_HPP
 
-# include <iostream>
-# include <sstream>
-# include <vector>
-# include "Client.hpp"
-# include "Server.hpp"
+class Server;
+class Client;
 
 void
-handleCommand( /* const char* buffer, */ Server& server, Client& person );
+handleCommand(Server& server, Client& person );
 void
 test( Client& person );
 
