@@ -3,6 +3,8 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
+#include <iostream>
+
 // ########################################################################## //
 // #_TODO___________________________________________________________________# //
 // #-> two functions:-> change TOPIC if arguments were send                 # //
@@ -58,6 +60,7 @@ topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
     std::string topic;
     std::string output;
     std::vector<std::string>::iterator check = data.begin();
+    check++;
 
     if ( data.size() == 1 && (*check)[0] == ':' && (*check).length() == 1 ) {
         topicReaply( client, channel, TOPICERR );
@@ -69,6 +72,8 @@ topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
         return ( TOPICERR );
     }
 
+    topic = *check;
+    check++;
     while ( check != data.end() )
     {
         topic += " " + *check;
@@ -86,21 +91,24 @@ topicParsing( Client& client, Channel* channel )
     std::map<Client*, bool>             key; 
     bool                                right = false;
 
+    std::cout << client.GetNickname() << std::endl;
     if ( !channel ) {
         topicReaply( client, channel, TOPICNOCHANNEL );
         return ( TOPICNOCHANNEL );
     }
 
     key = channel->GetUsers();
-    if ( !channel->GetMode( TOPIC_CHANGE_SET ) )
+    if ( !channel->GetMode( TOPIC_CHANGE_SET ) ) {
         right = true;
+    }
     else if ( !key.count( &client ) ) {
         topicReaply( client, channel, TOPICCLIENTNOINCHANNEL );
         return ( TOPICCLIENTNOINCHANNEL );
     }
 
-    else if ( key[ &client ] )
+    else if ( key[ &client ] ) {
         right = true;
+    }
 
     else {
         topicReaply( client, channel, TOPICNORIGHT );
@@ -141,9 +149,11 @@ topicReaply( Client& client, Channel* channel, int flag )
     }
 
     else if ( flag == TOPICSEND ) {
-        reply = ": 331 " + clientName + " " + channelName
-              + ":TOPIC the channel topic is \"" + channel->GetTopic()
-              + "\"\r\n";
+        reply = ":" + clientName + " 331 dan " + channelName;
+        if ( !channel->GetTopic().empty() )
+              reply += " " + channel->GetTopic() + "\r\n";
+        else
+              reply += ":NO topic is set.\r\n";
     }
 
     else if ( flag == TOPICCHANGED ) {
