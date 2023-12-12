@@ -5,7 +5,7 @@
 # include <vector>
 # include <string>
 
-# define CHAN_NAMESIZE_MAX 200
+# define CHAN_NAMESIZE_MAX 200	//RFC 1459 section 1.3
 
 class Server;
 class Client;

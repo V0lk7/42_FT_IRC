@@ -14,6 +14,7 @@
 /*============================================================================*/
 
 #include "Server.hpp"
+#include "Client.hpp"
 #include "Core.hpp"
 #include "Parsing.hpp"
 #include <cstring>
@@ -96,7 +97,7 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 				ServerData.DisconnectClient(**It);
 			else {
 				(*It)->SetInputBuffer(Buffer);
-				handleCommand(Buffer, ServerData, *(*It));
+				handleCommand(ServerData, *(*It));
 				bzero(Buffer, BUFFER_SIZE);
 			}
 		}

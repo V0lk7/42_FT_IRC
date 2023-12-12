@@ -1,18 +1,10 @@
 #ifndef KICK_HPP
 # define KICK_HPP
 
-#include <iostream>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <cstring>
+# include <string>
 
-#include "Tools.hpp"
-#include "Parsing.hpp"
-#include "Server.hpp"
-#include "Client.hpp"
-#include "Channel.hpp"
+class Channel;
+class Client;
 
 // ########################################################################## //
 // #_TODO___________________________________________________________________# //

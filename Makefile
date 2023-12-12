@@ -23,6 +23,7 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
 				$(SRC_DIR)/Commands/KICK/	\
+				$(SRC_DIR)/
 
 SRCS		:=	Core/main.cpp 					\
 				Core/Arguments_Parsing.cpp		\
@@ -52,6 +53,8 @@ SRCS		+=	Commands/MODE/Mode.cpp				\
 
 SRCS		+=	Commands/INVITE/Invite.cpp			\
 
+SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
+
 SRCS		+=	Commands/WHO/Who.cpp				\
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
@@ -65,6 +68,7 @@ DEPS		:=	$(OBJS:.o=.d)
 ###############################################################################
 
 CXX			=	c++
+#CXX			=	g++
 
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98 -ggdb3
 

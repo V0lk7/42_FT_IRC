@@ -1,14 +1,4 @@
-#include <iostream>
-#include <string>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <cstring>
-
-#include "Kick.hpp"
 #include "Tools.hpp"
-#include "Parsing.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -37,7 +27,7 @@ static void
 topicReaply( Client& client, Channel* channel, int flag );
 
 void
-topic( const Server& server, Client& client, const std::string& cmd )
+Topic( const Server& server, Client& client, const std::string& cmd )
 {
     Channel* channel;
 

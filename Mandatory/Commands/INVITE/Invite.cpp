@@ -2,8 +2,6 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Tools.hpp"
-#include <exception>
-#include <stdexcept>
 
 typedef enum IErr {
     NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,
@@ -22,7 +20,7 @@ static void
 inviteReaply( Client& client, Client* target, Channel* channel, int flag );
 
 void
-invite( Server& server, Client& client, const std::string& cmd )
+Invite( Server& server, Client& client, const std::string& cmd )
 {
     Channel*                    channel;
     std::vector<std::string>    cuttingCmd = split( cmd, " " );
@@ -39,12 +37,9 @@ invite( Server& server, Client& client, const std::string& cmd )
     if ( !inviteParsing( cuttingCmd, server, client, *channel ) )
         return ;
 
-    try {
-        target = server.GetClient( cuttingCmd[0] );
-        channel->PutClientOnWaitingList( *target );
-        inviteReaply( client, target, channel, NEXT );
-    }
-    catch ( std::exception& e ) {}
+    target = server.GetClient( cuttingCmd[0] );
+    channel->PutClientOnWaitingList( *target );
+    inviteReaply( client, target, channel, NEXT );
 }
 
 static bool
@@ -127,49 +122,49 @@ inviteReaply( Client& client, Client* target, Channel* channel, int flag )
 
     if ( flag == NOTARGETINSERVER ) {
         reaply = ": 401 " + clientName + " " + channelName
-               + ":INVITE cannot access to the target mentioned in server."
+               + ":INVITE cannot access to the target mentioned in server"
                + "\r\n";
     }
 
     else if ( flag == BADRIGHT ) {
         reaply = ": 473 " + clientName + " " + channelName
-               + ":INVITE You are not a channel operator."
+               + ":INVITE You are not a channel operator"
                + "\r\n";
     }
 
     else if ( flag == BADCHANNEL ) {
         reaply = ": 442 " + clientName +
-               + ":INVITE command is invalid or improperly formatted."
+               + ":INVITE command is invalid or improperly formatted"
                + "\r\n";
     }
 
     else if ( flag == TARGETALREADYINCHANNEL ) {
         reaply = ": 443 " + clientName + " "  + channelName
-               + ":INVITE target is already in channel."
+               + ":INVITE target is already in channel"
                + "\r\n";
     }
 
     else if ( flag == TARGETINWAITLIST ) {
         reaply = ": 443 " + clientName + " "  + channelName
-               + ":INVITE target is already invited."
+               + ":INVITE target is already invited"
                + "\r\n";
     }
 
     else if ( flag == CLIENTISTARGET ) {
         reaply = ": 401 " + clientName + " "  + channelName
-               + ":INVITE you can't invite yourself in a channel."
+               + ":INVITE you can't invite yourself in a channel"
                + "\r\n";
     }
 
     else if ( flag == BADPARAMS ) {
         reaply = ": 461 " + clientName +
-               + ":INVITE command is invalid or improperly formatted."
+               + ":INVITE command is invalid or improperly formatted"
                + "\r\n";
     }
 
     else if ( flag == NEXT ) {
         reaply = ": 301 " + clientName + " " + channelName
-               + ":INVITE you've been invited in channel."
+               + ":INVITE you've been invited in channel"
                + "\r\n";
     }
 

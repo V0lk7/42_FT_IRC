@@ -4,7 +4,6 @@
 #include "Tools.hpp"
 #include "Mode.hpp"
 #include "Error_code.hpp"
-#include <string>
 
 static int	ChangeMode(Server &server, Channel *ChanPtr, CmdNode const &Mode);
 static void	ModeReply(Client &client, Channel *ChanPtr, int Flag, CmdNode *Mode);
