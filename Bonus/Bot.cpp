@@ -21,13 +21,35 @@ Bot	&Bot::operator=( Bot const &rhs )
 
 void	Bot::on()
 {
-	std::string msg = "PRIVMSG #test :Hello World\r\n";
-	std::cout << "Bot on" << std::endl;
-	while (1)
-	{
-		send(this->_socket, msg.c_str(), msg.size(), 0);
-		sleep(1);
-	}
+	std::string pass = "PASS " + _password + "\r\n";
+	std::string nick = "NICK Minouchka\r\n";
+	std::string user = "USER StupidBot\r\n";
+	std::string channel = "JOIN #CutestBot\r\n";
+    send(this->_socket, pass.c_str(), pass.size(), 0);
+    send(this->_socket, nick.c_str(), nick.size(), 0);
+    send(this->_socket, user.c_str(), user.size(), 0);
+    send(this->_socket, channel.c_str(), channel.size(), 0);
+
+	puts( "Bot on" );
+
+	std::string fishing = "PRIVMSG #CutestBot :Hello, I'm Minouchka and I'm here to help you. Ask me any question and I'll answer it.\r\n";
+    send(this->_socket, fishing.c_str(), fishing.size(), 0);
+
+    while (true)
+    {
+        char buffer[1024];
+        int ret = recv(this->_socket, buffer, 1023, 0);
+        if (ret <= 0)
+            break;
+        buffer[ret] = 0;
+        std::cout << buffer;
+        if (std::string(buffer).find("PING") == 0)
+        {
+            std::string pong = "PONG " + std::string(buffer).substr(5) + "\r\n";
+            send(this->_socket, pong.c_str(), pong.size(), 0);
+        }
+    }
+	// std::string nop = "PRIVMSG #CutestBot :I didn't understand your question, can you rephrase it?\r\n";
 }
 
 void	Bot::run()
