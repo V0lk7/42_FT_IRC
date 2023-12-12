@@ -56,7 +56,7 @@ rmClientOfChannel( Channel& channel, const std::string& key,
 static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
-    std::cout << "\tTEST ICI PUTAIN\n"; // TODO 
+//    std::cout << "\tTEST ICI PUTAIN\n"; // TODO 
     std::string msg;
     if ( data.size() <= 2 ) {
         msg = ":" + client.GetNickname() + " KICK "
@@ -64,14 +64,14 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
     }
     else
     {
-        std::cout << "\tTEST\n"; // TODO 
+//        std::cout << "\tTEST\n"; // TODO 
         msg = ":" + client.GetNickname() + " KICK "
             + channel.GetName() + " " + data[1] + " :";
 
         for ( size_t idx = 4; idx < data.size(); idx++ )                         // TODO not sur about
             msg += " " + data[idx];                                              // idx = 4
 
-        std::cout << "msg: " << msg;
+  //      std::cout << "msg: " << msg;
         msg += "\r\n";
     }
     return ( msg );
