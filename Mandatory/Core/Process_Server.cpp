@@ -14,6 +14,7 @@
 /*============================================================================*/
 
 #include "Server.hpp"
+#include "Client.hpp"
 #include "Core.hpp"
 #include "Parsing.hpp"
 #include <cstring>

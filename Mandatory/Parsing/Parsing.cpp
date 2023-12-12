@@ -3,14 +3,7 @@
 #include "Server.hpp"
 #include "Commands.hpp"
 
-#include <cctype>
-#include <strings.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <cstdio>
-#include <cstring>
 #include <iostream>
-#include <sstream>
 #include <vector>
 
 typedef enum e_value {
@@ -116,15 +109,16 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
 		way = -1 ;
     switch ( way ) {
         case TOPIC :
-            topic( server, person, info );
+            Topic( server, person, info );
             break ;
         case INVITE :
+			Invite( server, person, info );
             break ;
         case PRIVMSG :
-            privateMessage( server, person, info );
+            PrivateMessage( server, person, info );
             break ;
         case KICK :
-            kick ( server, person, info );
+            Kick ( server, person, info );
             break ;
         case JOIN :
             Join( server, person, info );

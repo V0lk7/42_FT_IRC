@@ -1,13 +1,4 @@
-#include <iostream>
-#include <string>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <cstring>
-
 #include "Tools.hpp"
-#include "Parsing.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -28,7 +19,7 @@ static void
 rmClientOfChannel( Channel& channel, const std::string& key,
                                                     const std::string& reason );
 void
-kick( const Server& server, Client& client, const std::string& cmd )
+Kick( const Server& server, Client& client, const std::string& cmd )
 {
     std::string                 reason;
     Channel*                    channel;
