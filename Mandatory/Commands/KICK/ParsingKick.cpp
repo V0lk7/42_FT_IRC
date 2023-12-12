@@ -25,8 +25,6 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
 {
     std::vector<std::string> splitOnSpace = split( cmd , " " );
 
-    std::cout << "RawCmd:" << cmd << std::endl;
-
     splitOnSpace.erase( splitOnSpace.begin() );
     if ( !splitOnSpace.size() )
         return ( EMPTY );
@@ -41,7 +39,7 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
         return ( NORIGHT );
     }
 
-    if ( findTarget( splitOnSpace[2], *channel, client ) != CONTINUE ) {
+    if ( findTarget( splitOnSpace[1], *channel, client ) != CONTINUE ) {
         kickReaply( client, channel, NOTARGET );
         return ( NOTARGET );
     }
@@ -58,6 +56,7 @@ findTarget( std::string& key, Channel& channel, Client& client )
     std::map<Client*, bool> target( channel.GetUsers() );
     bool                    found = false;
 
+    std::cout << "key: " << key << std::endl; // TODO
     for ( std::map<Client*, bool>::iterator itTarget = target.begin();
                   itTarget != target.end(); itTarget++                 )
     {

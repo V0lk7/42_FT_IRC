@@ -42,7 +42,7 @@ kick( const Server& server, Client& client, const std::string& cmd )
         return ;
 
     reason = msgMaker( client, *channel, data );
-    rmClientOfChannel( *channel, data[2], reason );
+    rmClientOfChannel( *channel, data[1], reason );
     return ;
 }
 
@@ -61,22 +61,26 @@ rmClientOfChannel( Channel& channel, const std::string& key,
             channel.EraseClientFromChannel( *it->first );
     }
 }
-
+// TODO TESTING here
 static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
+    std::cout << "\tTEST ICI PUTAIN\n"; // TODO 
     std::string msg;
     if ( data.size() <= 2 ) {
-        msg = client.GetNickname() + " KICK " + data[1] + " to "
-            + channel.GetName() + "\r\n";
+        msg = ":" + client.GetNickname() + " KICK "
+            + channel.GetName() + " " + data[1] + "\r\n";
     }
     else
     {
-        msg = client.GetNickname() + " KICK " + data[1] + " to "
-            + channel.GetName();
+        std::cout << "\tTEST\n"; // TODO 
+        msg = ":" + client.GetNickname() + " KICK "
+            + channel.GetName() + " " + data[1] + " :";
 
         for ( size_t idx = 4; idx < data.size(); idx++ )                         // TODO not sur about
             msg += " " + data[idx];                                              // idx = 4
+
+        std::cout << "msg: " << msg;
         msg += "\r\n";
     }
     return ( msg );

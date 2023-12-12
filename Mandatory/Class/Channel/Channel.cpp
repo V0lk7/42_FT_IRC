@@ -2,6 +2,7 @@
 #include "Client.hpp"
 #include <algorithm>
 #include <ostream>
+#include <iostream>
 
 Channel::Channel( void ) {}
 
@@ -111,6 +112,20 @@ bool	Channel::GetMode(int Index) const
 }
 
 /*----------------------SpecificMethods----------------------------*/
+
+void
+Channel::displayUsers( void )
+{
+    int i = 0;
+    std::map<Client*,bool>::iterator it = _Users.begin();
+    std::cout << "\tChannel: " << _Name << std::endl;
+    while ( it != _Users.end() ) 
+    {
+        std::cout << "Channel client[" << i <<"]: "
+                  << it->first->GetUsername() << std::endl;
+        it++; i++;
+    }
+}
 
 void	Channel::AddClientToChannel(Client &src, bool Admin)
 {
