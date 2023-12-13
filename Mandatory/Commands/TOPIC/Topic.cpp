@@ -127,33 +127,33 @@ topicReaply( Client& client, Channel* channel, int flag )
         std::string channelName = (*channel).GetName() ;
 
     if ( flag == TOPICCLIENTNOINCHANNEL ) {
-        reply = ": 403 :" + clientName + " " + channelName
+        reply = ":" + clientName + " 403 dan " + channelName
               + ":TOPIC You are not currently in the channel."
               + "\r\n";
     }
 
     else if ( flag == TOPICNORIGHT ) {
-        reply = ": 482 :" + clientName + " " + channelName
+        reply = ":" + clientName + " 482 dan " + channelName
               + ":you are not a valid operator"
               + "\r\n";
     }
 
     else if ( flag == TOPICNOCHANNEL || flag == TOPICERR ) {
-        reply = ": 403 :" + clientName +
+        reply = ":" + clientName +
               + ":TOPIC command is invalid or improperly formatted."
               + "\r\n";
     }
 
     else if ( flag == TOPICSEND ) {
-        reply = ": 331 :" + clientName+ " " + channelName;
+        reply = ":331:" + clientName + " " + channelName + " ";
         if ( !channel->GetTopic().empty() )
-              reply += ":" + channel->GetTopic() + "\r\n";
+              reply += channel->GetTopic() + "\r\n";
         else
-              reply += ":No topic is set.\r\n";
+              reply += "No topic is set.\r\n";
     }
 
     else if ( flag == TOPICCHANGED ) {
-        reply = ": 331 :" + clientName+ " " + channelName + ":" + channel->GetTopic()
+        reply =  ":331:" + clientName + " " + channelName + " " + channel->GetTopic()
               + "\r\n";
     }
 
