@@ -18,12 +18,13 @@ typedef enum e_value {
      sPASS,
      sNICK,
      sUSER,
+	 QUIT
 } e_value;
 
-static const	std::string Cmd[10] = 
+static const	std::string Cmd[11] = 
 {
 	"TOPIC", "INVITE", "PRIVMSG", "KICK",
-	"JOIN", "MODE", "WHO", "PASS", "NICK", "USER"
+	"JOIN", "MODE", "WHO", "PASS", "NICK", "USER", "QUIT"
 };
 
 // ########################################################################## //
@@ -64,7 +65,7 @@ handleCommand(Server& server, Client& person ) {
     // TODO need a APPEND with previous cmd maybe manage here
 	//
     tab = split( work, "\r\n" );
-//	std::cout << "Cmd *-" << work << "-*" << std::endl;
+	std::cout << "Cmd *-" << work << "-*" << std::endl;
     if ( tab.empty() )
         return ( way ) ;
     for ( size_t i = 0; i < tab.size(); i++ ) {
@@ -76,7 +77,7 @@ handleCommand(Server& server, Client& person ) {
 		dispatch( tab[i], way, person, server );
     }
 	person.ClearInputBuffer();
-//	std::cout << "Reply\n*-" << person.GetMessage() << "-*" << std::endl;
+	std::cout << "Reply\n*-" << person.GetMessage() << "-*" << std::endl;
     return ( way );
 }
 
@@ -117,6 +118,8 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
 		case sUSER :
             User( person, info );
             break ;
+		case QUIT :
+			server.DisconnectClient(person);
         default :
             return ;
     }
@@ -126,7 +129,7 @@ static int
 wayChooser( const std::string& target ) {
 	std::string	tmp(target.substr(0, target.find_first_of(" ")));
 
-    for ( int i = 0; i < 10; i++ ) {
+    for ( int i = 0; i < 11; i++ ) {
         if ( Cmd[i].compare(0, Cmd[i].size(), tmp) == 0 ) {
             return ( i );
         }
