@@ -27,27 +27,6 @@ static const	std::string Cmd[11] =
 	"JOIN", "MODE", "WHO", "PASS", "NICK", "USER", "QUIT"
 };
 
-// ########################################################################## //
-// #~TODO MANAGER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
-// Still to make :
-// -> Management of NickName
-// Error found :
-//      SEGFAULT on empty data after all keyword
-// ########################################################################## //
-
-// ########################################################################## //
-// #~TESTING TOOL~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# //
-// static void
-// printClient( const Client* person );
-// static void
-// print( std::string in, std::vector<std::string>& tab );
-
-// TEST :
-// PASS password
-// NICK jimmy
-// USER tdc
-// ########################################################################## //
-
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server );
 

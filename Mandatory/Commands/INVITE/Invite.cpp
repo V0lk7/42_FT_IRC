@@ -2,6 +2,10 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Tools.hpp"
+// ########################################################################## //
+// #_TODO_TOOLS____________________________________________________________ # //
+#include <iostream>
+// ########################################################################## //
 
 typedef enum IErr {
     NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,
@@ -121,19 +125,19 @@ inviteReaply( Client& client, Client* target, Channel* channel, int flag )
         clientTarget = (*target).GetNickname();
 
     if ( flag == NOTARGETINSERVER ) {
-        reaply = ": 401 " + clientName + " " + channelName
+        reaply = ": 401 :" + clientName + " " + channelName
                + ":INVITE cannot access to the target mentioned in server"
                + "\r\n";
     }
 
     else if ( flag == BADRIGHT ) {
-        reaply = ": 473 " + clientName + " " + channelName
+        reaply = ": 473 :" + clientName + " " + channelName
                + ":INVITE You are not a channel operator"
                + "\r\n";
     }
 
     else if ( flag == BADCHANNEL ) {
-        reaply = ": 442 " + clientName +
+        reaply = ": 442 :" + clientName +
                + ":INVITE command is invalid or improperly formatted"
                + "\r\n";
     }
@@ -145,26 +149,27 @@ inviteReaply( Client& client, Client* target, Channel* channel, int flag )
     }
 
     else if ( flag == TARGETINWAITLIST ) {
-        reaply = ": 443 " + clientName + " "  + channelName
+        reaply = ": 443 :" + clientName + " "  + channelName
                + ":INVITE target is already invited"
                + "\r\n";
     }
 
     else if ( flag == CLIENTISTARGET ) {
-        reaply = ": 401 " + clientName + " "  + channelName
+        reaply = ": 401 :" + clientName + " "  + channelName
                + ":INVITE you can't invite yourself in a channel"
                + "\r\n";
     }
 
     else if ( flag == BADPARAMS ) {
-        reaply = ": 461 " + clientName +
+        reaply = ": 461 :" + clientName +
                + ":INVITE command is invalid or improperly formatted"
                + "\r\n";
     }
 
     else if ( flag == NEXT ) {
-        reaply = ": 301 " + clientName + " " + channelName
-               + ":INVITE you've been invited in channel"
+        std::cout << "SEARCHING\n"; // TODO DEBUG
+        reaply = ": 331 :" + clientName + " " + channelName
+               + " you've been invited in channel"
                + "\r\n";
     }
 
