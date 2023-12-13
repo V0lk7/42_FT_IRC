@@ -11,7 +11,7 @@ privMsgError( int code, std::string message, Client& client)
     std::ostringstream strCode;
     strCode << ": " << code;
     std::string fullMessage = strCode.str();
-    fullMessage += " PRIVMSG : " + message + ".\r\n";
+    fullMessage += " PRIVMSG : " + message + "\r\n";
     client.SetMessageToSend( fullMessage );
 }
 

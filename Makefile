@@ -23,7 +23,7 @@ INCLUDES	:= 	$(SRC_DIR)/Tools/			\
 				$(SRC_DIR)/Class/Server/	\
 				$(SRC_DIR)/Class/Channel/	\
 				$(SRC_DIR)/Commands/KICK/	\
-				$(SRC_DIR)/
+				$(SRC_DIR)/Authentication/	\
 
 SRCS		:=	Core/main.cpp 					\
 				Core/Arguments_Parsing.cpp		\
@@ -57,6 +57,10 @@ SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
 
 SRCS		+=	Commands/WHO/Who.cpp				\
 
+SRCS		+=	Authentication/Pass.cpp				\
+				Authentication/Nick.cpp				\
+				Authentication/User.cpp				\
+
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
 OBJS		:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
@@ -67,8 +71,8 @@ DEPS		:=	$(OBJS:.o=.d)
 #								FLAGS										  #
 ###############################################################################
 
-CXX			=	c++
-#CXX			=	g++
+#CXX			=	c++
+CXX			=	g++
 
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98 -ggdb3
 

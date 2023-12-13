@@ -5,7 +5,7 @@
 
 #include "../../../Mandatory/Commands/PRIVMSG/Privmsg.cpp"
 
-TEST_CASE ( "privateMessage" )
+TEST_CASE ( "PrivateMessage" )
 {
 	Server		server;
 
@@ -30,78 +30,78 @@ TEST_CASE ( "privateMessage" )
 	SUBCASE ( "PRIVMSG Charles : Unmot" )
 	{
 		std::string	str( "PRIVMSG Charles : Unmot" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		CHECK( (*Charles).GetMessage() == "Jean :  Unmot\r\n");
 	}
 
 	SUBCASE ( "PRIVMSG Charles :" )
 	{
 		std::string	str( "PRIVMSG Charles :" );
-		privateMessage( server, *Jean, str );
-		CHECK( (*Jean).GetMessage() == ": 412 PRIVMSG : No message.\r\n" );
+		PrivateMessage( server, *Jean, str );
+		CHECK( (*Jean).GetMessage() == ": 412 PRIVMSG : No message\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG Charles : Deux mots" )
 	{
 		std::string	str( "PRIVMSG Charles : Deux mots" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		CHECK( (*Charles).GetMessage() == "Jean :  Deux mots\r\n");
 	}
 
 	SUBCASE ( "PRIVMSG Charles : Beaucoup                 d'espaces" )
 	{
 		std::string	str( "PRIVMSG Charles : Beaucoup                 d'espaces" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		CHECK( (*Charles).GetMessage() == "Jean :  Beaucoup                 d'espaces\r\n");
 	}
 
 	SUBCASE ( "PRIVMSG Charles :Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:" )
 	{
 		std::string	str( "PRIVMSG Charles :Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		CHECK( (*Charles).GetMessage() == "Jean : Ch@r@ct3r&s @ |a c0n !<>,./$%^*()_+*:\r\n");
 	}
 
 	SUBCASE ( "PRIVMSGCharles :Commande colle au user" )
 	{
 		std::string	str( "PRIVMSGCharles :Commande colle au user" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		std::string test = (*Jean).GetMessage();
-		CHECK( (*Jean).GetMessage() == ": 441 PRIVMSG : No recipient.\r\n" );
+		CHECK( (*Jean).GetMessage() == ": 441 PRIVMSG : No recipient\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG Charles:Deux points colle au user" )
 	{
 		std::string	str( "PRIVMSG Charles:Deux points colle au user" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		CHECK( (*Charles).GetMessage() == "Jean : Deux points colle au user\r\n");
 	}
 
 	SUBCASE ( "PRIVMSG pacome : Utilisateur inconnu" )
 	{
 		std::string	str( "PRIVMSG pacome : Utilisateur inconnu" );
-		privateMessage( server, *Jean, str );
-		CHECK(  (*Jean).GetMessage() == ": 401 PRIVMSG : Unknown user.\r\n" );
+		PrivateMessage( server, *Jean, str );
+		CHECK(  (*Jean).GetMessage() == ": 401 PRIVMSG : Unknown user\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG jean charles : 2 user" )
 	{
 		std::string	str( "PRIVMSG jean charles : 2 user" );
-		privateMessage( server, *Jean, str );
-		CHECK(  (*Jean).GetMessage() == ": 441 PRIVMSG : Too many recipients.\r\n" );
+		PrivateMessage( server, *Jean, str );
+		CHECK(  (*Jean).GetMessage() == ": 441 PRIVMSG : Too many recipients\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG #test :Channel" )
 	{
 		std::string	str( "PRIVMSG #test :Channel" );
-		privateMessage( server, *Jean, str );
-		CHECK(  (*Jean).GetMessage() == ": 403 PRIVMSG : Unknown channel.\r\n" );
+		PrivateMessage( server, *Jean, str );
+		CHECK(  (*Jean).GetMessage() == ": 403 PRIVMSG : Unknown channel\r\n" );
 	}
 
 	SUBCASE ( "PRIVMSG #Test :Bonjour Henri" )
 	{
 		std::string	str( "PRIVMSG #Test :Bonjour Henri" );
-		privateMessage( server, *Jean, str );
+		PrivateMessage( server, *Jean, str );
 		CHECK(  (*Hanri).GetMessage() == "Jean : Bonjour Henri\r\n" );
 		CHECK(  (*Anri).GetMessage() == "Jean : Bonjour Henri\r\n" );
 		CHECK(  (*Enri).GetMessage() == "Jean : Bonjour Henri\r\n" );
@@ -111,7 +111,7 @@ TEST_CASE ( "privateMessage" )
 	SUBCASE ( "PRIVMSG #Test :Bonjour Henri" )
 	{
 		std::string	str( "PRIVMSG #Test :Bonjour Henri" );
-		privateMessage( server, *Hanri, str );
+		PrivateMessage( server, *Hanri, str );
 		CHECK(  (*Anri).GetMessage() == "Hanri : Bonjour Henri\r\n" );
 		CHECK(  (*Enri).GetMessage() == "Hanri : Bonjour Henri\r\n" );
 		CHECK(  (*Henry).GetMessage() == "Hanri : Bonjour Henri\r\n" );
