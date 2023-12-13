@@ -32,11 +32,8 @@ void	Bot::on()
     send(this->_socket, pass.c_str(), pass.size(), 0);
     send(this->_socket, nick.c_str(), nick.size(), 0);
     send(this->_socket, user.c_str(), user.size(), 0);
-    puts( "top" );
-    usleep(1000000);
-    puts( "top" );
+    usleep(100000);
     send(this->_socket, channel.c_str(), channel.size(), 0);
-    usleep(1000000);
 	puts( "Bot on" );
 
 	std::string fishing = "PRIVMSG #Bot :Hello, I'm Sarah and I'm here to help you. Ask me any question and I'll answer it.\r\n";
@@ -44,17 +41,18 @@ void	Bot::on()
     while (run)
     {
         send(this->_socket, fishing.c_str(), fishing.size(), 0);
-        char buffer[1024];
-        int ret = recv(this->_socket, buffer, 1023, 0);
-        if (ret <= 0)
-            break;
-        buffer[ret] = 0;
-        std::cout << buffer;
-        if (std::string(buffer).find("PING") == 0)
-        {
-            std::string pong = "PONG " + std::string(buffer).substr(5) + "\r\n";
-            send(this->_socket, pong.c_str(), pong.size(), 0);
-        }
+        usleep(10000000);
+        // char buffer[1024];
+        // int ret = recv(this->_socket, buffer, 1023, 0);
+        // if (ret <= 0)
+        //     break;
+        // buffer[ret] = 0;
+        // std::cout << buffer;
+        // if (std::string(buffer).find("PING") == 0)
+        // {
+        //     std::string pong = "PONG " + std::string(buffer).substr(5) + "\r\n";
+        //     send(this->_socket, pong.c_str(), pong.size(), 0);
+        // }
     }
 	// std::string nop = "PRIVMSG #CutestBot :I didn't understand your question, can you rephrase it?\r\n";
 }
