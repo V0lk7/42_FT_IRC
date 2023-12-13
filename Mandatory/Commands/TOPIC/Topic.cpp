@@ -107,7 +107,7 @@ topicParsing( Client& client, Channel* channel )
     else if ( key[ &client ] ) {
         right = true;
     }
-    else {
+    else if ( !right ) {
         topicReaply( client, channel, TOPICNORIGHT );
         return ( TOPICNORIGHT );
     }
