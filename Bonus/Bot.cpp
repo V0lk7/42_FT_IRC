@@ -23,11 +23,11 @@ void	Bot::on()
 {
 	std::string pass = "PASS " + _password + "\r\n";
 
-	std::string nick = "NICK Sarah\r\n";
+	std::string nick = "NICK bob\r\n";
 
 	std::string user = "USER StupidBot\r\n";
 
-	std::string channel = "JOIN #Bot\r\n";
+	std::string channel = "JOIN #bot\r\n";
 
     send(this->_socket, pass.c_str(), pass.size(), 0);
     send(this->_socket, nick.c_str(), nick.size(), 0);
@@ -36,24 +36,26 @@ void	Bot::on()
     send(this->_socket, channel.c_str(), channel.size(), 0);
 	puts( "Bot on" );
 
-	std::string fishing = "PRIVMSG #Bot :Hello, I'm Sarah and I'm here to help you. Ask me any question and I'll answer it.\r\n";
+	std::string fishing = "PRIVMSG #bot :Hello, I'm bob and I'm here to help you. Ask me any question and I'll answer it.\r\n";
 
     while (run)
     {
-        send(this->_socket, fishing.c_str(), fishing.size(), 0);
-        usleep(10000000);
-        // char buffer[1024];
-        // int ret = recv(this->_socket, buffer, 1023, 0);
-        // if (ret <= 0)
-        //     break;
-        // buffer[ret] = 0;
-        // std::cout << buffer;
-        // if (std::string(buffer).find("PING") == 0)
-        // {
-        //     std::string pong = "PONG " + std::string(buffer).substr(5) + "\r\n";
-        //     send(this->_socket, pong.c_str(), pong.size(), 0);
-        // }
+        char buffer[1024];
+        int ret = recv(this->_socket, buffer, 1023, 0);
+        if (ret <= 0)
+            break;
+        buffer[ret] = 0;
+        std::cout << buffer << std::endl;
+        if (std::string(buffer).find("ping") != std::string::npos)
+        {
+            puts( "pong" );
+            std::string pong = "PRIVMSG charles :pong\r\n";
+            send(this->_socket, pong.c_str(), pong.size(), 0);
+        }
     }
+	std::string quit = "QUIT\r\n";
+    send(this->_socket, quit.c_str(), quit.size(), 0);
+
 	// std::string nop = "PRIVMSG #CutestBot :I didn't understand your question, can you rephrase it?\r\n";
 }
 

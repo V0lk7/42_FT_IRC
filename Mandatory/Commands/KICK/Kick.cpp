@@ -5,14 +5,6 @@
 
 #include "Kick.hpp"
 
-// ########################################################################## //
-// #_TODO___________________________________________________________________# //
-// #-> better handling error msg: 1.                                        # //
-// #-> check idx 4 not sur i guess it would be 3                            # //
-// #-> i need a precise explanation of string storage 'Channel'             # //
-// #   Does it store '#' or '&' inside itself.                               # //
-// ########################################################################## //
-
 static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data );
 static void
@@ -52,26 +44,24 @@ rmClientOfChannel( Channel& channel, const std::string& key,
             channel.EraseClientFromChannel( *it->first );
     }
 }
-// TODO TESTING here
+
 static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
-//    std::cout << "\tTEST ICI PUTAIN\n"; // TODO 
     std::string msg;
+
     if ( data.size() <= 2 ) {
         msg = ":" + client.GetNickname() + " KICK "
             + channel.GetName() + " " + data[1] + "\r\n";
     }
     else
     {
-//        std::cout << "\tTEST\n"; // TODO 
         msg = ":" + client.GetNickname() + " KICK "
-            + channel.GetName() + " " + data[1] + " :";
+            + channel.GetName() + " " + data[1];
 
-        for ( size_t idx = 4; idx < data.size(); idx++ )                         // TODO not sur about
-            msg += " " + data[idx];                                              // idx = 4
+        for ( size_t idx = 2; idx < data.size(); idx++ )
+            msg += " " + data[idx];
 
-  //      std::cout << "msg: " << msg;
         msg += "\r\n";
     }
     return ( msg );
