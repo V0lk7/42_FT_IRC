@@ -93,4 +93,37 @@ TEST_SUITE( "PARSING" ) {
 			CHECK(wayChooser(target) == -1);
 		}
 	}
+
+	TEST_CASE("SaveIncompleteCommand"){
+		std::string	cmd;
+
+		SUBCASE("Command complete_1"){
+			cmd = "/JOIN\r\n";
+			CHECK(SaveIncompleteCommand(cmd).empty() == true);
+		}
+		SUBCASE("Command complete_2"){
+			cmd = "JOIN\r\nPRIVMSG\r\n";
+			CHECK(SaveIncompleteCommand(cmd).empty() == true);
+		}
+		SUBCASE("Command empty_1"){
+			cmd = "\r\n";
+			CHECK(SaveIncompleteCommand(cmd).empty() == true);
+		}
+		SUBCASE("Command empty_2"){
+			cmd = "\r\n";
+			CHECK(SaveIncompleteCommand(cmd).empty() == true);
+		}
+		SUBCASE("Command incomplete_1"){
+			cmd = "JOIN";
+			CHECK(SaveIncompleteCommand(cmd).compare("JOIN") == 0);
+		}
+		SUBCASE("Command incomplete_2"){
+			cmd = "JOIN\r\nPRIVMSG";
+			CHECK(SaveIncompleteCommand(cmd).compare("PRIVMSG") == 0);
+		}
+		SUBCASE("Command incomplete_3"){
+			cmd = "\r\nPRIVMSG";
+			CHECK(SaveIncompleteCommand(cmd).compare("PRIVMSG") == 0);
+		}
+	}
 }
