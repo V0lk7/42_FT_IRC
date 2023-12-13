@@ -25,9 +25,7 @@ TEST_SUITE ( "KICK HANDLING" )
 
     TEST_CASE ( "msgMaker: reason" )
     {
-        msg.push_back( "#Test" );
-        msg.push_back( "Jean" );
-        msg.push_back( "because" );
+        msg.push_back( ": because" );
         msg.push_back( "racism" );
         CHECK ( msgMaker( *kicker3, *channel3, msg ) ==
                                   ":sudo KICK #Test Jean : because racism\r\n");
