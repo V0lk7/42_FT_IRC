@@ -65,7 +65,7 @@ handleCommand(Server& server, Client& person ) {
     // TODO need a APPEND with previous cmd maybe manage here
 	//
     tab = split( work, "\r\n" );
-	std::cout << "Cmd *-" << work << "-*" << std::endl;
+	std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
     if ( tab.empty() )
         return ( way ) ;
     for ( size_t i = 0; i < tab.size(); i++ ) {
@@ -77,7 +77,7 @@ handleCommand(Server& server, Client& person ) {
 		dispatch( tab[i], way, person, server );
     }
 	person.ClearInputBuffer();
-	std::cout << "Reply\n*-" << person.GetMessage() << "-*" << std::endl;
+	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl;
     return ( way );
 }
 
