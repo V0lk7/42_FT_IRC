@@ -82,7 +82,7 @@ TEST_CASE( "function: isValidRight" )
     }
 }
 
-TEST_CASE( "function: invitePArsing" )
+TEST_CASE( "function: InvitePArsing" )
 {
     Server      server;
     server.AddClient( new Client ( "Henri", CLIENT ) );
@@ -147,7 +147,7 @@ TEST_CASE( "function: invitePArsing" )
 //     }
 // }
 
-TEST_CASE( "invite" )
+TEST_CASE( "Invite" )
 {
     Server      server;
     Client*     Henri = new Client ( "Henri", CLIENT );
@@ -160,19 +160,19 @@ TEST_CASE( "invite" )
     std::string charles( "Charles" );
     SUBCASE( "true" )
     {
-        invite( server, *sudo, "INVITE Henri #Test" );
+        Invite( server, *sudo, "INVITE Henri #Test" );
         std::list<Client*> WCL(channel->GetWaitingList());
         CHECK( std::find( WCL.begin(), WCL.end(), Henri ) != WCL.end() );
     }
     SUBCASE( "true" )
     {
-        invite( server, *sudo, "INVITE BOB #Test" );
+        Invite( server, *sudo, "INVITE BOB #Test" );
         std::list<Client*> WCL(channel->GetWaitingList());
         CHECK( std::find( WCL.begin(), WCL.end(), Henri ) == WCL.end() );
     }
 }
 
-TEST_CASE( "inviteReaply" )
+TEST_CASE( "InviteReaply" )
 {
     Server      server;
     Client*     Henri = new Client ( "Henri", CLIENT );
@@ -184,18 +184,18 @@ TEST_CASE( "inviteReaply" )
     std::string itself( "sudo" );
     std::string charles( "Charles" );
     SUBCASE( "targetGood" ) {
-        invite( server, *sudo, "INVITE Henri #Test" );
-        CHECK( Henri->GetMessage() == ": 301 sudo #Test:INVITE you've been invited in channel.\r\n");
+        Invite( server, *sudo, "INVITE Henri #Test" );
+        CHECK( Henri->GetMessage() == ": 301 sudo #Test:INVITE you've been invited in channel\r\n");
         CHECK( sudo->GetMessage() == "" );
     }
     SUBCASE( "NOTARGETINSERVER" ) {
-        invite( server, *sudo, "INVITE Damien #Test" );
+        Invite( server, *sudo, "INVITE Damien #Test" );
         CHECK( sudo->GetMessage() ==
-              ": 401 sudo #Test:INVITE cannot access to the target mentioned in server.\r\n" );
+              ": 401 sudo #Test:INVITE cannot access to the target mentioned in server\r\n" );
     }
     SUBCASE( "need more params" ) {
-        invite( server, *sudo, "INVITE Damien #Test caca" );
+        Invite( server, *sudo, "INVITE Damien #Test caca" );
         CHECK( sudo->GetMessage() ==
-              ": 461 sudo:INVITE command is invalid or improperly formatted.\r\n" );
+              ": 461 sudo:INVITE command is invalid or improperly formatted\r\n" );
     }
 }

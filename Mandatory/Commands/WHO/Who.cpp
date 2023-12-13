@@ -23,6 +23,6 @@ void	Who(Server &server, Client &client, std::string &RawCmd)
 	}
 	else {
 		client.SetMessageToSend(": 353 " + client.GetNickname() + " = " + ChanPtr->GetName() +  " :" + ChanPtr->GetListClientIn() + "\r\n");
-		client.SetMessageToSend(": 366" + client.GetNickname() + ChanPtr->GetName() +  " :End\r\n");
+		client.SetMessageToSend(": 366 " + client.GetNickname() + " " + ChanPtr->GetName() +  " :End\r\n");
 	}
 }
