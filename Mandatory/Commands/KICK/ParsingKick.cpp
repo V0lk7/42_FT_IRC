@@ -62,7 +62,6 @@ findTarget( std::string& key, Channel& channel, Client& client )
     std::map<Client*, bool> target( channel.GetUsers() );
     bool                    found = false;
 
-    std::cout << "key: " << key << std::endl; // TODO
     for ( std::map<Client*, bool>::iterator itTarget = target.begin();
                   itTarget != target.end(); itTarget++                 )
     {
