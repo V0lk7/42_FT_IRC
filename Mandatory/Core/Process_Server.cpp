@@ -90,6 +90,7 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 	while (It != ClientList.end()){
 		Sd = (*It)->GetSocket();
 		if (FD_ISSET(Sd, &ListSd) != 0){
+			bzero(Buffer, BUFFER_SIZE);
 			flag = recv(Sd, Buffer, BUFFER_SIZE, 0);
 			if (flag == -1)
 				throw std::runtime_error("Error on read system call");
@@ -98,7 +99,6 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 			else {
 				(*It)->SetInputBuffer(Buffer);
 				handleCommand(ServerData, *(*It));
-				bzero(Buffer, BUFFER_SIZE);
 			}
 		}
 		It++;

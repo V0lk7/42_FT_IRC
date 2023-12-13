@@ -187,8 +187,10 @@ bool	Server::SendReply(void)
 	while (It != _ClientList.end()){
 		Msg = (*It)->GetMessage();
 		if (Msg.empty() != true){
-			if (send((*It)->GetSocket(), Msg.c_str(), Msg.size(), 0) == -1)
+			if (send((*It)->GetSocket(), Msg.c_str(), Msg.size(), 0) == -1){
+				(*It)->ClearMessage();
 				return (false);
+			}
 			(*It)->ClearMessage();
 		}
 		It++;
