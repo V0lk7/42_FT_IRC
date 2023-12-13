@@ -57,16 +57,15 @@ Topic( const Server& server, Client& client, const std::string& cmd )
 static enum TErr
 topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
 {
-    std::string topic;
-    std::string output;
-    std::vector<std::string>::iterator check = data.begin();
-    check++;
+    std::string                         topic;
+    std::string                         output;
+    std::vector<std::string>::iterator  check = data.begin();
 
+    check++;
     if ( data.size() == 1 && (*check)[0] == ':' && (*check).length() == 1 ) {
         topicReaply( client, channel, TOPICERR );
         return ( TOPICERR );
     }
-
     if ( (*check)[0] != ':' ) {
         topicReaply( client, channel, TOPICERR );
         return ( TOPICERR );
@@ -82,34 +81,32 @@ topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
 
     channel->SetTopic( topic );
     topicReaply( client, channel, TOPICCHANGED );
+
     return ( TOPICNONE );
 }
 
 static enum TErr
 topicParsing( Client& client, Channel* channel )
 {
-    std::map<Client*, bool>             key; 
-    bool                                right = false;
+    std::map<Client*, bool> key; 
+    bool                    right = false;
 
-    std::cout << client.GetNickname() << std::endl;
     if ( !channel ) {
         topicReaply( client, channel, TOPICNOCHANNEL );
         return ( TOPICNOCHANNEL );
     }
-
     key = channel->GetUsers();
     if ( !channel->GetMode( TOPIC_CHANGE_SET ) ) {
         right = true;
     }
-    else if ( !key.count( &client ) ) {
+
+    if ( !key.count( &client ) ) {
         topicReaply( client, channel, TOPICCLIENTNOINCHANNEL );
         return ( TOPICCLIENTNOINCHANNEL );
     }
-
     else if ( key[ &client ] ) {
         right = true;
     }
-
     else {
         topicReaply( client, channel, TOPICNORIGHT );
         return ( TOPICNORIGHT );
