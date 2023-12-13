@@ -2,10 +2,14 @@
 
 void	ExitHandlerSignal(int Signal)
 {
-	(void)Signal;
-	puts( "AUTODESTRUCTION!! BOOOOOOM!!" );
-	exit(0);
+	if( Signal == SIGINT)
+	{
+		run = false;
+		puts( "\nStay here, I'll be back." );
+	}
 }
+
+bool	run = true;
 
 int	main(int ac, char **av)
 {
@@ -14,8 +18,9 @@ int	main(int ac, char **av)
 		std::cout << "Usage: ./Bot <port> <password>" << std::endl;
 		return (1);
 	}
+	// run = true;
 	signal(SIGINT, ExitHandlerSignal);
 	Bot	bot( atoi(av[1]), av[2]);
-	bot.run();
+	bot.start();
 	return (0);
 }

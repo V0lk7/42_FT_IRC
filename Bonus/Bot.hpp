@@ -11,6 +11,8 @@
 # include <cstdio>
 # include <cstdlib>
 
+extern bool run;
+
 class Bot
 {
 	private :
@@ -28,6 +30,6 @@ class Bot
 
 		Bot	&operator=( Bot const &rhs );
 
-		void	run();
+		void	start();
 		void	on();
 };
