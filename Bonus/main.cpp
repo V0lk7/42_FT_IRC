@@ -5,10 +5,7 @@ bool	run = true;
 void	ExitHandlerSignal(int Signal)
 {
 	if( Signal == SIGINT)
-	{
 		run = false;
-		puts( "\nStay here, I'll be back." );
-	}
 }
 
 int	main(int ac, char **av)
