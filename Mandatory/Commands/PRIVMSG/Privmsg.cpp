@@ -49,7 +49,7 @@ PrivateMessage( Server& server, Client& client, std::string& rawCommand )
     else
     {
         Client* targetClient = server.GetClient( target );
-        if( targetClient ){
+        if( targetClient && targetClient->GetStatement() == true){
 			message += targetClient->GetNickname() + " " + rawCommand.substr(rawCommand.find(":"));
 			message += "\r\n";
             targetClient->SetMessageToSend( message );
