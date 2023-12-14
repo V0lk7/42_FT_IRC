@@ -33,24 +33,27 @@ PrivateMessage( Server& server, Client& client, std::string& rawCommand )
 
     target = splitCmd[1];
 
-    std::string message = client.GetNickname();
-    message += " : ";
-    message += rawCommand.substr( rawCommand.find( ":" ) + 1 );
-    message += "\r\n";
+	std::string message(":" + client.GetNickname() + " PRIVMSG ");
 
     if( target.find ( "#" ) == 0 || target.find( "&" ) == 0 )
     {
         Channel* targetChannel = server.GetChannel( target );
-        if( targetChannel )
+        if( targetChannel ){
+			message += targetChannel->GetName() + " " + rawCommand.substr(rawCommand.find(":"));
+			message += "\r\n";
             targetChannel->SendMessageToClients( message, client );
+		}
         else
             return privMsgError( ERR_NOSUCHCHANNEL, "Unknown channel", client);
     }
     else
     {
         Client* targetClient = server.GetClient( target );
-        if( targetClient )
+        if( targetClient && targetClient->GetStatement() == true){
+			message += targetClient->GetNickname() + " " + rawCommand.substr(rawCommand.find(":"));
+			message += "\r\n";
             targetClient->SetMessageToSend( message );
+		}
         else
             return privMsgError( ERR_NOSUCHNICK, "Unknown user", client);
     }
