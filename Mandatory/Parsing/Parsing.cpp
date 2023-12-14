@@ -45,6 +45,7 @@ handleCommand(Server& server, Client& person ) {
     int                         way;
 
     tab = split( work, "\r\n" );
+	std::cout << "Command receive by " << person.GetNickname() << std::endl; //DEBUG
 	std::cout << "Size list before " << server.getCllist().size() << std::endl; //DEBUG
 	std::cout << "Backup *-" << Backup << "-*" << std::endl; //DEBUG
 	std::cout << "Cmd *-" << work << "-*" << std::endl; //DEBUG
@@ -53,7 +54,7 @@ handleCommand(Server& server, Client& person ) {
     for ( size_t i = 0; i < tab.size(); i++ ) {
 		way = wayChooser( tab[i] );
 		if (way == -1) {
-			person.SetMessageToSend(": 461 : Unknow command\r\n");
+			person.SetMessageToSend(": 461 : [" + tab[i] + "] :Unknow command\r\n");
 			continue ;
 		}
 		dispatch( tab[i], way, person, server );
@@ -61,7 +62,7 @@ handleCommand(Server& server, Client& person ) {
 	person.ClearInputBuffer();
 	person.SetInputBuffer(Backup);
 	std::cout << "Reply*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
-	std::cout << "Size list after " << server.getCllist().size() << std::endl; //DEBUG
+	std::cout << "Size list after " << server.getCllist().size() << "\n" << std::endl; //DEBUG
     return ;
 }
 
@@ -87,7 +88,7 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
 	if (way == QUIT)
 		server.DisconnectClient(person);
 	else if ( !person.GetStatement() && !(way > 6 &&  way < 10) ){
-		person.SetMessageToSend(": 451 :Not registered\r\n");
+		person.SetMessageToSend(": 451 : :Not registered\r\n");
 		return ;
 	}
     switch ( way ) {
