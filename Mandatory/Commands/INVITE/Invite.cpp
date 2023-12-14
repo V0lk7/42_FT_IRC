@@ -19,7 +19,7 @@ static IErr
 isValidRight( Client& client, Channel& channel, std::string& target );
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
-               Client& client, Channel& channel );
+               Client& client, Channel* channel );
 static void
 inviteReaply( Client& client, Client* target, Channel* channel, int flag );
 
@@ -38,7 +38,7 @@ Invite( Server& server, Client& client, const std::string& cmd )
 
     channel = server.GetChannel( cuttingCmd[1] );
 
-    if ( !inviteParsing( cuttingCmd, server, client, *channel ) )
+    if ( !inviteParsing( cuttingCmd, server, client, channel ) )
         return ;
 
     target = server.GetClient( cuttingCmd[0] );
@@ -48,14 +48,19 @@ Invite( Server& server, Client& client, const std::string& cmd )
 
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
-               Client& client, Channel& channel )
+               Client& client, Channel* channel )
 {
-    if ( !server.GetClient( key[0] ) ) {
-        inviteReaply( client, NULL, &channel, NOTARGETINSERVER );
+    if ( !channel ) {
+        inviteReaply( client, NULL, NULL, BADPARAMS );
         return ( false );
     }
 
-    if ( isValidRight( client, channel, key[0] ) != NEXT )
+    if ( !server.GetClient( key[0] ) ) {
+        inviteReaply( client, NULL, channel, NOTARGETINSERVER );
+        return ( false );
+    }
+
+    if ( isValidRight( client, *channel, key[0] ) != NEXT )
         return ( false );
 
     else
