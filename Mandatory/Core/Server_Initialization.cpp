@@ -26,16 +26,16 @@ bool	InitializeMasterSocket(Server &ServerData, char const *Port)
 {
 	std::cout << "Create the master socket" << std::endl;
 	int MasterSocket = socket(AF_INET, SOCK_STREAM, 0);
+	int	Opt = true;
 
 	if (MasterSocket == -1){
 		std::cerr << "Error: " << errno << " : Socket creation" << std::endl;
 		return (-1);
 	}
     ServerData.SetMasterSocket(MasterSocket);
-//	Usefull ?
-//	if (setsockopt(server->GetMasterSocket(), SOL_SOCKET, SO_REUSEADDR, (char *)&opt, 
-//		sizeof(opt)) < 0)
-//
+	if (setsockopt(MasterSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&Opt, sizeof(Opt)) < 0)
+		return (false);
+
 	if (SetupTcpSocket(ServerData, MasterSocket, Port) == false)
 		return (false);
 	return (true);
