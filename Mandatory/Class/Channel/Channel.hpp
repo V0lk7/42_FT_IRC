@@ -5,23 +5,6 @@
 # include <map>
 # include <list>
 
-/*########################################################################################
-	Class wich will keep all the informations usefull of the channel.
-	_Name => Name of the channel;
-	_Password => Password for a new client to enter the channel;
-	_Topic => Topic of the channel;
-	_LimitUsers => Define the numbers of client the channel can have (0 = no limit);
-	_Mode => Define the MODE parameters of the channel:
-		-> Mode[0] = "i" Invite only channel 0 = NO, 1 = YES.
-		-> Mode[1] = "t" Restriction of the TOPIC command,
-					only to channel operator. 0 = NO, 1 = YES.
-		-> Mode[2] = "k" Define a password for the channel. 0 = NO, 1 = YES.
-	_Users => Define the client list which is in the channel.
-		 Map ->
-			Key => The client.
-			Value => Grade of the client (channel operator or not)
-########################################################################################*/
-
 enum mode {
 	INVITE_ONLY_SET,
 	PASSWORD_SET,
@@ -69,6 +52,7 @@ class Channel{
 		std::string					GetListClientIn(void);
 		std::map<Client *, bool>&	GetUsers(void) ;
 		std::list<Client*>&	        GetWaitingList(void) ;
+		size_t						GetSizeUsers(void) const;
 
 		void                        AddClientToChannel(Client &, bool);
 		void                        EraseClientFromChannel(Client &);
