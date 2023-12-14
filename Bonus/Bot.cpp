@@ -93,7 +93,7 @@ void	Bot::on()
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-    std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\nTOPIC #bot :PingPong\r\n";
+    std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\n";
     send(this->_socket, connexions.c_str(), connexions.size(), 0);
 
     int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
