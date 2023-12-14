@@ -33,36 +33,66 @@ dispatch( std::string& info, int& way, Client& person, Server& server );
 static int
 wayChooser( const std::string& target );
 
+static std::string	SaveIncompleteCommand(std::string &Cmd);
+
 // ########################################################################## //
 // #_PARSER COMMAND_________________________________________________________# //
-int
+void
 handleCommand(Server& server, Client& person ) {
     std::string                 work(person.GetInputBuffer());
+	std::string					Backup(SaveIncompleteCommand(work));
     std::vector<std::string>    tab;
-    int                         way = -1;
+    int                         way;
 
-    // TODO need a APPEND with previous cmd maybe manage here
-	//
     tab = split( work, "\r\n" );
+
 	std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
+	std::cout << "Size list before " << server.getCllist().size() << std::endl; //DEBUG
+	std::cout << "Backup *-" << Backup << "-*" << std::endl; //DEBUG
+	std::cout << "Cmd *-" << work << "-*" << std::endl; //DEBUG
+
     if ( tab.empty() )
-        return ( way ) ;
+        return ;
     for ( size_t i = 0; i < tab.size(); i++ ) {
 		way = wayChooser( tab[i] );
 		if (way == -1) {
-			person.SetMessageToSend(": 461 :Unknow command\r\n");
+			person.SetMessageToSend(": 461 : Unknow command\r\n");
 			continue ;
 		}
 		dispatch( tab[i], way, person, server );
     }
+
 	person.ClearInputBuffer();
+
 	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl;
-    return ( way );
+
+	person.SetInputBuffer(Backup);
+
+	std::cout << "Size list after " << server.getCllist().size() << std::endl; //DEBUG
+
+    return ;
+}
+
+static std::string	SaveIncompleteCommand(std::string &Cmd)
+{
+	std::string	Backup;
+	size_t	pos = Cmd.rfind("\n");
+
+	if (pos == std::string::npos){
+		pos = 0;
+		Backup = Cmd;
+	}
+	else if (pos == Cmd.size() - 1)
+		Backup = "";
+	else
+		Backup = Cmd.substr(pos + 1);
+	Cmd.erase(pos);
+	return (Backup);
 }
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server ) {
-    if ( !person.GetStatement() && !(way > 6 &&  way < 10) ){
+    if ( !person.GetStatement() && !(way > 6 &&  way < 10) ) {
 		person.SetMessageToSend(": 451 :Not registered\r\n");
 		return ;
 	}
@@ -98,7 +128,7 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
             User( person, info );
             break ;
 		case QUIT :
-			server.DisconnectClient(person);
+			server.DisconnectClient( person );
         default :
             return ;
     }
