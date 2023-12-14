@@ -233,6 +233,22 @@ void	Server::EraseClientDisconnected(void)
 	}
 }
 
+void	Server::EraseEmptyChannel(void)
+{
+	std::list<Channel *>::iterator	It = _ChannelList.begin();
+
+	while (It != _ChannelList.end()){
+		if ((*It)->GetSizeUsers() == 0){
+			delete (*It);
+			_ChannelList.erase(It);
+			It = _ChannelList.begin();
+		}
+		else
+			It++;
+	}
+	return ;
+}
+
 std::ostream&	operator<<(std::ostream& print, const Server& other)
 {
 	print << "Server password : " << other.GetPassword() << std::endl;
