@@ -84,7 +84,9 @@ static std::string	SaveIncompleteCommand(std::string &Cmd)
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server ) {
-    if ( !person.GetStatement() && !(way > 6 &&  way < 10) ){
+	if (way == QUIT)
+		server.DisconnectClient(person);
+	else if ( !person.GetStatement() && !(way > 6 &&  way < 10) ){
 		person.SetMessageToSend(": 451 :Not registered\r\n");
 		return ;
 	}
@@ -119,8 +121,6 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
 		case sUSER :
             User( person, info );
             break ;
-		case QUIT :
-			server.DisconnectClient(person);
         default :
             return ;
     }
