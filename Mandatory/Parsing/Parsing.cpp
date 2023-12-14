@@ -68,7 +68,6 @@ handleCommand(Server& server, Client& person ) {
 
 	person.SetInputBuffer(Backup);
 
-	std::cout << "Reply*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
 	std::cout << "Size list after " << server.getCllist().size() << std::endl; //DEBUG
 
     return ;
@@ -129,7 +128,7 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
             User( person, info );
             break ;
 		case QUIT :
-			server.DisconnectClient(person);
+			server.DisconnectClient( person );
         default :
             return ;
     }
