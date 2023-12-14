@@ -46,9 +46,11 @@ handleCommand(Server& server, Client& person ) {
 
     // TODO need a APPEND with previous cmd maybe manage here
     tab = split( work, "\r\n" );
+
+	std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
 	std::cout << "Size list before " << server.getCllist().size() << std::endl; //DEBUG
 	std::cout << "Backup *-" << Backup << "-*" << std::endl; //DEBUG
-	std::cout << "Cmd *-" << work << "-*" << std::endl; //DEBUG
+
     if ( tab.empty() )
         return ;
     for ( size_t i = 0; i < tab.size(); i++ ) {
@@ -61,7 +63,7 @@ handleCommand(Server& server, Client& person ) {
     }
 	person.ClearInputBuffer();
 	person.SetInputBuffer(Backup);
-	std::cout << "Reply*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
+	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
 	std::cout << "Size list after " << server.getCllist().size() << std::endl; //DEBUG
     return ;
 }
