@@ -19,84 +19,6 @@ Bot	&Bot::operator=( Bot const &rhs )
 	return *this;
 }
 
-void	Bot::on()
-{
-    std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\n";
-    send(this->_socket, connexions.c_str(), connexions.size(), 0);
-
-
-while (run) {
-    fd_set read_fds;
-    FD_ZERO(&read_fds);
-    FD_SET(this->_socket, &read_fds);
-
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 400000;
-
-    int ready = select(this->_socket + 1, &read_fds, NULL, NULL, &timeout);
-
-    if (ready > 0 && FD_ISSET(this->_socket, &read_fds)) {
-        char buffer[1024];
-        int ret = recv(this->_socket, buffer, sizeof(buffer) - 1, 0);
-        if (ret <= 0) {
-            break;
-        }
-        buffer[ret] = '\0';
-        std::cout << buffer << std::endl;
-        
-        std::string received(buffer);
-
-        if (received.find("ping") != std::string::npos) {
-            usleep(100000);
-            puts("pong");
-            send(this->_socket, "PRIVMSG #bot :pong\r\n", 20, 0);
-        }
-        if (received.find("pong") != std::string::npos) {
-            usleep(100000);
-            puts("ping");
-            send(this->_socket, "PRIVMSG #bot :ping\r\n", 20, 0);
-        }
-    } 
-    // else if (ready == 0) {
-    //     // Aucune donnée disponible dans le délai spécifié, vous pouvez effectuer d'autres actions ici si nécessaire
-    // } else {
-    //     // Gérer l'erreur de select() ici
-    // }
-}
-
-send(this->_socket, "QUIT\r\n", 6, 0);
-
-
-
-
-    // while (run)
-    // {
-    //     char buffer[1024];
-    //     int ret = recv(this->_socket, buffer, 1023, 0);
-    //     if (ret <= 0)
-    //         break;
-    //     buffer[ret] = 0;
-    //     std::cout << buffer << std::endl;
-    //     if (std::string(buffer).find("ping") != std::string::npos)
-    //     {
-    //         usleep(400000);
-    //         puts( "pong" );
-    //         std::string pong = "PRIVMSG #bot :pong\r\n";
-    //         std::cout << pong.size() << std::endl;
-    //         send(this->_socket, pong.c_str(), pong.size(), 0);
-    //     }
-    //     if (std::string(buffer).find("pong") != std::string::npos)
-    //     {
-    //         usleep(400000);
-    //         puts( "ping" );
-    //         std::string ping = "PRIVMSG #bot :ping\r\n";
-    //         send(this->_socket, ping.c_str(), ping.size(), 0);
-    //     }
-    // }
-    // send( this->_socket, "QUIT\r\n", 6, 0 );
-}
-
 void	Bot::start()
 {
     struct sockaddr_in addr;
@@ -111,4 +33,60 @@ void	Bot::start()
     }
     std::cout << "Bot connected" << std::endl;
     this->on();
+}
+
+void	Bot::on()
+{
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(this->_socket, &read_fds);
+    char buffer[1024];
+    struct timeval timeout;
+
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 400000;
+
+    std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\n";
+    send(this->_socket, connexions.c_str(), connexions.size(), 0);
+
+    int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
+    buffer[ret] = '\0';
+
+    std::string check( buffer );
+    if (check.find(":bot JOIN #bot") == std::string::npos)
+    {
+        std::cerr << "Error from server" << std::endl;
+        return;
+    }
+
+    while (run)
+    {
+        int ready = select( this->_socket + 1, &read_fds, NULL, NULL, &timeout );
+
+        if ( ready > 0 && FD_ISSET( this->_socket, &read_fds ) ) {
+            int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
+            if ( ret <= 0 ) {
+                break;
+            }
+            buffer[ret] = '\0';
+            
+            std::string received( buffer );
+
+            if ( received.find( "ping" ) != std::string::npos ) {
+                usleep( 100000 );
+                puts( "pong" );
+                send( this->_socket, "PRIVMSG #bot :pong\r\n", 20, 0 );
+            }
+            if ( received.find( "pong" ) != std::string::npos ) {
+                usleep(100000);
+                puts( "ping" );
+                send( this->_socket, "PRIVMSG #bot :ping\r\n", 20, 0 );
+            }
+        }
+        else if (ready < 0) {
+            std::cerr << "select error" << std::endl;
+            break;
+        }
+    }
+    send(this->_socket, "QUIT\r\n", 6, 0);
 }
