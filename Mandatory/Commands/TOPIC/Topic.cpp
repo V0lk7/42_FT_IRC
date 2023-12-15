@@ -43,13 +43,13 @@ Topic( const Server& server, Client& client, const std::string& cmd )
 
     channel = server.GetChannel( data[0] );
 
-    if ( topicParsing( client, channel) != TOPICNONE )
-        return ;
-
-    if ( data.size() == 1 ) {
+    if ( channel && data.size() == 1 ) {
         topicReaply( client, channel, TOPICSEND );
         return ;
     }
+
+    if ( topicParsing( client, channel) != TOPICNONE )
+        return ;
 
     topicChange( data, channel, client );
 }
