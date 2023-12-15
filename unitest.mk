@@ -22,7 +22,7 @@ clear:
 	rm -rf $(ARCHIVE)
 .PHONY: clear
 
-rclean:
+rclean: fclean clear
 	rm -rf $(RUNNER)
 .PHONY: rclean
 
