@@ -115,6 +115,9 @@ void	Bot::on()
 
         int ready = select( this->_socket + 1, &read_fds, NULL, NULL, &timeout );
 
+        usleep( 10000000 );
+        send( this->_socket, "PRIVMSG #bot :pong\r\n", 20, 0 );
+
         if ( ready > 0 && FD_ISSET( this->_socket, &read_fds ) )
         {
             int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
