@@ -26,12 +26,16 @@ void	Bot::start()
     this->_socket = socket(AF_INET, SOCK_STREAM, 0);
     int opt = 1;
     if (setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
+    {
+        close(this->_socket);
         return;
+    }
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(this->_port);
 
     if (connect(this->_socket, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+        close(this->_socket);
         std::cerr << "Bot connect fail" << std::endl;
         return;
     }
@@ -42,10 +46,6 @@ void	Bot::start()
 void	Bot::on()
 {
     char buffer[1024];
-    struct timeval timeout;
-
-    timeout.tv_sec = 1;
-    timeout.tv_usec = 0;
 
     std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\nTOPIC #bot :PING PONG\r\n";
     send(this->_socket, connexions.c_str(), connexions.size(), 0);
@@ -57,6 +57,8 @@ void	Bot::on()
     std::cout << "Check:" << check << "^" << std::endl;
     if (check.find(":bot JOIN #bot") == std::string::npos)
     {
+        send(this->_socket, "QUIT\r\n", 6, 0);
+        close(this->_socket);
         std::cerr << "Error from server" << std::endl;
         return;
     }
@@ -67,7 +69,7 @@ void	Bot::on()
         FD_ZERO(&read_fds);
         FD_SET(this->_socket, &read_fds);
 
-        int ready = select( this->_socket + 1, &read_fds, NULL, NULL, &timeout );
+        int ready = select( this->_socket + 1, &read_fds, NULL, NULL, NULL );
 
         if ( ready > 0 && FD_ISSET( this->_socket, &read_fds ) )
         {
