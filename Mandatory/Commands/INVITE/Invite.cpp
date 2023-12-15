@@ -46,11 +46,6 @@ Invite( Server& server, Client& client, const std::string& cmd )
     channel = server.GetChannel( cuttingCmd[1] );
     target = server.GetClient( cuttingCmd[0] );
 
-    // TODO DEBUG
-    std::cout << "\tcuttingCmd[0]:" << cuttingCmd[0] << "^" << std::endl;
-    std::cout << "\tcuttingCmd[1]:" << cuttingCmd[1] << "^" << std::endl;
-    // TODO DEBUG
-
     if ( !inviteParsing( cuttingCmd, server, client, channel, target ) )
         return ;
 
@@ -63,15 +58,12 @@ inviteParsing( std::vector<std::string>& key, Server& server,
                Client& client, Channel* channel, Client* target )
 {
     if ( !channel ) {
-        std::cout << "\t**1**" << std::endl; // TODO DEBUG
         if ( !isNoChannelButValidTargetFCT( key, server, client, target ) ) {
-            std::cout << "\t**2**" << std::endl; // TODO DEBUG
             inviteReaply( client, NULL, NULL, BADPARAMS );
         }
         return ( false );
     }
 
-    std::cout << "\t**3**" << std::endl; // TODO DEBUG
     if ( !server.GetClient( key[0] ) ) {
         inviteReaply( client, NULL, channel, NOTARGETINSERVER );
         return ( false );
@@ -88,21 +80,16 @@ static bool
 isNoChannelButValidTargetFCT( const std::vector<std::string>& key, Server& server,
                               Client& client, Client* target )
 {
-    std::cout << "\t**5**" << std::endl; // TODO DEBUG
-    std::cout << "key[0]:" << key[0] << "^" << std::endl; // TODO DEBUG
     if ( !isNotHimSelf( client, key[0] ) ) {
-        std::cout << "\t**6**" << std::endl; // TODO DEBUG
         specialReply( client, target, key[1], 1 );
         return ( true );
     }
 
     if ( server.GetClient( key[0] ) ) {
-        std::cout << "\t**7**" << std::endl; // TODO DEBUG
         specialReply( client, target, key[1], 0 );
         return ( true );
     }
 
-    std::cout << "\t**8**" << std::endl; // TODO DEBUG
     return ( false );
 }
 
