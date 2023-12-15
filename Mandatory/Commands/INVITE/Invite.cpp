@@ -10,7 +10,7 @@
 typedef enum IErr {
     NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,
     CLIENTISTARGET, BADRIGHT, BADCHANNEL, TARGETINWAITLIST,
-    BADPARAMS
+    BADPARAMS, SECIALCASE
 } IErr;
 
 static IErr
@@ -19,9 +19,16 @@ static IErr
 isValidRight( Client& client, Channel& channel, std::string& target );
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
-               Client& client, Channel* channel );
+               Client& client, Channel* channel, Client* Target );
 static void
 inviteReaply( Client& client, Client* target, Channel* channel, int flag );
+static bool
+isNotHimSelf( Client& client, const std::string& target );
+static void
+specialReply( Client& client, Client* target, std::string channel, int flag );
+static bool
+isNoChannelButValidTargetFCT( const std::vector<std::string>& key, Server& server,
+                              Client& client, Client* target );
 
 void
 Invite( Server& server, Client& client, const std::string& cmd )
@@ -37,24 +44,34 @@ Invite( Server& server, Client& client, const std::string& cmd )
     }
 
     channel = server.GetChannel( cuttingCmd[1] );
+    target = server.GetClient( cuttingCmd[0] );
 
-    if ( !inviteParsing( cuttingCmd, server, client, channel ) )
+    // TODO DEBUG
+    std::cout << "\tcuttingCmd[0]:" << cuttingCmd[0] << "^" << std::endl;
+    std::cout << "\tcuttingCmd[1]:" << cuttingCmd[1] << "^" << std::endl;
+    // TODO DEBUG
+
+    if ( !inviteParsing( cuttingCmd, server, client, channel, target ) )
         return ;
 
-    target = server.GetClient( cuttingCmd[0] );
     channel->PutClientOnWaitingList( *target );
     inviteReaply( client, target, channel, NEXT );
 }
 
 static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
-               Client& client, Channel* channel )
+               Client& client, Channel* channel, Client* target )
 {
     if ( !channel ) {
-        inviteReaply( client, NULL, NULL, BADPARAMS );
+        std::cout << "\t**1**" << std::endl; // TODO DEBUG
+        if ( !isNoChannelButValidTargetFCT( key, server, client, target ) ) {
+            std::cout << "\t**2**" << std::endl; // TODO DEBUG
+            inviteReaply( client, NULL, NULL, BADPARAMS );
+        }
         return ( false );
     }
 
+    std::cout << "\t**3**" << std::endl; // TODO DEBUG
     if ( !server.GetClient( key[0] ) ) {
         inviteReaply( client, NULL, channel, NOTARGETINSERVER );
         return ( false );
@@ -65,6 +82,54 @@ inviteParsing( std::vector<std::string>& key, Server& server,
 
     else
         return ( true );
+}
+
+static bool
+isNoChannelButValidTargetFCT( const std::vector<std::string>& key, Server& server,
+                              Client& client, Client* target )
+{
+    std::cout << "\t**5**" << std::endl; // TODO DEBUG
+    std::cout << "key[0]:" << key[0] << "^" << std::endl; // TODO DEBUG
+    if ( !isNotHimSelf( client, key[0] ) ) {
+        std::cout << "\t**6**" << std::endl; // TODO DEBUG
+        specialReply( client, target, key[1], 1 );
+        return ( true );
+    }
+
+    if ( server.GetClient( key[0] ) ) {
+        std::cout << "\t**7**" << std::endl; // TODO DEBUG
+        specialReply( client, target, key[1], 0 );
+        return ( true );
+    }
+
+    std::cout << "\t**8**" << std::endl; // TODO DEBUG
+    return ( false );
+}
+
+static bool
+isNotHimSelf( Client& client, const std::string& target )
+{
+    if ( client.GetNickname() == target )
+        return ( false );
+    else
+        return ( true );
+}
+
+static void
+specialReply( Client& client, Client* target, std::string channel, int flag )
+{
+    std::string reply;
+
+    if ( flag == 0 ) {
+        reply = "INVITE " + client.GetNickname() + " " + channel + "\r\n";
+        target->SetMessageToSend( reply );
+    }
+    else {
+        reply = ": 401 :" + client.GetNickname()
+               + " you can't invite yourself in a channel"
+               + "\r\n";
+        client.SetMessageToSend( reply );
+    }
 }
 
 static IErr
