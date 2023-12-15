@@ -18,8 +18,7 @@ void	Join(Server &server, Client &client, std::string &RawCmd)
 	CmdParts = split(RawCmd, " ");
 	if (OrganiseRequest(Request, CmdParts) == false)
 	{
-		client.SetMessageToSend(": 461 " + client.GetNickname() +
-								" JOIN :Need more parameters\r\n");
+		client.SetMessageToSend(": 461 : [JOIN] :Need more parameters\r\n");
 		return ;
 	}
 	for (std::map<std::string, std::string>::iterator It = Request.begin(); 

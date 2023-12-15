@@ -5,3 +5,5 @@ nohup.out
 .cache/
 Unitary-Test/irc.a
 Unitary-Test/runtest
+.obj_bonus
+Bot

@@ -1,65 +1,6 @@
-###############################################################################
-#								EXECUTABLE									  #
-###############################################################################
+SHELL = /bin/sh
 
-NAME		=	ircserv
-
-###############################################################################
-#								DESTINATION									  #
-###############################################################################
-
-OBJ_DIR		:=	.obj
-
-###############################################################################
-#								SOURCES										  #
-###############################################################################
-
-SRC_DIR		:=	Mandatory
-
-INCLUDES	:= 	$(SRC_DIR)/Tools/			\
-				$(SRC_DIR)/Commands/		\
-				$(SRC_DIR)/Parsing/			\
-				$(SRC_DIR)/Class/Client/	\
-				$(SRC_DIR)/Class/Server/	\
-				$(SRC_DIR)/Class/Channel/	\
-				$(SRC_DIR)/Commands/KICK/	\
-				$(SRC_DIR)/Authentication/	\
-
-SRCS		:=	Core/main.cpp 					\
-				Core/Arguments_Parsing.cpp		\
-				Core/Server_Initialization.cpp	\
-				Core/Process_Server.cpp			\
-
-SRCS		+=	Parsing/Parsing.cpp 				\
-
-SRCS		+=	Tools/cSplit.cpp 					\
-
-SRCS		+=	Class/Client/Client.cpp				\
-				Class/Channel/Channel.cpp			\
-				Class/Server/Server.cpp
-
-SRCS		+=	Commands/TOPIC/Topic.cpp			\
-
-SRCS		+=	Commands/JOIN/Join.cpp				\
-				Commands/JOIN/Join_parsing.cpp		\
-				Commands/JOIN/Join_utilities.cpp	\
-
-SRCS		+=	Commands/KICK/Kick.cpp				\
-				Commands/KICK/ParsingKick.cpp		\
-
-SRCS		+=	Commands/MODE/Mode.cpp				\
-				Commands/MODE/Mode_parsing.cpp		\
-				Commands/MODE/Mode_utilities.cpp	\
-
-SRCS		+=	Commands/INVITE/Invite.cpp			\
-
-SRCS		+=	Commands/PRIVMSG/Privmsg.cpp		\
-
-SRCS		+=	Commands/WHO/Who.cpp				\
-
-SRCS		+=	Authentication/Pass.cpp				\
-				Authentication/Nick.cpp				\
-				Authentication/User.cpp				\
+-include Variables.mk
 
 SRCS		:=	$(SRCS:%=$(SRC_DIR)/%)
 
@@ -74,7 +15,7 @@ DEPS		:=	$(OBJS:.o=.d)
 #CXX			=	c++
 CXX			=	g++
 
-CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98 -ggdb3
+CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98 -ggdb3
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 
@@ -105,12 +46,16 @@ $(OBJ_DIR)/%.o : %.cpp
 all: $(NAME)
 .PHONY:all
 
+bonus:
+	$(MAKE) BONUS=1 all
+.PHONY:bonus
+
 clean:
-	rm -rf $(OBJ_DIR)
+	rm -rf $(shell find . -type d -name '.obj*')
 .PHONY:clean
 
 fclean: clean
-	rm -rf $(NAME)
+	rm -rf $(shell find . -type f \( -name 'ircserv' -o -name 'Bot' \) )
 .PHONY:fclean
 
 re: fclean all
