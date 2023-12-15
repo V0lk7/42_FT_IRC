@@ -23,10 +23,14 @@ void	Bot::start()
 {
     struct sockaddr_in addr;
 
-    this->_socket = socket(PF_INET, SOCK_STREAM, 0);
+    this->_socket = socket(AF_INET, SOCK_STREAM, 0);
+    int opt = 1;
+    if (setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
+        return;
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(this->_port);
+
     if (connect(this->_socket, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
         std::cerr << "Bot connect fail" << std::endl;
         return;
@@ -34,56 +38,6 @@ void	Bot::start()
     std::cout << "Bot connected" << std::endl;
     this->on();
 }
-
-// void	Bot::on()
-// {
-//     char buffer[1024];
-//     struct timeval timeout;
-
-//     timeout.tv_sec = 1;
-//     timeout.tv_usec = 0;
-
-//     listen(this->_socket, 1);
-
-//     std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\n";
-//     send(this->_socket, connexions.c_str(), connexions.size(), 0);
-
-//     int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
-//     buffer[ret] = '\0';
-
-//     std::string check( buffer );
-//     std::cout << "Check:" << check << "^" << std::endl;
-//     if (check.find(":bot JOIN #bot") == std::string::npos)
-//     {
-//         std::cerr << "Error from server" << std::endl;
-//         return;
-//     }
-//     this->_connected = true;
-
-//     while (this->_connected)
-//     {
-//         int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
-
-//         if ( ret <= 0 )
-//             break;
-
-//         buffer[ret] = '\0';
-        
-//         std::string received( buffer );
-//         std::cout << received << std::endl;
-
-//         if ( received.find( "ping" ) != std::string::npos )
-//             send( this->_socket, "PRIVMSG #bot :pong\r\n", 20, 0 );
-//         if ( received.find( "pong" ) != std::string::npos )
-//             send( this->_socket, "PRIVMSG #bot :ping\r\n", 20, 0 );
-//     }
-//     send(this->_socket, "QUIT\r\n", 6, 0);
-//     close(this->_socket);
-//     this->_connected = false;
-// 	puts( "\nStay here, I'll be back." );
-
-// }
-
 
 void	Bot::on()
 {
@@ -93,7 +47,7 @@ void	Bot::on()
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-    std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\n";
+    std::string connexions = "PASS " + _password + "\r\nNICK bot\r\nUSER bot\r\nJOIN #bot\r\nTOPIC #bot :PING PONG\r\n";
     send(this->_socket, connexions.c_str(), connexions.size(), 0);
 
     int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
@@ -114,9 +68,6 @@ void	Bot::on()
         FD_SET(this->_socket, &read_fds);
 
         int ready = select( this->_socket + 1, &read_fds, NULL, NULL, &timeout );
-
-        usleep( 10000000 );
-        send( this->_socket, "PRIVMSG #bot :pong\r\n", 20, 0 );
 
         if ( ready > 0 && FD_ISSET( this->_socket, &read_fds ) )
         {
