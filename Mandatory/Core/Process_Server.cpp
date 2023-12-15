@@ -85,13 +85,13 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 {
 	std::list<Client *>				&ClientList = ServerData.getCllist();
 	std::list<Client *>::iterator	It = ClientList.begin();
-	char							Buffer[BUFFER_SIZE];
+	char							Buffer[BUFFER_SIZE + 1];
 	int								Sd, flag;
 
 	while (It != ClientList.end()){
 		Sd = (*It)->GetSocket();
 		if (FD_ISSET(Sd, &ListSd) != 0){
-			bzero(Buffer, BUFFER_SIZE);
+			bzero(Buffer, BUFFER_SIZE + 1);
 			flag = recv(Sd, Buffer, BUFFER_SIZE, 0);
 			if (flag == -1)
 				throw std::runtime_error("Error on read system call");

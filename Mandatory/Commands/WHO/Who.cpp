@@ -12,7 +12,7 @@ void	Who(Server &server, Client &client, std::string &RawCmd)
 	Cmd.erase(Cmd.begin());
 	if (Cmd.size() != 1){
 		client.SetMessageToSend(": 461 " + client.GetNickname() +
-								" JOIN :Need more parameters\r\n");
+								" WHO :Need more parameters\r\n");
 		return ;
 	}
 	Channel	*ChanPtr = server.GetChannel(Cmd[0]);
