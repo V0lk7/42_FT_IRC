@@ -111,6 +111,11 @@ bool	Channel::GetMode(int Index) const
 	return (this->_Mode[Index]);
 }
 
+size_t	Channel::GetSizeUsers(void) const
+{
+	return (this->_Users.size());
+}
+
 /*----------------------SpecificMethods----------------------------*/
 
 void
