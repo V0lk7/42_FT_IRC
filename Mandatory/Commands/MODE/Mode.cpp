@@ -67,54 +67,54 @@ static void	ModeReply(Client &client, Channel *ChanPtr, int Flag, CmdNode *Mode)
 		ChannelName = ChanPtr->GetName();
 	
 	if (Mode != NULL && Mode->Op == true)
-		Add = "set";
+		Add = "+";
 	else
-		Add = "unset";
+		Add = "-";
 
 	if (Flag == INVITONLY_CHANGED){
-		Reply = ": 324 " + ClientName + " MODE " + ChannelName + ": " + Add + " invit only\r\n";
+		Reply = ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + "\r\n";
 		ChanPtr->SendMessageToClients(Reply, client);
-		Reply = ": 324 MODE " + ChannelName + ": " + Add + " invit only\r\n";
 	}
 	else if (Flag == TOPIC_CHANGED){
-		Reply = ": 324 " + ClientName + " MODE " + ChannelName + ": " + Add + " topic\r\n";
+		Reply = ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + "\r\n";
 		ChanPtr->SendMessageToClients(Reply, client);
-		Reply = ": 324 MODE " + ChannelName + ": " + Add + " topic\r\n";
 	}
 	else if (Flag == LIMIT_CHANGED){
-		Reply = ": 324 " + ClientName + " MODE " + ChannelName + ": " + Add + " limit user\r\n";
+		Reply = ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + " ";
+		if (Add == "+")
+			Reply += Mode->Param;
+		Reply += "\r\n";
 		ChanPtr->SendMessageToClients(Reply, client);
-		Reply = ": 324 MODE " + ChannelName + ": " + Add + " limit user\r\n";
 	}
 	else if (Flag == PASSWORD_CHANGED){
-		Reply	= ": 324 " + ClientName + " MODE " + ChannelName
-				+ ": " + Add + " channel password\r\n";
+		Reply	= ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + " ";
+		if (Add == "+")
+			Reply += Mode->Param;
+		Reply += "\r\n";
 		ChanPtr->SendMessageToClients(Reply, client);
-		Reply = ": 324 MODE " + ChannelName + ": " + Add + " channel password\r\n";
 	}
 	else if (Flag == CLIENTRIGHT_CHANGED){
-		Reply	= ": 324 " + ClientName + " MODE " + ChannelName + ": " + Add + " "
-				+ Mode->Param + " operator\r\n";
+		Reply	= ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + " "
+				+ Mode->Param + "\r\n";
 		ChanPtr->SendMessageToClients(Reply, client);
-		Reply = ": 324 MODE " + ChannelName + ": " + Add + " " + Mode->Param + " operator\r\n";
 	}
 	else if (Flag == ERR_NEEDMOREPARAMS){
-		Reply = ": 461 MODE " + ChannelName + ": parameter error\r\n";
-	}
-	else if (Flag == ERR_KEYSET){
-		Reply = ": 467 MODE " + ChannelName + ": mode already " + Add + "\r\n";
+		Reply	= ": 467 " + ClientName + " " + ChannelName + " " + Mode->Mode 
+				+ " *: You must specify a parameter with " + Add + Mode->Mode + "\r\n";
 	}
 	else if (Flag == ERR_NOSUCHNICK){
-		Reply = ": 401 MODE " + ChannelName + ": no such nickname\r\n";
+		Reply = ": 401 MODE " + ChannelName + " Mode: Unknow Nickname: " + Mode->Param + "\r\n";
 	}
 	else if (Flag == ERR_NOSUCHCHANNEL){
-		Reply = ": 403 MODE : no such channel\r\n";
+		Reply = ": 403 MODE :No such channel\r\n";
 	}
 	else if (Flag == ERR_NOTONCHANNEL){
-		Reply = ": 442 MODE : not on channel\r\n";
+		Reply = ": 442 MODE :Not on channel\r\n";
 	}
 	else if (Flag == ERR_UNKNOWNMODE){
-		Reply = ": 472 MODE : unknow mode\r\n";
+		Reply = ": 472 MODE " + ChannelName + " Mode: Unknow mode\r\n";
 	}
+	else if (Flag == ERR_KEYSET)
+		Reply = "";
 	client.SetMessageToSend(Reply);
 }
