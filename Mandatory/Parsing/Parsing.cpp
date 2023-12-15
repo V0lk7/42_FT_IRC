@@ -44,6 +44,7 @@ handleCommand(Server& server, Client& person ) {
     std::vector<std::string>    tab;
     int                         way;
 
+    // TODO need a APPEND with previous cmd maybe manage here
     tab = split( work, "\r\n" );
 
   std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
@@ -65,13 +66,11 @@ handleCommand(Server& server, Client& person ) {
 
 	person.ClearInputBuffer();
 
-	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl;
 
 	person.SetInputBuffer(Backup);
 
-	std::cout << "Reply*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
+	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
 	std::cout << "Size list after " << server.getCllist().size() << "\n" << std::endl; //DEBUG
-
     return ;
 }
 

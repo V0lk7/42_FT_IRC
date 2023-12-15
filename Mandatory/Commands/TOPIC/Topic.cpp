@@ -164,4 +164,5 @@ topicReaply( Client& client, Channel* channel, int flag )
         reply = "" ;
 
     client.SetMessageToSend( reply );
+    channel->SendMessageToClients( reply, client );
 }
