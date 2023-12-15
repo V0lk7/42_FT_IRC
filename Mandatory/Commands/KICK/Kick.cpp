@@ -9,7 +9,7 @@ static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data );
 static void
 rmClientOfChannel( Channel& channel, const std::string& key,
-                                                    const std::string& reason );
+                        const std::string& reason            );
 void
 Kick( const Server& server, Client& client, const std::string& cmd )
 {
@@ -31,12 +31,12 @@ Kick( const Server& server, Client& client, const std::string& cmd )
 
 static void
 rmClientOfChannel( Channel& channel, const std::string& key,
-                                                     const std::string& reason )
+                        const std::string& reason            )
 {
     std::map<Client*, bool> target( channel.GetUsers() );
 
     for ( std::map<Client*, bool>::iterator it = target.begin();
-                                                      it != target.end(); it++ )
+                   it != target.end(); it++                      )
     {
 
         it->first->SetMessageToSend( reason );

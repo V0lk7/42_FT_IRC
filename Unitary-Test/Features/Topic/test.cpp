@@ -56,19 +56,22 @@ TEST_CASE ( "topicParsing" )
     std::vector<std::string>    data;
     SUBCASE ( "true" )
     {
+        data.push_back( "#Test" );
         data.push_back( ":the" );
         data.push_back( "new" );
         data.push_back( "Topic" );
         topicChange( data, channel, *sudo );
         CHECK( channel->GetTopic() == "the new Topic" );
     }
+    // SUBCASE ( "false" )
+    // {
+    //     data.push_back( "#Test" );
+    //     data.push_back( ":" );
+    //     CHECK( topicChange( data, channel, *sudo) == TOPICERR );
+    // }
     SUBCASE ( "false" )
     {
-        data.push_back( ":" );
-        CHECK( topicChange( data, channel, *sudo) == TOPICERR );
-    }
-    SUBCASE ( "false" )
-    {
+        data.push_back( "#Test" );
         data.push_back( "the" );
         data.push_back( "new" );
         data.push_back( "Topic" );

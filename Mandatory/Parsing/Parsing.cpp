@@ -45,9 +45,12 @@ handleCommand(Server& server, Client& person ) {
     int                         way;
 
     tab = split( work, "\r\n" );
+
+	std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
 	std::cout << "Size list before " << server.getCllist().size() << std::endl; //DEBUG
 	std::cout << "Backup *-" << Backup << "-*" << std::endl; //DEBUG
 	std::cout << "Cmd *-" << work << "-*" << std::endl; //DEBUG
+
     if ( tab.empty() )
         return ;
     for ( size_t i = 0; i < tab.size(); i++ ) {
@@ -58,10 +61,15 @@ handleCommand(Server& server, Client& person ) {
 		}
 		dispatch( tab[i], way, person, server );
     }
+
 	person.ClearInputBuffer();
+
+	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl;
+
 	person.SetInputBuffer(Backup);
-	std::cout << "Reply*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
+
 	std::cout << "Size list after " << server.getCllist().size() << std::endl; //DEBUG
+
     return ;
 }
 
