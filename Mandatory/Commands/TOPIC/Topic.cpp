@@ -91,6 +91,7 @@ topicParsing( Client& client, Channel* channel )
     std::map<Client*, bool> key; 
     bool                    right = false;
 
+    std::cout << client.GetNickname() << std::endl;
     if ( !channel ) {
         topicReaply( client, channel, TOPICNOCHANNEL );
         return ( TOPICNOCHANNEL );

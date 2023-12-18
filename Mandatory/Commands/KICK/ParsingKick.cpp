@@ -93,24 +93,25 @@ kickReaply( Client& client, Channel* channel, int flag )
     std::string reply;
     std::string clientName( client.GetNickname() );
     std::string channelName;
+
     if ( channel )
-        std::string channelName = (*channel).GetName() ;
+        channelName = channel->GetName() ;
 
     if ( flag == NOTARGET ) {
-        reply = ": 442 " + clientName + " " + channelName
-              + ":KICK cannot access to the target mentioned and has kicked it"
+        reply = ": 441 " + clientName + " " + channelName
+              + " :They are not on that channel."
               + "\r\n";
     }
 
     else if ( flag == NORIGHT ) {
         reply = ": 482 " + clientName + " " + channelName
-              + ":KICK You are not an operator"
+              + " :You must be a channel operator."
               + "\r\n";
     }
 
     else if ( flag == NOCHANNEL ) {
         reply = ": 476 " + clientName +
-              + ":KICK command is invalid or improperly formatted"
+              + " :Command is invalid or improperly formatted."
               + "\r\n";
     }
     else 
