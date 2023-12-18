@@ -77,7 +77,7 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 		channel.SendMessageToClients(Reply, client);
 		if (channel.GetTopic().empty() == false)
 			Reply	+= ": 332 :" + ClientName + " " + ChannelName
-					+ " The Topic is: " + channel.GetTopic() + "\r\n";
+					+ " " + channel.GetTopic() + "\r\n";
 	}
 	else if (flag == ERR_BADCHANNELKEY){
 		Reply	= ": 475 " + ClientName + " " + ChannelName
