@@ -45,9 +45,10 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
         return ( NORIGHT );
     }
 
-    if ( findTarget( splitOnSpace[1], *channel, client ) != CONTINUE ) {
-        kickReaply( client, channel, NOTARGET );
-        return ( NOTARGET );
+	enum Err	Flag = findTarget( splitOnSpace[1], *channel, client ); 
+    if ( Flag != CONTINUE ) {
+        kickReaply( client, channel, Flag );
+        return ( Flag );
     }
 
     return ( NONE );
@@ -70,8 +71,8 @@ findTarget( std::string& key, Channel& channel, Client& client )
         }
     }
 
-    if ( key == client.GetNickname() )
-        found = false;
+    if ( found == true && key == client.GetNickname() )
+        return (HIMSELF);
     return ( found ? CONTINUE : NOTARGET );
 }
 
@@ -98,8 +99,8 @@ kickReaply( Client& client, Channel* channel, int flag )
         channelName = channel->GetName() ;
 
     if ( flag == NOTARGET ) {
-        reply = ": 441 " + clientName + " " + channelName
-              + " :They are not on that channel."
+        reply = ": 442 " + clientName + " " + channelName
+              + " :You're not on that channel."
               + "\r\n";
     }
 
@@ -114,6 +115,11 @@ kickReaply( Client& client, Channel* channel, int flag )
               + " :Command is invalid or improperly formatted."
               + "\r\n";
     }
+	else if (flag == HIMSELF){
+        reply = ": 400 " + clientName + " " + channelName
+              + " :You can't kick yourself."
+              + "\r\n";
+	}
     else 
         reply = "" ;
 

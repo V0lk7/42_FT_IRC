@@ -32,7 +32,6 @@ void	Pass(Server &server, Client &client, std::string &Auth)
 	}
 	else {
 		client.SetPasswd();
-		client.SetMessageToSend(": 300 : [PASS] :Password accepted\r\n");
 	}
 	return ;
 }

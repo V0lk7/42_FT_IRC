@@ -44,10 +44,9 @@ handleCommand(Server& server, Client& person ) {
     std::vector<std::string>    tab;
     int                         way;
 
-    // TODO need a APPEND with previous cmd maybe manage here
     tab = split( work, "\r\n" );
 
-  std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
+	std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
 	std::cout << "Command receive by " << person.GetNickname() << std::endl; //DEBUG
 	std::cout << "Size list before " << server.getCllist().size() << std::endl; //DEBUG
 	std::cout << "Backup *-" << Backup << "-*" << std::endl; //DEBUG
@@ -58,7 +57,7 @@ handleCommand(Server& server, Client& person ) {
     for ( size_t i = 0; i < tab.size(); i++ ) {
 		way = wayChooser( tab[i] );
 		if (way == -1) {
-			person.SetMessageToSend(": 461 : [" + tab[i] + "] :Unknow command\r\n");
+			person.SetMessageToSend(": 421 : " + tab[i] + " :Unknow command\r\n");
 			continue ;
 		}
 		dispatch( tab[i], way, person, server );

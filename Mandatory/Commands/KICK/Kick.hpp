@@ -14,7 +14,7 @@ class Client;
 // #-> need str is : KICK [&#]CHANNEL target                                # //
 // ########################################################################## //
 
-typedef enum Err { NONE, EMPTY, NOTARGET, CONTINUE, NOCHANNEL, NORIGHT } Err;
+typedef enum Err { NONE, EMPTY, NOTARGET, CONTINUE, NOCHANNEL, NORIGHT, HIMSELF } Err;
 
 enum Err
 parseCmd( const std::string& cmd, Channel* channel, Client& client );

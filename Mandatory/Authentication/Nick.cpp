@@ -2,45 +2,51 @@
 #include "Client.hpp"
 #include <string>
 
-static int	NickIsValid(Server &server, std::string Nick);
+static int	NickIsValid(Server &server, Client &client, std::string Nick);
 
 void	Nick(Server &server, Client &client, std::string &Auth)
 {
+	std::string	reply;
+
 	if (client.GetStatementStep(PASSWD) == false) {
-		client.SetMessageToSend(": 400 : [NICK] :Password needed before\r\n");
-		return ;
-	}
-	if (client.GetStatementStep(NICK) == true) {
-		client.SetMessageToSend(": 400 : [NICK] :Nick already set\r\n");
+		reply = ": 400 :Password needed before\r\n";
+		client.SetMessageToSend(reply);
 		return ;
 	}
 
 	size_t	pos = Auth.find(" ");
 	pos = Auth.find_first_not_of(" ", pos);
 	if (pos == std::string::npos) {
-		client.SetMessageToSend(": 431 : [NICK] :Need more parameters\r\n");
+		client.SetMessageToSend(": 431 NICK :No nickname given\r\n");
 		return ;
 	}
 
 	std::string	Nick(Auth.substr(pos));
-	int	flag = NickIsValid(server, Nick);
+	int	flag = NickIsValid(server, client, Nick);
 	if (flag == 1)
-		client.SetMessageToSend(": 432 : [NICK] :Wrong Nickname format\r\n");
-	else if (flag == 2)
-		client.SetMessageToSend(": 433 : [NICK] :Nickname already in use\r\n");
+		reply = ": 432 : " + client.GetNickname() + " :Erroneus nickname\r\n";
+	else if (flag == 2){
+		client.SetNickname(Nick);
+		reply = ": 433 " + Nick + " :Nickname is already in use\r\n";
+	}
 	else {
+		if (client.GetNickname().empty() == true)
+			reply = ":" + Nick + " NICK :" + Nick + "\r\n";
+		else
+			reply = ":" + client.GetNickname() + " NICK :" + Nick + "\r\n";
 		client.SetNickname(Nick);
 		client.SetStatement(NICK, true);
-		client.SetMessageToSend(": 300 : [NICK] :Nickname set\r\n");
 	}
+	client.SetMessageToSend(reply);
 	return ;
 }
 
-static int	NickIsValid(Server &server, std::string Nick)
+static int	NickIsValid(Server &server, Client &client, std::string Nick)
 {
 	if (Nick.size() > 9 || Nick.find_first_of(":#& ") != std::string::npos)
 		return (1);
-	if (server.GetClient(Nick) != NULL)
+	Client	*ptr = server.GetClient(Nick);
+	if (ptr != NULL && ptr != &client)
 		return (2);
 	return (0);
 }
