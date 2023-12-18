@@ -187,8 +187,10 @@ bool	Server::SendReply(void)
 	while (It != _ClientList.end()){
 		Msg = (*It)->GetMessage();
 		if (Msg.empty() != true){
-			if (send((*It)->GetSocket(), Msg.c_str(), Msg.size(), 0) == -1)
+			if (send((*It)->GetSocket(), Msg.c_str(), Msg.size(), 0) == -1){
+				(*It)->ClearMessage();
 				return (false);
+			}
 			(*It)->ClearMessage();
 		}
 		It++;
@@ -229,6 +231,22 @@ void	Server::EraseClientDisconnected(void)
 		}
 		It++;
 	}
+}
+
+void	Server::EraseEmptyChannel(void)
+{
+	std::list<Channel *>::iterator	It = _ChannelList.begin();
+
+	while (It != _ChannelList.end()){
+		if ((*It)->GetSizeUsers() == 0){
+			delete (*It);
+			_ChannelList.erase(It);
+			It = _ChannelList.begin();
+		}
+		else
+			It++;
+	}
+	return ;
 }
 
 std::ostream&	operator<<(std::ostream& print, const Server& other)

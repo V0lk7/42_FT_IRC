@@ -6,8 +6,6 @@ TEST_OBJS	:=	$(TEST:%.cpp=$(OBJ_DIR)/%.o)
 ARCHIVE		:=	$(DIRUNITEST)/irc.a
 RUNNER		:=	$(DIRUNITEST)/runtest
 
-#CXX = g++
-
 $(ARCHIVE): $(OBJS)
 	ar rcs $(ARCHIVE) $(OBJS)
 
@@ -22,7 +20,7 @@ clear:
 	rm -rf $(ARCHIVE)
 .PHONY: clear
 
-rclean:
+rclean: fclean clear
 	rm -rf $(RUNNER)
 .PHONY: rclean
 

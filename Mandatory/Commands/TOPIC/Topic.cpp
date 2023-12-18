@@ -57,16 +57,15 @@ Topic( const Server& server, Client& client, const std::string& cmd )
 static enum TErr
 topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
 {
-    std::string topic;
-    std::string output;
-    std::vector<std::string>::iterator check = data.begin();
-    check++;
+    std::string                         topic;
+    std::string                         output;
+    std::vector<std::string>::iterator  check = data.begin();
 
+    check++;
     if ( data.size() == 1 && (*check)[0] == ':' && (*check).length() == 1 ) {
         topicReaply( client, channel, TOPICERR );
         return ( TOPICERR );
     }
-
     if ( (*check)[0] != ':' ) {
         topicReaply( client, channel, TOPICERR );
         return ( TOPICERR );
@@ -74,43 +73,42 @@ topicChange( std::vector<std::string>& data, Channel* channel, Client& client )
 
     topic = *check;
     check++;
-    while ( check != data.end() )
-    {
+    while ( check != data.end() ) {
         topic += " " + *check;
         check++;
     }
-    topic = topic.substr( 2, std::string::npos );
+    topic = topic.substr( 1, std::string::npos );
+
     channel->SetTopic( topic );
     topicReaply( client, channel, TOPICCHANGED );
+
     return ( TOPICNONE );
 }
 
 static enum TErr
 topicParsing( Client& client, Channel* channel )
 {
-    std::map<Client*, bool>             key; 
-    bool                                right = false;
+    std::map<Client*, bool> key; 
+    bool                    right = false;
 
     std::cout << client.GetNickname() << std::endl;
     if ( !channel ) {
         topicReaply( client, channel, TOPICNOCHANNEL );
         return ( TOPICNOCHANNEL );
     }
-
     key = channel->GetUsers();
     if ( !channel->GetMode( TOPIC_CHANGE_SET ) ) {
         right = true;
     }
-    else if ( !key.count( &client ) ) {
+
+    if ( !key.count( &client ) ) {
         topicReaply( client, channel, TOPICCLIENTNOINCHANNEL );
         return ( TOPICCLIENTNOINCHANNEL );
     }
-
     else if ( key[ &client ] ) {
         right = true;
     }
-
-    else {
+    else if ( !right ) {
         topicReaply( client, channel, TOPICNORIGHT );
         return ( TOPICNORIGHT );
     }
@@ -127,38 +125,39 @@ topicReaply( Client& client, Channel* channel, int flag )
     std::string clientName( client.GetNickname() );
     std::string channelName;
     if ( channel )
-        std::string channelName = (*channel).GetName() ;
+        channelName = channel->GetName() ;
 
     if ( flag == TOPICCLIENTNOINCHANNEL ) {
-        reply = ": 442 " + clientName + " " + channelName
+        reply = ": 403 :" + clientName + " TOPIC " + channelName
               + ":TOPIC You are not currently in the channel."
               + "\r\n";
     }
 
     else if ( flag == TOPICNORIGHT ) {
-        reply = ": 477 " + clientName + " " + channelName
-              + ":TOPIC this channel is in MODE invite only and"
-              + " you are not a valid operator"
+        reply = ": 482 :" + clientName + " TOPIC " + channelName
+              + ":you are not a valid operator"
               + "\r\n";
     }
 
     else if ( flag == TOPICNOCHANNEL || flag == TOPICERR ) {
-        reply = ": 442 " + clientName +
+        reply = ":" + clientName +
               + ":TOPIC command is invalid or improperly formatted."
               + "\r\n";
     }
 
     else if ( flag == TOPICSEND ) {
-        reply = ":" + clientName + " 331 dan " + channelName;
-        if ( !channel->GetTopic().empty() )
-              reply += " " + channel->GetTopic() + "\r\n";
-        else
-              reply += ":NO topic is set.\r\n";
+        if ( !channel->GetTopic().empty() ) {
+            reply = ": 332 " + clientName + " " + channelName + " :"
+                  + channel->GetTopic() + "\r\n";
+        }
+        else {
+            reply += ": 331 " + clientName + " " + channelName
+                  + " :No topic is set.\r\n";
+        }
     }
 
     else if ( flag == TOPICCHANGED ) {
-        reply = ": 332 " + clientName + " " + channelName
-              + ":TOPIC channel topic changed"
+        reply =  ":" + clientName + " TOPIC " + channelName + " :" + channel->GetTopic()
               + "\r\n";
     }
 
@@ -166,4 +165,5 @@ topicReaply( Client& client, Channel* channel, int flag )
         reply = "" ;
 
     client.SetMessageToSend( reply );
+    channel->SendMessageToClients( reply, client );
 }

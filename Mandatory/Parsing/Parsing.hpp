@@ -6,7 +6,5 @@ class Client;
 
 void
 handleCommand(Server& server, Client& person );
-void
-test( Client& person );
 
 #endif

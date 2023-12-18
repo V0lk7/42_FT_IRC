@@ -51,6 +51,7 @@ class Server {
 		bool				SendReply(void);
 		void				DisconnectClient(Client &);	
 		void				EraseClientDisconnected(void);
+		void				EraseEmptyChannel(void);
 };
 
 std::ostream&	operator<<(std::ostream& print, const Server& other);

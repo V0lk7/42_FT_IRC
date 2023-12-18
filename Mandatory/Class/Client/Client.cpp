@@ -55,16 +55,12 @@ void	Client::SetNickname(std::string const &NewNickname)
 {
 	this->_Nickname = NewNickname;
 	this->_Auth[NICK] = true;
-	if (this->_Auth[PASSWD] == true && this->_Auth[USER] == true)
-		this->_Auth[OK] = true;
 }
 
 void	Client::SetUsername(std::string const &NewUsername)
 {
 	this->_Username = NewUsername;
 	this->_Auth[USER] = true;
-	if (this->_Auth[PASSWD] == true && this->_Auth[NICK] == true)
-		this->_Auth[OK] = true;
 }
 
 void	Client::SetSocket(int const &NewSocket)

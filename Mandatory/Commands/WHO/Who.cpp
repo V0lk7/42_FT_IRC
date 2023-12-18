@@ -12,7 +12,7 @@ void	Who(Server &server, Client &client, std::string &RawCmd)
 	Cmd.erase(Cmd.begin());
 	if (Cmd.size() != 1){
 		client.SetMessageToSend(": 461 " + client.GetNickname() +
-								" JOIN :Need more parameters\r\n");
+								" WHO :Need more parameters\r\n");
 		return ;
 	}
 	Channel	*ChanPtr = server.GetChannel(Cmd[0]);
@@ -23,6 +23,6 @@ void	Who(Server &server, Client &client, std::string &RawCmd)
 	}
 	else {
 		client.SetMessageToSend(": 353 " + client.GetNickname() + " = " + ChanPtr->GetName() +  " :" + ChanPtr->GetListClientIn() + "\r\n");
-		client.SetMessageToSend(": 366" + client.GetNickname() + ChanPtr->GetName() +  " :End\r\n");
+		client.SetMessageToSend(": 366 " + client.GetNickname() + " " + ChanPtr->GetName() +  " :End\r\n");
 	}
 }
