@@ -5,14 +5,7 @@
 void	Pass(Server &server, Client &client, std::string &Auth)
 {
 	if (client.GetStatementStep(PASSWD) == true){
-		if (server.GetPassword().empty() == true)
-			client.SetMessageToSend(": 300 : [PASS] :Password not needed\r\n");
-		else
-			client.SetMessageToSend(": 462 : [PASS] :Password already accepted\r\n");
-		return ;
-	}
-	if (server.GetPassword().empty() == true){
-		client.SetStatement(PASSWD, true);
+		client.SetMessageToSend(": 462 : [PASS] :Password already accepted\r\n");
 		return ;
 	}
 	size_t	pos = Auth.find(" ");

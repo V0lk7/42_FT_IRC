@@ -27,6 +27,8 @@ ErrArgs	ParseArguments(int ac, char **av)
 	std::string	Ports(av[1]);
 	std::string	Password(av[2]);
 
+	if (Password.empty() == true)
+		return (WRONG_PARAMETERS);
 	if (Ports.find_first_not_of("0123456789") != std::string::npos)
 		return (WRONG_PORT);
 	double	Port = strtod(av[1], NULL);
