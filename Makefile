@@ -12,10 +12,9 @@ DEPS		:=	$(OBJS:.o=.d)
 #								FLAGS										  #
 ###############################################################################
 
-#CXX			=	c++
-CXX			=	g++
+CXX			=	c++
 
-CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98 -ggdb3
+CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 
@@ -37,7 +36,7 @@ $(OBJ_DIR)/%.o : %.cpp
 	$(DIR_CREATE)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
--include $(DEPS) unitest.mk
+-include $(DEPS) 
 
 ###############################################################################
 #								RULES										  #

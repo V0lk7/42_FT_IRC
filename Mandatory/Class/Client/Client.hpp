@@ -3,15 +3,6 @@
 
 # include <string>
 
-/*########################################################################################
-	Class Client which is for taking all the information of the potential new client
-	connected to the server.
-	_Socket => File Descriptor of the socket link to the client.
-	_Nickname => Nickname used for the IRC protocol. 9 characters only. ONLY ONE NICKNAME by client is unique
-	_Username => Obligation name to be a valid client.
-	_Auth => List of the setting conditions.
-########################################################################################*/
-
 enum right { SUDO, CLIENT };
 
 enum step{
@@ -32,16 +23,12 @@ class Client{
 		std::string	_InputBuffer;
 		std::string	_MessageToSend;
 
+		Client(Client const &src);
+		Client	&operator=(Client const &rhs);
 
 	public :
 		Client();
 		~Client();
-
-        // TOOLS DEV
-		Client( const std::string name, right right );
-		Client(Client const &src);
-		Client	&operator=(Client const &rhs);
-        // TOOLS DEV
 
 		void            SetNickname(std::string const &);
 		void            SetUsername(std::string const &);

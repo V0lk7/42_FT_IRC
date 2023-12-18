@@ -3,17 +3,6 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-#include <iostream>
-
-// ########################################################################## //
-// #_TODO___________________________________________________________________# //
-// #-> two functions:-> change TOPIC if arguments were send                 # //
-// #                 -> display TOPIC if no argument was send               # //
-// #-> make send msg when errro input user was detected                     # //
-// #-> question about management need i inform all user when topic change   # //
-// #-> TOPIC DONE NEED MSG MANAGEMENT                                       # //
-// ########################################################################## //
-
 typedef enum TErr {
     TOPICNONE, NOTOPIC,
     TOPICNORIGHT, TOPICNOCHANNEL,
@@ -91,7 +80,6 @@ topicParsing( Client& client, Channel* channel )
     std::map<Client*, bool> key; 
     bool                    right = false;
 
-    std::cout << client.GetNickname() << std::endl;
     if ( !channel ) {
         topicReaply( client, channel, TOPICNOCHANNEL );
         return ( TOPICNOCHANNEL );
@@ -159,6 +147,7 @@ topicReaply( Client& client, Channel* channel, int flag )
     else if ( flag == TOPICCHANGED ) {
         reply =  ":" + clientName + " TOPIC " + channelName + " :" + channel->GetTopic()
               + "\r\n";
+		channel->SendMessageToClients(reply, client);
     }
 
     else if ( TOPICNONE )

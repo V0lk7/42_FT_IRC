@@ -2,10 +2,6 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Tools.hpp"
-// ########################################################################## //
-// #_TODO_TOOLS____________________________________________________________ # //
-#include <iostream>
-// ########################################################################## //
 
 typedef enum IErr {
     NEXT, NOTARGETINSERVER, TARGETALREADYINCHANNEL,

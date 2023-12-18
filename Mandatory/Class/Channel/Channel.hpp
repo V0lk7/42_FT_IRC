@@ -26,17 +26,14 @@ class Channel{
 		std::list<Client *>			_WaitingList;
 
 
+		Channel();
+		Channel	&operator=(Channel const &rhs);
+		Channel(Channel const &src);
+
 	public :
+
 		Channel(std::string const &);
 		~Channel();
-
-        //_TOOL DEV___________________________________________________________//
-        Channel( Client& one, Client& two, Client& tree, Client& four );
-		Channel	&operator=(Channel const &rhs);
-        //_TOOL DEV___________________________________________________________//
-
-		Channel(Channel const &src);
-		Channel();
 
 		void                        SetName(std::string const &);
 		void                        SetPassword(std::string const &);

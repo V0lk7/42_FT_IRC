@@ -2,19 +2,6 @@
 #include "Tools.hpp"
 #include "Channel.hpp"
 #include "Client.hpp"
-#include <vector>
-
-#include <iostream>
-
-// ########################################################################## //
-// #_TODO___________________________________________________________________# //
-// #-> better handling error msg: 1.                                        # //
-// #-> need check if [&#] is present TODO                                   # //
-// #-> need to implement checking right of client kickmaker                 # //
-// #-> need str is : KICK [&#]CHANNEL target TODO MISSING FORMAT CHECKING   # //
-// #               : MISSING MULTIPLE KICKING FORMAT AND HAVE TO CHANNEL    # //
-// #               : AFTER [#&]                                             # //
-// ########################################################################## //
 
 static enum Err
 checkRight( Channel& channel, Client& client );

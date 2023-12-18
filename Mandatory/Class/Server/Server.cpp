@@ -5,45 +5,7 @@
 #include <algorithm>
 #include <iostream>
 
-Server::Server() : _Password( "password" ),
-                   _MasterSocket( -1 )
-{
-    int i = 0;
-    Client* one;
-    Client* two;
-    Client* three;
-    Client* four;
-
-    _ClientList.push_back( new Client ( "sudo",      SUDO ) );
-    _ClientList.push_back( new Client ( "Jean",    CLIENT ) );
-    _ClientList.push_back( new Client ( "Charles", CLIENT ) );
-    _ClientList.push_back( new Client ( "Jimmy",   CLIENT ) );
-
-	std::list<Client *>::iterator	ItClientBegin = this->_ClientList.begin();
-	std::list<Client *>::iterator	ItEnd = this->_ClientList.end();
-	while ( ItClientBegin != ItEnd )
-	{
-        switch (i) {
-            case 0:
-                one = *ItClientBegin;
-                break;
-            case 1:
-                two = *ItClientBegin;
-                break;
-            case 2:
-                three= *ItClientBegin;
-                break;
-            default:
-                four = *ItClientBegin;
-                break;
-        }
-		ItClientBegin++;
-        i++;
-	}
-
-    _ChannelList.push_back( new Channel ( *one, *two, *three, *four ) );
-
-}
+Server::Server(){}
 
 Server::Server(std::string const &Passwd) : _Password(Passwd), _MasterSocket(-1) {}
 
