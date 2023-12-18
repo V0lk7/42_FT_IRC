@@ -44,6 +44,12 @@ Invite( Server& server, Client& client, const std::string& cmd )
     }
 
     channel = server.GetChannel( cuttingCmd[1] );
+
+	if (channel != NULL && channel->IsClientOperator(client) != true){
+        inviteReaply( client, NULL, channel, BADRIGHT );
+        return ;
+	}
+
     target = server.GetClient( cuttingCmd[0] );
 
     if ( !inviteParsing( cuttingCmd, server, client, channel, target ) )
@@ -57,15 +63,15 @@ static bool
 inviteParsing( std::vector<std::string>& key, Server& server,
                Client& client, Channel* channel, Client* target )
 {
+    if ( !server.GetClient( key[0] ) ) {
+        inviteReaply( client, NULL, channel, NOTARGETINSERVER );
+        return ( false );
+    }
+
     if ( !channel ) {
         if ( !isNoChannelButValidTargetFCT( key, server, client, target ) ) {
             inviteReaply( client, NULL, NULL, BADPARAMS );
         }
-        return ( false );
-    }
-
-    if ( !server.GetClient( key[0] ) ) {
-        inviteReaply( client, NULL, channel, NOTARGETINSERVER );
         return ( false );
     }
 
@@ -188,8 +194,8 @@ inviteReaply( Client& client, Client* target, Channel* channel, int flag )
     }
 
     else if ( flag == BADRIGHT ) {
-        reaply = ": 473 :" + clientName + " " + channelName
-               + " You are not a channel operator"
+        reaply = ": 482 :" + clientName + " " + channelName
+               + " :You are not a channel operator"
                + "\r\n";
     }
 

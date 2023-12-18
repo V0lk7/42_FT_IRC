@@ -71,7 +71,11 @@ static void	ModeReply(Client &client, Channel *ChanPtr, int Flag, CmdNode *Mode)
 	else
 		Add = "-";
 
-	if (Flag == INVITONLY_CHANGED){
+	if (Flag == ERR_CHANOPRIVSNEEDED){
+		Reply	= ": 482 " + ClientName + " " + ChannelName
+				+ " :You are not a channel operator\r\n";
+	}
+	else if (Flag == INVITONLY_CHANGED){
 		Reply = ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + "\r\n";
 		ChanPtr->SendMessageToClients(Reply, client);
 	}
