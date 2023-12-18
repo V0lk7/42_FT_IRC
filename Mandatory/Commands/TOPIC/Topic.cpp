@@ -117,19 +117,19 @@ topicReaply( Client& client, Channel* channel, int flag )
 
     if ( flag == TOPICCLIENTNOINCHANNEL ) {
         reply = ": 403 :" + clientName + " TOPIC " + channelName
-              + ":TOPIC You are not currently in the channel."
+              + " :TOPIC You are not currently in the channel."
               + "\r\n";
     }
 
     else if ( flag == TOPICNORIGHT ) {
-        reply = ": 482 :" + clientName + " TOPIC " + channelName
-              + ":you are not a valid operator"
+        reply = ": 482 :" + clientName + " " + channelName
+              + " :you are not a valid operator"
               + "\r\n";
     }
 
     else if ( flag == TOPICNOCHANNEL || flag == TOPICERR ) {
         reply = ":" + clientName +
-              + ":TOPIC command is invalid or improperly formatted."
+              + " :TOPIC command is invalid or improperly formatted."
               + "\r\n";
     }
 

@@ -17,6 +17,7 @@ enum Err
 parseCmd( const std::string& cmd, Channel* channel, Client& client )
 {
     std::vector<std::string> splitOnSpace = split( cmd , " " );
+	enum Err	flag;
 
     splitOnSpace.erase( splitOnSpace.begin() );
     if ( !splitOnSpace.size() )
@@ -31,10 +32,10 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
         kickReaply( client, channel, NORIGHT );
         return ( NORIGHT );
     }
-
-    if ( findTarget( splitOnSpace[1], *channel, client ) != CONTINUE ) {
-        kickReaply( client, channel, NOTARGET );
-        return ( NOTARGET );
+	flag = findTarget( splitOnSpace[1], *channel, client );
+    if ( flag != CONTINUE ) {
+        kickReaply( client, channel, flag );
+        return ( flag );
     }
 
     return ( NONE );
@@ -57,8 +58,8 @@ findTarget( std::string& key, Channel& channel, Client& client )
         }
     }
 
-    if ( key == client.GetNickname() )
-        found = false;
+    if ( found == true && key == client.GetNickname() )
+		return (HIMSELF);
     return ( found ? CONTINUE : NOTARGET );
 }
 
@@ -101,6 +102,12 @@ kickReaply( Client& client, Channel* channel, int flag )
               + " :Command is invalid or improperly formatted."
               + "\r\n";
     }
+	else if (flag == HIMSELF ){
+        reply = ": 400 " + clientName + " " +channelName +
+              + " :You can't kick yourself."
+              + "\r\n";
+
+	}
     else 
         reply = "" ;
 
