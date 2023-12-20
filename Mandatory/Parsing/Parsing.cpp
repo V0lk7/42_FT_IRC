@@ -27,6 +27,8 @@ static const	std::string Cmd[11] =
 	"JOIN", "MODE", "WHO", "PASS", "NICK", "USER", "QUIT"
 };
 
+static bool	Authentication(Client &client, int &way);
+
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server );
 
@@ -94,10 +96,8 @@ static void
 dispatch( std::string& info, int& way, Client& person, Server& server ) {
 	if (way == QUIT)
 		server.DisconnectClient(person);
-	else if ( !person.GetStatement() && !(way > 6 &&  way < 10) ){
-		person.SetMessageToSend(": 451 : :Not registered\r\n");
+	if ( Authentication(person, way) == false )
 		return ;
-	}
     switch ( way ) {
         case TOPIC :
             Topic( server, person, info );
@@ -144,4 +144,17 @@ wayChooser( const std::string& target ) {
         }
     }
 	return (-1);
+}
+
+static bool	Authentication(Client &client, int &way)
+{
+	if (client.GetStatement() == true)
+		return (true);
+	if (client.IsAuthenticate() == true)
+		client.SetStatement(OK, true);
+	else if (!(way > 6 && way < 10)){
+		client.SetMessageToSend(": 451 : :Not registered\r\n");
+		return (false);
+	}
+	return (true);
 }

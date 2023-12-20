@@ -9,7 +9,7 @@ void	Nick(Server &server, Client &client, std::string &Auth)
 	std::string	reply;
 
 	if (client.GetStatementStep(PASSWD) == false) {
-		reply = ": 400 :Password needed before\r\n";
+		reply = ": 400 : Password needed before\r\n";
 		client.SetMessageToSend(reply);
 		return ;
 	}
@@ -17,7 +17,7 @@ void	Nick(Server &server, Client &client, std::string &Auth)
 	size_t	pos = Auth.find(" ");
 	pos = Auth.find_first_not_of(" ", pos);
 	if (pos == std::string::npos) {
-		client.SetMessageToSend(": 431 NICK :No nickname given\r\n");
+		client.SetMessageToSend(": 431 NICK : No nickname given\r\n");
 		return ;
 	}
 
@@ -26,7 +26,8 @@ void	Nick(Server &server, Client &client, std::string &Auth)
 	if (flag == 1)
 		reply = ": 432 : " + client.GetNickname() + " :Erroneus nickname\r\n";
 	else if (flag == 2){
-		client.SetNickname(Nick);
+		if (client.GetNickname().empty() == true)
+			client.SetNickname(Nick);
 		reply = ": 433 " + Nick + " :Nickname is already in use\r\n";
 	}
 	else {

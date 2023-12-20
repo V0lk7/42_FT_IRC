@@ -133,6 +133,15 @@ std::string	Client::GetInputBuffer(void) const
 	return (this->_InputBuffer);
 }
 
+bool	Client::IsAuthenticate(void) const
+{
+	for (int i = 1; i < 4; i++){
+		if (this->_Auth[i] == false)
+			return (false);
+	}
+	return (true);
+}
+
 std::ostream&	operator<<(std::ostream& print, const Client& other)
 {
 	print << "Nickname : " << other.GetNickname() << std::endl;

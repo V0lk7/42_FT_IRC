@@ -5,10 +5,7 @@
 void	Pass(Server &server, Client &client, std::string &Auth)
 {
 	if (client.GetStatementStep(PASSWD) == true){
-		if (server.GetPassword().empty() == true)
-			client.SetMessageToSend(": 300 : [PASS] :Password not needed\r\n");
-		else
-			client.SetMessageToSend(": 462 : [PASS] :Password already accepted\r\n");
+		client.SetMessageToSend(": 462 : You may not reregister\r\n");
 		return ;
 	}
 	if (server.GetPassword().empty() == true){
@@ -17,17 +14,17 @@ void	Pass(Server &server, Client &client, std::string &Auth)
 	}
 	size_t	pos = Auth.find(" ");
 	if (pos == std::string::npos){
-		client.SetMessageToSend(": 461 : [PASS] :Need more parameters\r\n");
+		client.SetMessageToSend(": 461 PASS :Not enough parameters\r\n");
 		return ;
 	}
 	pos = Auth.find_first_not_of(" ", pos);
 	if (pos == std::string::npos){
-		client.SetMessageToSend(": 461 : [PASS] :Need more parameters\r\n");
+		client.SetMessageToSend(": 461 PASS :Not enough parameters\r\n");
 		return ;
 	}
 	std::string	pass(Auth.substr(pos));
 	if (pass != server.GetPassword()){
-		client.SetMessageToSend(": 464 : [PASS] :Invalid password\r\n");
+		client.SetMessageToSend(": 464 : Password incorrect\r\n");
 		return ;
 	}
 	else {
