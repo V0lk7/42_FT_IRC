@@ -73,7 +73,7 @@ static void	ModeReply(Client &client, Channel *ChanPtr, int Flag, CmdNode *Mode)
 
 	if (Flag == ERR_CHANOPRIVSNEEDED){
 		Reply	= ": 482 " + ClientName + " " + ChannelName
-				+ " :You are not a channel operator\r\n";
+				+ " :You're not channel operator\r\n";
 	}
 	else if (Flag == INVITONLY_CHANGED){
 		Reply = ":" + ClientName + " MODE " + ChannelName + " " + Add + Mode->Mode + "\r\n";
@@ -107,7 +107,7 @@ static void	ModeReply(Client &client, Channel *ChanPtr, int Flag, CmdNode *Mode)
 				+ " *: You must specify a parameter with " + Add + Mode->Mode + "\r\n";
 	}
 	else if (Flag == ERR_NOSUCHNICK){
-		Reply = ": 401 MODE " + ChannelName + " Mode: Unknow Nickname: " + Mode->Param + "\r\n";
+		Reply = ": 401 MODE " + ChannelName + " Mode: Unknow nickname: " + Mode->Param + "\r\n";
 	}
 	else if (Flag == ERR_NOSUCHCHANNEL){
 		Reply = ": 403 MODE :No such channel\r\n";

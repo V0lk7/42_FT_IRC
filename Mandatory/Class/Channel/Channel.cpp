@@ -27,7 +27,7 @@ Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)
 {
 	_Mode[INVITE_ONLY_SET] = false;
-	_Mode[TOPIC_CHANGE_SET] = false;
+	_Mode[TOPIC_CHANGE_SET] = true;
 	_Mode[PASSWORD_SET] = false;
 }
 

@@ -3,33 +3,22 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Tools.hpp"
-#include <sstream>
-
-static void
-privMsgError( int code, std::string message, Client& client)
-{
-    std::ostringstream strCode;
-    strCode << ": " << code;
-    std::string fullMessage = strCode.str();
-    fullMessage += " PRIVMSG : " + message + "\r\n";
-    client.SetMessageToSend( fullMessage );
-}
 
 void
 PrivateMessage( Server& server, Client& client, std::string& rawCommand )
 {
     if( rawCommand.find ( ":" ) == std::string::npos || rawCommand.find ( ":" ) == rawCommand.size() - 1 )
-        return privMsgError( ERR_NOTEXTTOSEND, "No message", client );
+		return client.SetMessageToSend(": 412 : No text to send (PRIVMSG)\r\n");
 
     std::string target = rawCommand.substr( 0, rawCommand.find( ":" ) );
 
     std::vector<std::string> splitCmd = split( target , " " );
 
     if( splitCmd.size() < 2 )
-        return privMsgError( ERR_NORECIPIENT, "No recipient", client);
+		return client.SetMessageToSend(": 411 : No recipient given (PRIVMSG)\r\n");
 
     else if( splitCmd.size() > 2 )
-        return privMsgError( ERR_NORECIPIENT, "Too many recipients", client);
+		return client.SetMessageToSend(": 407 : Duplicate recipients. No message delivered\r\n");
 
     target = splitCmd[1];
 
@@ -44,7 +33,7 @@ PrivateMessage( Server& server, Client& client, std::string& rawCommand )
             targetChannel->SendMessageToClients( message, client );
 		}
         else
-            return privMsgError( ERR_NOSUCHCHANNEL, "Unknown channel", client);
+			return client.SetMessageToSend(": 401 : " + target + " :No such nick/channel\r\n");
     }
     else
     {
@@ -55,6 +44,6 @@ PrivateMessage( Server& server, Client& client, std::string& rawCommand )
             targetClient->SetMessageToSend( message );
 		}
         else
-            return privMsgError( ERR_NOSUCHNICK, "Unknown user", client);
+			return client.SetMessageToSend(": 401 : " + target + " :No such nick/channel\r\n");
     }
 }

@@ -42,8 +42,15 @@ Topic( const Server& server, Client& client, const std::string& cmd )
     }
 
     channel = server.GetChannel( data[0] );
-
-    if ( channel && data.size() == 1 ) {
+	if (channel == NULL){
+		client.SetMessageToSend(": 403 : " + data[0] + " :No such channel\r\n");
+		return ;
+	}
+	if (channel->UserInChannel(client) == false){
+		topicReaply(client, channel, TOPICCLIENTNOINCHANNEL);
+		return ;
+	}
+    if ( data.size() == 1 ) {
         topicReaply( client, channel, TOPICSEND );
         return ;
     }
@@ -91,11 +98,6 @@ topicParsing( Client& client, Channel* channel )
     std::map<Client*, bool> key; 
     bool                    right = false;
 
-    std::cout << client.GetNickname() << std::endl;
-    if ( !channel ) {
-        topicReaply( client, channel, TOPICNOCHANNEL );
-        return ( TOPICNOCHANNEL );
-    }
     key = channel->GetUsers();
     if ( !channel->GetMode( TOPIC_CHANGE_SET ) ) {
         right = true;
@@ -127,22 +129,20 @@ topicReaply( Client& client, Channel* channel, int flag )
     if ( channel )
         channelName = channel->GetName() ;
 
-    if ( flag == TOPICCLIENTNOINCHANNEL ) {
-        reply = ": 403 :" + clientName + " TOPIC " + channelName
-              + " :TOPIC You are not currently in the channel."
+    if ( flag == TOPICCLIENTNOINCHANNEL) {
+        reply = ": 403 : " + channelName
+              + " :You're not on that channel"
               + "\r\n";
     }
 
     else if ( flag == TOPICNORIGHT ) {
-        reply = ": 482 :" + clientName + " TOPIC " + channelName
-              + " :you are not a valid operator"
+        reply = ": 482 : " + channelName
+              + " :You're not channel operator"
               + "\r\n";
     }
 
-    else if ( flag == TOPICNOCHANNEL || flag == TOPICERR ) {
-        reply = ":" + clientName +
-              + " :TOPIC command is invalid or improperly formatted."
-              + "\r\n";
+    else if ( flag == TOPICERR ) {
+        reply = ": 461 : TOPIC :Not enough parameters\r\n";
     }
 
     else if ( flag == TOPICSEND ) {
@@ -161,7 +161,7 @@ topicReaply( Client& client, Channel* channel, int flag )
               + "\r\n";
     }
 
-    else if ( TOPICNONE )
+    else
         reply = "" ;
 
     client.SetMessageToSend( reply );

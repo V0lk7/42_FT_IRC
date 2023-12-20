@@ -4,18 +4,6 @@
 #include "Client.hpp"
 #include <vector>
 
-#include <iostream>
-
-// ########################################################################## //
-// #_TODO___________________________________________________________________# //
-// #-> better handling error msg: 1.                                        # //
-// #-> need check if [&#] is present TODO                                   # //
-// #-> need to implement checking right of client kickmaker                 # //
-// #-> need str is : KICK [&#]CHANNEL target TODO MISSING FORMAT CHECKING   # //
-// #               : MISSING MULTIPLE KICKING FORMAT AND HAVE TO CHANNEL    # //
-// #               : AFTER [#&]                                             # //
-// ########################################################################## //
-
 static enum Err
 checkRight( Channel& channel, Client& client );
 static enum Err
@@ -32,9 +20,15 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
     std::vector<std::string> splitOnSpace = split( cmd , " " );
 
     splitOnSpace.erase( splitOnSpace.begin() );
+	if (splitOnSpace[0] == "Irc42_JCJ")
+		splitOnSpace.erase(splitOnSpace.begin());
+
     if ( !splitOnSpace.size() )
         return ( EMPTY );
-
+	else if (splitOnSpace.size() != 2){
+        kickReaply( client, channel, ERR_PARAMS );
+        return ( ERR_PARAMS );
+	}
     if ( !channel ) {
         kickReaply( client, channel, NOCHANNEL );
         return ( NOCHANNEL );
@@ -99,26 +93,34 @@ kickReaply( Client& client, Channel* channel, int flag )
         channelName = channel->GetName() ;
 
     if ( flag == NOTARGET ) {
-        reply = ": 442 " + clientName + " " + channelName
-              + " :You're not on that channel."
+        reply = ": 441 " + clientName + " " + channelName
+              + " :Target not on the channel"
               + "\r\n";
     }
 
     else if ( flag == NORIGHT ) {
         reply = ": 482 " + clientName + " " + channelName
-              + " :You must be a channel operator."
+              + " :You must be a channel operator"
               + "\r\n";
     }
 
     else if ( flag == NOCHANNEL ) {
         reply = ": 476 " + clientName +
-              + " :Command is invalid or improperly formatted."
+              + " :No such channel"
               + "\r\n";
     }
 	else if (flag == HIMSELF){
         reply = ": 400 " + clientName + " " + channelName
-              + " :You can't kick yourself."
+              + " :You can't kick yourself"
               + "\r\n";
+	}
+	else if (flag == ERR_PARAMS){
+		if (channelName.empty() == false)
+			reply	= ": 461 " + clientName + " " + channelName + 
+					+ " :Not enough parameters\r\n";
+		else
+			reply	= ": 461 " + clientName + " :Not enough parameters\r\n";
+
 	}
     else 
         reply = "" ;

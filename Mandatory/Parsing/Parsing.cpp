@@ -27,7 +27,7 @@ static const	std::string Cmd[11] =
 	"JOIN", "MODE", "WHO", "PASS", "NICK", "USER", "QUIT"
 };
 
-static bool	Authentication(Client &client, int &way);
+static void	SendGreatingMessage(Client &client);
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server );
@@ -94,10 +94,15 @@ static std::string	SaveIncompleteCommand(std::string &Cmd)
 
 static void
 dispatch( std::string& info, int& way, Client& person, Server& server ) {
-	if (way == QUIT)
+	if (way == QUIT){
 		server.DisconnectClient(person);
-	if ( Authentication(person, way) == false )
 		return ;
+	}
+	if (person.GetStatement() != true && !(way > 6 && way < 10)){
+		person.SetMessageToSend(": 451 :Not registered\r\n");
+		return ;
+	}
+
     switch ( way ) {
         case TOPIC :
             Topic( server, person, info );
@@ -125,9 +130,17 @@ dispatch( std::string& info, int& way, Client& person, Server& server ) {
             break ;
 		case sNICK :
             Nick( server, person, info );
+			if (person.GetStatement() == false && person.IsAuthenticate() == true){
+				person.SetStatement(OK, true);
+				SendGreatingMessage(person);
+			}
             break ;
 		case sUSER :
             User( person, info );
+			if (person.GetStatement() == false && person.IsAuthenticate() == true){
+				person.SetStatement(OK, true);
+				SendGreatingMessage(person);
+			}
             break ;
         default :
             return ;
@@ -146,15 +159,11 @@ wayChooser( const std::string& target ) {
 	return (-1);
 }
 
-static bool	Authentication(Client &client, int &way)
+static void	SendGreatingMessage(Client &client)
 {
-	if (client.GetStatement() == true)
-		return (true);
-	if (client.IsAuthenticate() == true)
-		client.SetStatement(OK, true);
-	else if (!(way > 6 && way < 10)){
-		client.SetMessageToSend(": 451 : :Not registered\r\n");
-		return (false);
-	}
-	return (true);
+	std::string	Reply;
+
+	Reply = ": 001 " + client.GetNickname() + " :Welcome to 42 Irc Network\r\n";
+	Reply += ": 005 " + client.GetNickname() + " NETWORK=Irc42_JCJ\r\n";
+	client.SetMessageToSend(Reply);
 }
