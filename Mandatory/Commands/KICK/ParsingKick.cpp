@@ -102,7 +102,7 @@ kickReaply( Client& client, Channel* channel, int flag )
 
     else if ( flag == NORIGHT ) {
         reply = ": 482 " + clientName + " " + channelName
-              + " :You must be a channel operator"
+              + " :You're not channel operator"
               + "\r\n";
     }
 

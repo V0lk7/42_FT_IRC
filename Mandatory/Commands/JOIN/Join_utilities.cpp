@@ -71,7 +71,7 @@ void	CreateReply(Client &client, Channel &channel, int flag)
 		ChannelName = channel.GetName();
 
 	if (flag == BAD_CHANNEL)
-		Reply = ": 461 : [JOIN] :Invalid Channel name\r\n";
+		Reply = ": 461 : JOIN :Invalid Channel name\r\n";
 	else if (flag == EXISTING_CHANNEL || flag == NEW_CHANNEL){
 		Reply	= ":" + ClientName + " JOIN " + ChannelName + "\r\n";
 		channel.SendMessageToClients(Reply, client);
