@@ -53,6 +53,7 @@ class Channel{
 		std::map<Client *, bool>&	GetUsers(void) ;
 		std::list<Client*>&	        GetWaitingList(void) ;
 		size_t						GetSizeUsers(void) const;
+		std::string					GetModeOn(void) const;
 
 		void                        AddClientToChannel(Client &, bool);
 		void                        EraseClientFromChannel(Client &);

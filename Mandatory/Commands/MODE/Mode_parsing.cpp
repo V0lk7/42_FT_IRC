@@ -24,6 +24,8 @@ int	ParsingModeCmd(	Server const &server,
 		return (ERR_NOSUCHCHANNEL);
 	else if (Chanptr->UserInChannel(client) == false)
 		return (ERR_NOTONCHANNEL);
+	else if (Cmd.size() == 1)
+		return (LIST_MODE);
 	else if (Chanptr->IsClientOperator(client) == false)
 		return (ERR_CHANOPRIVSNEEDED);
 	else if (Cmd.size() == 1)

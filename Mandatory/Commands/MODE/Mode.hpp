@@ -10,6 +10,7 @@
 # define PASSWORD_CHANGED 2
 # define CLIENTRIGHT_CHANGED 3
 # define LIMIT_CHANGED 4 
+# define LIST_MODE 5 
 
 class Server;
 class Channel;

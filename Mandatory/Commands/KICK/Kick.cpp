@@ -4,6 +4,7 @@
 #include "Channel.hpp"
 
 #include "Kick.hpp"
+#include <iostream>
 
 static std::string
 msgMaker( Client& client, Channel& channel, std::vector<std::string>& data );
@@ -19,6 +20,10 @@ Kick( const Server& server, Client& client, const std::string& cmd )
     std::vector<std::string>    data = split( cmd, " " );
     data.erase( data.begin() );
 
+	if (data[0] == "Irc42_JCJ"){
+		std::cout << "It's working OMG" << std::endl;
+		data.erase(data.begin());
+	}
     channel = server.GetChannel( data[0] );
 
     if ( parseCmd( cmd , channel, client ) != NONE )
@@ -50,6 +55,8 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
     std::string msg;
 
+	if (data[1][0] == ':')
+		data[1].erase(data[1].begin());
     if ( data.size() <= 2 ) {
         msg = ":" + client.GetNickname() + " KICK "
             + channel.GetName() + " " + data[1] + "\r\n";
