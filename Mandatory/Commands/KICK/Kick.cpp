@@ -55,6 +55,8 @@ msgMaker( Client& client, Channel& channel, std::vector<std::string>& data )
 {
     std::string msg;
 
+	if (data[1][0] == ':')
+		data[1].erase(data[1].begin());
     if ( data.size() <= 2 ) {
         msg = ":" + client.GetNickname() + " KICK "
             + channel.GetName() + " " + data[1] + "\r\n";

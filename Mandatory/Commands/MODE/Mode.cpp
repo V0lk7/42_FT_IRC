@@ -118,6 +118,9 @@ static void	ModeReply(Client &client, Channel *ChanPtr, int Flag, CmdNode *Mode)
 	else if (Flag == ERR_UNKNOWNMODE){
 		Reply = ": 472 MODE " + ChannelName + " Mode: Unknow mode\r\n";
 	}
+	else if (Flag == LIST_MODE){
+		Reply = ": 324 " + ClientName + " " + ChannelName + " :+" + ChanPtr->GetModeOn() + "\r\n";
+	}
 	else if (Flag == ERR_KEYSET)
 		Reply = "";
 	client.SetMessageToSend(Reply);

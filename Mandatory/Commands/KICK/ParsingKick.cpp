@@ -20,8 +20,10 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
     std::vector<std::string> splitOnSpace = split( cmd , " " );
 
     splitOnSpace.erase( splitOnSpace.begin() );
-	if (splitOnSpace[0] == "Irc42_JCJ")
+	if (splitOnSpace[0] == "Irc42_JCJ"){
 		splitOnSpace.erase(splitOnSpace.begin());
+		splitOnSpace[1].erase(splitOnSpace[1].begin());
+	}
 
     if ( !splitOnSpace.size() )
         return ( EMPTY );

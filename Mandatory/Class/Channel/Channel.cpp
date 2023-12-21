@@ -116,6 +116,21 @@ size_t	Channel::GetSizeUsers(void) const
 	return (this->_Users.size());
 }
 
+std::string	Channel::GetModeOn(void) const
+{
+	std::string	ModeOn;
+
+	if (this->_LimitUsers > 0)
+		ModeOn = "l";
+	if (this->_Mode[INVITE_ONLY_SET] == true)
+		ModeOn += "i";
+	if (this->_Mode[PASSWORD_SET] == true)
+		ModeOn += "k";
+	if (this->_Mode[TOPIC_CHANGE_SET] == true)
+		ModeOn += "t";
+	return (ModeOn);
+}
+
 /*----------------------SpecificMethods----------------------------*/
 
 void
