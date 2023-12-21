@@ -27,6 +27,8 @@ ErrArgs	ParseArguments(int ac, char **av)
 	std::string	Ports(av[1]);
 	std::string	Password(av[2]);
 
+	if (Password.empty() == true)
+		return (WRONG_PASSWORD);
 	if (Ports.find_first_not_of("0123456789") != std::string::npos)
 		return (WRONG_PORT);
 	double	Port = strtod(av[1], NULL);
@@ -39,8 +41,10 @@ void	ErrorArguments(ErrArgs flag)
 {
 	if (flag == WRONG_PARAMETERS)
 		std::cerr << "Usage: ircserv \"Port\" \"Password\"";
-	else
+	else if (flag == WRONG_PORT)
 		std::cerr << "Error: Port number invalid";
+	else
+		std::cerr << "Error: Need a non empty password";
 	std::cerr << std::endl;
 	return ;
 }

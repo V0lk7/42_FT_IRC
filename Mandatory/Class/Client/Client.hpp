@@ -23,16 +23,12 @@ class Client{
 		std::string	_InputBuffer;
 		std::string	_MessageToSend;
 
+		Client(Client const &src);
+		Client	&operator=(Client const &rhs);
 
 	public :
 		Client();
 		~Client();
-
-        // TOOLS DEV
-		Client( const std::string name, right right );
-		Client(Client const &src);
-		Client	&operator=(Client const &rhs);
-        // TOOLS DEV
 
 		void            SetNickname(std::string const &);
 		void            SetUsername(std::string const &);

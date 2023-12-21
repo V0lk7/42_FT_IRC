@@ -8,29 +8,12 @@ Client::Client() : _Socket(-1), _Nickname(""), _Username("")
 		this->_Auth[i] = false;
 }
 
-Client::Client( const std::string name, right right )
-{
-    if ( right == SUDO ) {
-        _Socket = -1;
-        _Username = "SUDO";
-        for (int i = 0; i < 4; i++)
-            this->_Auth[i] = true;
-    }
-    else if ( right == CLIENT ) {
-        _Socket = -1;
-        _Username = "CLIENT";
-        for (int i = 0; i < 4; i++)
-            this->_Auth[i] = true;
-    }
-    _Nickname = name;
-}
-
 Client::Client(Client const &src) {*this = src;}
 
 Client& Client::operator=( const Client& rhs )
 {
-    if ( this == &rhs )                                                          // TODO not sur about
-        return ( *this );                                                        // this protection
+    if ( this == &rhs )
+		return ( *this );
     _Socket         = rhs._Socket;
     _Nickname       = rhs._Nickname;
     _Username       = rhs._Username;

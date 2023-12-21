@@ -4,9 +4,6 @@
 #include "Commands.hpp"
 #include "Authentication.hpp"
 
-#include <iostream>
-#include <vector>
-
 typedef enum e_value {
      TOPIC,
      INVITE,
@@ -48,12 +45,6 @@ handleCommand(Server& server, Client& person ) {
 
     tab = split( work, "\r\n" );
 
-	std::cout << "\tCmd\n*-" << work << "-*" << std::endl;
-	std::cout << "Command receive by " << person.GetNickname() << std::endl; //DEBUG
-	std::cout << "Size list before " << server.getCllist().size() << std::endl; //DEBUG
-	std::cout << "Backup *-" << Backup << "-*" << std::endl; //DEBUG
-	std::cout << "Cmd *-" << work << "-*" << std::endl; //DEBUG
-
     if ( tab.empty() )
         return ;
     for ( size_t i = 0; i < tab.size(); i++ ) {
@@ -64,14 +55,8 @@ handleCommand(Server& server, Client& person ) {
 		}
 		dispatch( tab[i], way, person, server );
     }
-
 	person.ClearInputBuffer();
-
-
 	person.SetInputBuffer(Backup);
-
-	std::cout << "\tReply\n*-" << person.GetMessage() << "-*" << std::endl; //DEBUG
-	std::cout << "Size list after " << server.getCllist().size() << "\n" << std::endl; //DEBUG
     return ;
 }
 

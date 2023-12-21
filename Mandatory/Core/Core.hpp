@@ -25,7 +25,8 @@ typedef struct sockaddr SockAddr;
 typedef enum ErrArgs {
 	NONE,
 	WRONG_PARAMETERS,
-	WRONG_PORT
+	WRONG_PORT,
+	WRONG_PASSWORD
 } ErrArgs;
 
 class Server;

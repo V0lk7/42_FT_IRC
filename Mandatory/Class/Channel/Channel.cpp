@@ -1,27 +1,9 @@
 #include "Channel.hpp"
 #include "Client.hpp"
 #include <algorithm>
-#include <ostream>
 #include <iostream>
 
 Channel::Channel( void ) {}
-
-Channel::Channel( Client& one, Client& two, Client& three, Client& four ) :
-                           _Name( "#Test" ),
-                           _Password( "password" ),
-                           _Topic( "Test" ),
-                           _LimitUsers( 5 )
-{
-    _Mode[ INVITE_ONLY_SET  ] = false;
-    _Mode[ TOPIC_CHANGE_SET ] = false;
-    _Mode[ PASSWORD_SET ] = false;
-
-    _Users[ &one ]   = true;
-    _Users[ &two ]   = false;
-    _Users[ &three ] = false;
-
-    _WaitingList.push_back( &four );
-}
 
 Channel::Channel(std::string const &NewName) : _Name(NewName), _Password(""),
 												_Topic(""), _LimitUsers(0)
