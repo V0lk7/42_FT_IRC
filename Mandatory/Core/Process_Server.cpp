@@ -18,7 +18,6 @@
 #include "Core.hpp"
 #include "Parsing.hpp"
 #include <cstring>
-#include <iostream>
 
 static int	SetListSd(	std::list<Client *> &ClientList,
 						fd_set &ListSd, int MasterSocket);
@@ -98,7 +97,6 @@ static void	ProcessClientSocket(Server &ServerData, fd_set &ListSd)
 			else if (flag == 0)
 				ServerData.DisconnectClient(**It);
 			else {
-				std::cout << "###### Buffer: " << Buffer << " ######" << std::endl;
 				(*It)->SetInputBuffer(Buffer);
 				handleCommand(ServerData, *(*It));
 			}
