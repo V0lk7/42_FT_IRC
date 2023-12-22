@@ -52,9 +52,8 @@ void	Bot::on()
 
     int ret = recv(this->_socket, buffer, sizeof( buffer ) - 1, 0);
     buffer[ret] = '\0';
-
-    std::string check( buffer );
-    std::cout << "Check:" << check << "^" << std::endl;
+	
+	std::string	check(buffer);
     if (check.find(":bot JOIN #bot") == std::string::npos)
     {
         send(this->_socket, "QUIT\r\n", 6, 0);
@@ -81,7 +80,6 @@ void	Bot::on()
             buffer[ret] = '\0';
             
             std::string received( buffer );
-            std::cout << received << std::endl;
 
             if ( received.find( "ping" ) != std::string::npos )
                 send( this->_socket, "PRIVMSG #bot :pong\r\n", 20, 0 );
