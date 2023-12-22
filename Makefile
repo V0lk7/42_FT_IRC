@@ -12,9 +12,9 @@ DEPS		:=	$(OBJS:.o=.d)
 #								FLAGS										  #
 ###############################################################################
 
-CXX			=	c++
+CXX			=	g++
 
-CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98
+CXXFLAGS	=	-Wall -Wextra -Werror -pedantic -std=c++98 -ggdb3
 
 CPPFLAGS	=	-MMD -MP $(addprefix -I,$(INCLUDES))
 

@@ -27,7 +27,7 @@ parseCmd( const std::string& cmd, Channel* channel, Client& client )
 
     if ( !splitOnSpace.size() )
         return ( EMPTY );
-	else if (splitOnSpace.size() != 2){
+	else if (splitOnSpace.size() < 2){
         kickReaply( client, channel, ERR_PARAMS );
         return ( ERR_PARAMS );
 	}
